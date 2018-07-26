@@ -1,12 +1,13 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
 # This script is run before install script to ensure vars set, etc
 # It is designed to be run one dir above UHH2
 
+set -e
+set -x # Print command before executing it - easier for looking at logs
 # CRUCIAL for cmsrel, etc as aliases not expanded in non-interactive shells
 shopt -s expand_aliases
 
-set -o xtrace # Print command before executing it - easier for looking at logs
 
 setGitSetting() {
     # Check if git config setting is blank, if so set it to a value
