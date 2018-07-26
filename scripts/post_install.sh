@@ -12,9 +12,9 @@ echo "Doing post_install"
 # (which got cloned by gitlab at the start of the job)
 # Copy not move as could still need to reference scripts etc from the yaml
 cd ${CMSSW_BASE}/src
-mv ${CMSSW_BASE}/src/UHH2/JECDatabase $WORKDIR/UHH2/
+mv ${CMSSW_BASE}/src/UHH2/JECDatabase ${WORKDIR}/UHH2/
 rm -rf "${CMSSW_BASE}/src/UHH2"
-cp -r $WORKDIR/UHH2 ${CMSSW_BASE}/src
+cp -r ${WORKDIR}/UHH2 ${CMSSW_BASE}/src
 ls ${CMSSW_BASE}/src
 if [ ! -d "${CMSSW_BASE}/src/UHH2" ];
 then
@@ -25,9 +25,9 @@ fi
 # Compile SFrame and UHH
 cd ${CMSSW_BASE}/../SFrame
 source setup.sh
-time make $MAKEFLAGS
+time make ${MAKEFLAGS}
 cd ${CMSSW_BASE}/src/UHH2
-time make $MAKEFLAGS
+time make ${MAKEFLAGS}
 
 # Hack to make cmsRun work on the images as no default site set
 export CMS_PATH=/cvmfs/cms-ib.cern.ch/
