@@ -10,3 +10,5 @@ git init
 git remote add UHH https://github.com/UHH2/UHH2.git
 git fetch UHH pull/${PRNUM}/head:${PRBRANCH}
 git checkout ${PRBRANCH}
+
+set +u

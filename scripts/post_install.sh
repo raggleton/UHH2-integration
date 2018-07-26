@@ -30,3 +30,5 @@ time make $MAKEFLAGS
 
 # Hack to make cmsRun work on the images as no default site set
 export CMS_PATH=/cvmfs/cms-ib.cern.ch/
+
+set +u
