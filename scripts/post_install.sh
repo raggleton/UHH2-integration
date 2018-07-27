@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 set -x # Print command before executing it - easier for looking at logs
-set -u # Don't allow use of unset variables
 
 # Run after the install script to copy the version of UHH2 under test,
 # and to compile everything
@@ -31,5 +30,3 @@ time make ${MAKEFLAGS}
 
 # Hack to make cmsRun work on the images as no default site set
 export CMS_PATH=/cvmfs/cms-ib.cern.ch/
-
-set +u
