@@ -2,9 +2,9 @@ uhh2:
   tags:
   - cvmfs
 
-  cache:
-    paths:
-    - ${CI_PROJECT_DIR}/cmssw.git
+  # cache:
+  #   paths:
+  #   - ${CI_PROJECT_DIR}/cmssw.git
 
   before_script:
     - source /cvmfs/grid.cern.ch/etc/profile.d/setup-cvmfs-ui.sh
