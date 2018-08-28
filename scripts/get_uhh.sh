@@ -12,4 +12,7 @@ git remote add UHH https://github.com/UHH2/UHH2.git
 git fetch UHH pull/${PRNUM}/head:${PRBRANCH}
 git checkout ${PRBRANCH}
 
+# Get the diff for later analysis
+wget -O PR.diff https://patch-diff.githubusercontent.com/raw/UHH2/UHH2/pull/${PRNUM}.diff
+
 set +u
