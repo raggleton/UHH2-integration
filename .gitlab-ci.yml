@@ -17,7 +17,8 @@ uhh2:
     - mkdir ${TESTDIR}
     - cd ${TESTDIR}
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
-    - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Use the UHH2 PR, compile everything
+    - source ${CI_PROJECT_DIR}/scripts/replace_UHH.sh  # Use the UHH2 PR version
+    - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
   script:
     - cd ${CMSSW_BASE}/src/UHH2/core/python
     # Check the python is even valid
