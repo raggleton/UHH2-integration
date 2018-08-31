@@ -7,21 +7,15 @@ before_script:
   - source ${CI_PROJECT_DIR}/to_test.sh
   - source ${CI_PROJECT_DIR}/scripts/get_uhh.sh # get the desired version of UHH2
 
-
-.install_uhh: &install_uhh_defintion
-  # factor out common bit for running UHH install.sh
-  - export TESTDIR=${CI_PROJECT_DIR}/testdir
-  - mkdir ${TESTDIR} && cd ${TESTDIR}
-  - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
-
-
 build-pr:
   # Build the user's PR
   tags:
   - cvmfs
   stage: build
   script:
-    <<: *install_uhh_defintion
+    - export TESTDIR=${CI_PROJECT_DIR}/testdir
+    - mkdir ${TESTDIR} && cd ${TESTDIR}
+    - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
     - source ${CI_PROJECT_DIR}/scripts/replace_UHH.sh  # Use the UHH2 PR version
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
@@ -30,12 +24,14 @@ build-pr:
 
 
 build-ref:
-  # Build the reference UHH version (use the UHH2 in install.sh)
+  # Build the reference UHH version (set in the install.sh in UHH2)
   tags:
   - cvmfs
   stage: build
   script:
-    <<: *install_uhh_defintion
+    - export TESTDIR=${CI_PROJECT_DIR}/testdir
+    - mkdir ${TESTDIR} && cd ${TESTDIR}
+    - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
