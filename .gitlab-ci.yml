@@ -20,7 +20,7 @@ build-pr:
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
-    - python ntuplewriter.py
+    - for f in ntuple*.py; do python "$f"; done
 
 
 build-ref:
@@ -35,7 +35,7 @@ build-ref:
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
-    - python ntuplewriter.py
+    - for f in ntuple*.py; do python "$f"; done
 
 stages:
   - build
