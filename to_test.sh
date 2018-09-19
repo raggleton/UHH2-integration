@@ -7,7 +7,7 @@
 # username & branchname to test your branch
 
 export REMOTENAME="UHH2"
-export PRNUM=1008
+export PRNUM=1011
 export REMOTEBRANCH=pull/${PRNUM}/head
 
 # Local branchname on testmachine, you shouldn't need to touch this
