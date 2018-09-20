@@ -13,7 +13,6 @@ git fetch UHH ${REMOTEBRANCH}:${LOCALBRANCH}
 git checkout ${LOCALBRANCH}
 
 # Get the diff for later analysis
-# FIXME: broken if the user isn't testing a PR
-wget -O PR.diff https://patch-diff.githubusercontent.com/raw/UHH2/UHH2/pull/${PRNUM}.diff
+git diff ${REFBRANCH}..HEAD > PR.diff
 
 set +u
