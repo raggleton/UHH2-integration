@@ -25,7 +25,6 @@ build-new:
   - cvmfs
   stage: build
   script:
-    - ls
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
     - export TESTDIR=${CI_PROJECT_DIR}/testdir
     - mkdir ${TESTDIR} && cd ${TESTDIR}
