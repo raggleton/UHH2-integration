@@ -2,10 +2,22 @@ before_script:
   # Common part to setup vars, get the version of UHH in the PR
   - source /cvmfs/grid.cern.ch/etc/profile.d/setup-cvmfs-ui.sh
   - source /cvmfs/cms.cern.ch/cmsset_default.sh
-  - yum install -y libtool  # needed for autoreconf when setting up fastjet
   - source ${CI_PROJECT_DIR}/scripts/pre_install.sh  # setup general vars
   - source ${CI_PROJECT_DIR}/to_test.sh
-  - source ${CI_PROJECT_DIR}/scripts/get_uhh_ref_and_new.sh # get the reference and modified versions of UHH2
+
+
+get-uhh:
+  # Get the ref & modified versions of UHH2 that is used in later steps along with diff
+  tags:
+  - cvmfs
+  stage: getit
+  script:
+    - source ${CI_PROJECT_DIR}/scripts/get_uhh_ref_and_new.sh
+  artifacts:
+    paths:
+      - UHH2
+    expire_in: 2 days
+
 
 build-new:
   # Build the new user's version
@@ -13,11 +25,13 @@ build-new:
   - cvmfs
   stage: build
   script:
+    - ls
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
     - export TESTDIR=${CI_PROJECT_DIR}/testdir
     - mkdir ${TESTDIR} && cd ${TESTDIR}
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
     - source ${CI_PROJECT_DIR}/scripts/replace_UHH.sh  # Use the UHH2 version we checked out
+    - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
@@ -35,10 +49,12 @@ build-ref:
     - export TESTDIR=${CI_PROJECT_DIR}/testdir
     - mkdir ${TESTDIR} && cd ${TESTDIR}
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
+    - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
     - for f in ntuple*.py; do python "$f"; done
 
 stages:
+  - getit
   - build
