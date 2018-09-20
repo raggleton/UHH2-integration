@@ -25,12 +25,12 @@ build-new:
   - cvmfs
   stage: build
   script:
+    - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
     - export TESTDIR=${CI_PROJECT_DIR}/testdir
     - mkdir ${TESTDIR} && cd ${TESTDIR}
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
     - source ${CI_PROJECT_DIR}/scripts/replace_UHH.sh  # Use the UHH2 version we checked out
-    - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
@@ -44,11 +44,11 @@ build-ref:
   - cvmfs
   stage: build
   script:
+    - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${REFBRANCH} && cd .. # Use the reference branch
     - export TESTDIR=${CI_PROJECT_DIR}/testdir
     - mkdir ${TESTDIR} && cd ${TESTDIR}
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
-    - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
