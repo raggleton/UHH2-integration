@@ -17,7 +17,9 @@ git remote add UHHNEW https://github.com/${REMOTENAME}/UHH2.git
 git fetch UHHNEW ${REMOTEBRANCH}:${LOCALBRANCH}
 git checkout ${LOCALBRANCH}
 git diff ${REFBRANCH}..HEAD > PR.diff
-git merge --no-edit ${REFBRANCH}
+# Replicate PR - merge changes into reference branch
+# Don't want this if not a PR?
+git merge -m "Merge PR ${PRNUM}" ${REFBRANCH}
 cd ..
 
 set +u
