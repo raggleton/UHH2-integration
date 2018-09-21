@@ -17,6 +17,7 @@ git remote add UHHNEW https://github.com/${REMOTENAME}/UHH2.git
 git fetch UHHNEW ${REMOTEBRANCH}:${LOCALBRANCH}
 git checkout ${LOCALBRANCH}
 git diff ${REFBRANCH}..HEAD > PR.diff
+git merge --no-edit ${REFBRANCH}
 cd ..
 
 set +u
