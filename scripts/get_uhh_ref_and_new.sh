@@ -10,7 +10,7 @@ mkdir "$UHHDIR"
 cd "$UHHDIR"
 git init
 git remote add UHHREF https://github.com/UHH2/UHH2.git
-git fetch UHHREF ${REFBRANCH}:${REFBRANCH}
+git fetch -u UHHREF ${REFBRANCH}:${REFBRANCH}  # need the -u for master
 git checkout ${REFBRANCH}
 
 git remote add UHHNEW https://github.com/${REMOTENAME}/UHH2.git
