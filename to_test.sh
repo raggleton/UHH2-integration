@@ -12,7 +12,7 @@
 export REMOTENAME="UHH2"
 export PRNUM=1019
 export REMOTEBRANCH=pull/${PRNUM}/head
-export REFBRANCH="RunII_101X_v1"
+export REFBRANCH="RunII_101_v1"
 
 # Local branchname on testmachine, you shouldn't need to touch this
 export LOCALBRANCH="test$PRNUM"
