@@ -18,3 +18,4 @@ git add to_test.sh
 git commit -m "Test PR $PULLNUM"
 git push origin $NEWBRANCH
 echo "Pushed to origin/$NEWBRANCH"
+git checkout master
