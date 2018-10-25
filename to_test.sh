@@ -10,7 +10,7 @@
 # username & branchname to test your branch, along with setting REFBRANCH
 
 export REMOTENAME="UHH2"
-export PRNUM=1012
+export PRNUM=1037
 export REMOTEBRANCH=pull/${PRNUM}/head
 export REFBRANCH="RunII_94X_v2"
 
