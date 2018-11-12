@@ -3,6 +3,7 @@ before_script:
   - source /cvmfs/grid.cern.ch/etc/profile.d/setup-cvmfs-ui.sh
   - source /cvmfs/cms.cern.ch/cmsset_default.sh
   - source ${CI_PROJECT_DIR}/scripts/pre_install.sh  # setup general vars
+  - source ${CI_PROJECT_DIR}/scripts/get_pr_id.sh
   - source ${CI_PROJECT_DIR}/to_test.sh
 
 
@@ -11,6 +12,8 @@ get-uhh:
   tags:
   - cvmfs
   stage: getit
+  except:
+    - master
   script:
     - source ${CI_PROJECT_DIR}/scripts/get_uhh_ref_and_new.sh
   artifacts:
