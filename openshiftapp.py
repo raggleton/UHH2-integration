@@ -51,12 +51,13 @@ def gitlab_forwarder():
     pr_num = request_json["number"]
     base_branch = request_json["pull_request"]["base"]["ref"]
     proposer = request_json["pull_request"]["user"]["login"]
+    pr_id = request_json["pull_request"]["node_id"]
     app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s." % (pr_num, proposer, base_branch, action))
 
     # Now run the script that pushes a new branch to gitlab for this PR.
     # This will then trigger gitlab-ci to run on the new branch
     app.logger.info("Pushing to gitlab")
-    check_output(['./testPR.sh', str(pr_num), base_branch])
+    check_output(['./testPR.sh', str(pr_num), base_branch, str(pr_id)])
 
     return 'Forwarding to gitlab'
 

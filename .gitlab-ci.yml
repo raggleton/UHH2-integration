@@ -5,6 +5,8 @@ before_script:
   - source ${CI_PROJECT_DIR}/scripts/pre_install.sh  # setup general vars
   - source ${CI_PROJECT_DIR}/scripts/get_pr_id.sh
   - source ${CI_PROJECT_DIR}/scripts/to_test.sh
+  # Update PRID env var if it wasn't already set & add to vars
+  - "[ -z \"$PRID\" ] && python scripts/get_pr_id.py --id $PRNUM --dumpFilename ${CI_PROJECT_DIR}/scripts/to_test.sh --dumpVarname PRID && source ${CI_PROJECT_DIR}/scripts/to_test.sh"
 
 
 get-uhh:
