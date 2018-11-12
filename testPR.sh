@@ -10,12 +10,14 @@
 PULLNUM="$1"
 REFBRANCH="$2"
 
-NEWBRANCH="test$PULLNUM"
-git checkout -b $NEWBRANCH master
-sed -i .bak -E "s/export PRNUM=[0-9]*/export PRNUM=$PULLNUM/" to_test.sh
-sed -i .bak -E "s/export REFBRANCH=\".*\"/export REFBRANCH=\"$REFBRANCH\"/" to_test.sh
+NEWBRANCH="test${PULLNUM}"
+git checkout -b "${NEWBRANCH}" master
+echo "export PRNUM=${PULLNUM}" >> to_test.sh
+echo "export REFBRANCH=${REFBRANCH}" >> to_test.sh
+echo "export REMOTEBRANCH=pull/${PULLNUM}/head" >> to_test.sh
+echo "export LOCALBRANCH=${NEWBRANCH}" >> to_test.sh
 git add to_test.sh
-git commit -m "Test PR $PULLNUM"
-git push origin $NEWBRANCH
-echo "Pushed to origin/$NEWBRANCH"
+git commit -m "Test PR ${PULLNUM}"
+git push -f origin "${NEWBRANCH}"  # use force push to overwrite existing branch
+echo "Pushed to origin/${NEWBRANCH}"
 git checkout master
