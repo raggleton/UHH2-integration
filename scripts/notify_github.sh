@@ -28,6 +28,7 @@ failed)
     COMMENT="$2"
     [ -z "$COMMENT" ] && COMMENT="Failed pipeline"
     source ${CI_PROJECT_DIR}/scripts/post_comment.sh "${COMMENT}"
+    exit 1;
     ;;
 *)
     exit 1;
