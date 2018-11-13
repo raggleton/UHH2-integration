@@ -13,8 +13,7 @@ git remote add UHHREF https://github.com/UHH2/UHH2.git
 git fetch -u UHHREF ${REFBRANCH}:${REFBRANCH}  # need the -u for master
 git checkout ${REFBRANCH}
 
-git remote add UHHNEW https://github.com/${REMOTENAME}/UHH2.git
-git fetch UHHNEW ${REMOTEBRANCH}:${LOCALBRANCH}
+git fetch UHHREF ${REMOTEBRANCH}:${LOCALBRANCH}
 git checkout ${LOCALBRANCH}
 git diff ${REFBRANCH}..HEAD > PR.diff
 # Replicate PR - merge changes into reference branch
