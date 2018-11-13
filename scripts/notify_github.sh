@@ -12,10 +12,10 @@ FAIL_LABEL="Failed"
 
 case $1 in
 start)
+    source ${CI_PROJECT_DIR}/scripts/post_comment.sh "Starting setup & tests, see ${CI_PIPELINE_URL}"
     source ${CI_PROJECT_DIR}/scripts/remove_label.sh "PleaseTest"
     source ${CI_PROJECT_DIR}/scripts/remove_label.sh "${PASS_LABEL}"
     source ${CI_PROJECT_DIR}/scripts/remove_label.sh "${FAIL_LABEL}"
-    source ${CI_PROJECT_DIR}/scripts/post_comment.sh "Starting setup & tests, see ${CI_PIPELINE_URL}"
     ;;
 passed)
     source ${CI_PROJECT_DIR}/scripts/add_label.sh "${PASS_LABEL}"
