@@ -38,10 +38,10 @@ build-new:
     - export TESTDIR=${CI_PROJECT_DIR}/testdir
     - mkdir ${TESTDIR} && cd ${TESTDIR}
     # deploy CMSSW, UHH
-    - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "install.sh failed, please check pipeline log"
+    - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "install.sh failed, please check log"
     - source ${CI_PROJECT_DIR}/scripts/replace_UHH.sh  # Use the UHH2 version we checked out
     # Compile everything
-    - source ${CI_PROJECT_DIR}/scripts/post_install.sh  || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check pipeline log"
+    - source ${CI_PROJECT_DIR}/scripts/post_install.sh  || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check log"
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
     - for f in ntuple*.py; do python "$f"; done || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts'
