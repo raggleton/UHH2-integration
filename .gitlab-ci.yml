@@ -66,6 +66,18 @@ build-ref:
     # - cd ${CMSSW_BASE}/src/UHH2/core/python
     # - for f in ntuple*.py; do python "$f"; done
 
+
+success:
+  tags:
+    - cvmfs
+  stage: end
+  except:
+    - master
+  script:
+    - source ${CI_PROJECT_DIR}/scripts/notify_github.sh "passed" "Compilations & tests successful"
+
+
 stages:
   - getit
   - build
+  - end
