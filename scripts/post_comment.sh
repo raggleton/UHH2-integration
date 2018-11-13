@@ -1,5 +1,7 @@
 #!/user/bin/env bash
-#
+
+set +x  # Otherwise our token will get exposed!
+
 # Post a comment to Github
 # Requires the following envvars to be set:
 # - GITHUB_TOKEN

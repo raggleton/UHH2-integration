@@ -1,5 +1,7 @@
 #!/user/bin/env bash
-#
+
+set +x  # Otherwise our token will get exposed!
+
 # Remove a label to a Github Pull Request
 # Requires the following envvars to be set:
 # - GITHUB_TOKEN

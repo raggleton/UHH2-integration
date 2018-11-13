@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-#
+
+set +x  # Otherwise our token will get exposed!
+
 # Pre-defined things to post to github
 #
 # Usage:
