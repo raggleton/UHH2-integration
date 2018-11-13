@@ -30,6 +30,8 @@ build-new:
   tags:
   - cvmfs
   stage: build
+  dependencies:
+    - get-uhh
   script:
     - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
@@ -51,6 +53,8 @@ build-ref:
   tags:
   - cvmfs
   stage: build
+  dependencies:
+    - get-uhh
   script:
     - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${REFBRANCH} && cd .. # Use the reference branch
