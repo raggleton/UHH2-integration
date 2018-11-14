@@ -74,10 +74,21 @@ success:
   tags:
     - cvmfs
   stage: end
+  when: on_success
   except:
     - master
   script:
     - source ${CI_PROJECT_DIR}/scripts/notify_github.sh "passed" "Compilations & tests successful"
+
+failure:
+  tags:
+    - cvmfs
+  stage: end
+  when: on_failure
+  except:
+    - master
+  script:
+    - source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "Compilations and/or tests failed, please check logs"
 
 
 stages:
