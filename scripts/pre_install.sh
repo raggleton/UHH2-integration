@@ -34,7 +34,7 @@ ls -1 /cvmfs/cms.cern.ch/
 # Store top location
 export WORKDIR=$(pwd)
 
-export CMSSW_GIT_REFERENCE=${WORKDIR}/cmssw.git
+export CMSSW_GIT_REFERENCE=${CI_PROJECT_DIR}/cmssw.git
 
 # Necessary for cms-init or addpkg
 setGitSetting "user.name" "Jim Hopper"
