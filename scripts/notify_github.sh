@@ -35,5 +35,7 @@ failed)
     exit 1;
     ;;
 *)
-    exit 1;
+    source ${CI_PROJECT_DIR}/scripts/add_label.sh "$1"
+    source ${CI_PROJECT_DIR}/scripts/post_comment.sh "$2"
+    ;;
 esac;
