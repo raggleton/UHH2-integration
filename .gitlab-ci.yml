@@ -45,7 +45,7 @@ build-new:
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check log"
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
-    - for f in ntuple*.py; do python "$f" || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
+    - for f in ntuple*.py; do echo "$f"; python "$f" || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
 
 
 build-ref:
