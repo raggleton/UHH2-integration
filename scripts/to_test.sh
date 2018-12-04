@@ -1,0 +1,5 @@
+export PRNUM=1066
+export REFBRANCH=RunII_94X_v3
+export REMOTEBRANCH=pull/1066/head
+export LOCALBRANCH=test1066
+export PRID=MDExOlB1bGxSZXF1ZXN0MjM1NzUzNDc3
