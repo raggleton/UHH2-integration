@@ -1,3 +1,6 @@
+variables:
+  TESTDIR: "${CI_PROJECT_DIR}/testdir"
+
 before_script:
   # Common part to setup vars
   - source /cvmfs/grid.cern.ch/etc/profile.d/setup-cvmfs-ui.sh
@@ -36,8 +39,7 @@ build-new:
   script:
     - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
-    - export TESTDIR=${CI_PROJECT_DIR}/testdir
-    - mkdir ${TESTDIR} && cd ${TESTDIR}
+    - mkdir -p ${TESTDIR} && cd ${TESTDIR}
     # deploy CMSSW, UHH
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "install.sh failed, please check log"
     - source ${CI_PROJECT_DIR}/scripts/replace_UHH.sh  # Use the UHH2 version we checked out
@@ -61,8 +63,7 @@ build-ref:
   script:
     - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${REFBRANCH} && cd .. # Use the reference branch
-    - export TESTDIR=${CI_PROJECT_DIR}/testdirRef
-    - mkdir ${TESTDIR} && cd ${TESTDIR}
+    - mkdir -p ${TESTDIR} && cd ${TESTDIR}
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
     - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
     # Check the python is even valid
