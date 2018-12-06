@@ -36,6 +36,12 @@ build-new:
     - get-uhh
   except:
     - master
+  artifacts:
+    name: ${CI_COMMIT_REF_NAME}-new
+    expire_in: 6 mos
+    paths:
+      - ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz
+      - ${TESTDIR}/deploy_script_all_${CI_COMMIT_REF_NAME}.sh
   script:
     - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
@@ -48,6 +54,8 @@ build-new:
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
     - for f in ntuple*.py; do echo "$f"; python "$f" || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
+    # Tar up CMSSW & SFrame
+    - cd ${TESTDIR} && python ${CI_PROJECT_DIR}/scripts/tarballEntireRelease.py -o ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz
 
 
 build-ref:
@@ -60,6 +68,12 @@ build-ref:
     - get-uhh
   except:
     - master
+  artifacts:
+    name: ${CI_COMMIT_REF_NAME}-ref
+    expire_in: 6 mos
+    paths:
+      - ${TESTDIR}/all_ref.tgz
+      - ${TESTDIR}/deploy_script_all_ref.sh
   script:
     - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${REFBRANCH} && cd .. # Use the reference branch
@@ -69,6 +83,8 @@ build-ref:
     # Check the python is even valid
     # - cd ${CMSSW_BASE}/src/UHH2/core/python
     # - for f in ntuple*.py; do python "$f"; done
+    # Tar up CMSSW & SFrame
+    - cd ${TESTDIR} && python ${CI_PROJECT_DIR}/scripts/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz
 
 
 success:
