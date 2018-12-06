@@ -87,6 +87,20 @@ build-ref:
     - cd ${TESTDIR} && python ${CI_PROJECT_DIR}/scripts/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz
 
 
+cmsrun-2018-data-new:
+  # Run 2018 data on PR
+  tags:
+  - cvmfs
+  stage: cmsrun
+  dependencies:
+    - build-new
+  except:
+    - master
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${CMSSW_BASE}/python/UHH2/core/ntuplewriter_data_2018.py maxEvents=500 wantSummary=1 outputFile="Ntuple_2018_data_new.root"
+
+
 success:
   tags:
     - cvmfs
@@ -111,4 +125,5 @@ failure:
 stages:
   - getit
   - build
+  - cmsrun
   - end
