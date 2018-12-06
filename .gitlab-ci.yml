@@ -20,7 +20,7 @@ get-uhh:
     - master
   script:
     - source ${CI_PROJECT_DIR}/scripts/notify_github.sh "start"
-    - source ${CI_PROJECT_DIR}/scripts/get_uhh_ref_and_new.sh
+    - source ${CI_PROJECT_DIR}/scripts/get_uhh_ref_and_new.sh || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "Failed to checkout UHH2 & merge PR"
   artifacts:
     paths:
       - UHH2
