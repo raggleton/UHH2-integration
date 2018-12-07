@@ -29,10 +29,7 @@ echo "Doing pre_install"
 ls -lh
 
 # Check CVMSFS
-ls -1 /cvmfs/cms.cern.ch/
-
-# Store top location
-export WORKDIR=$(pwd)
+ls /cvmfs/cms.cern.ch/
 
 export CMSSW_GIT_REFERENCE=${CI_PROJECT_DIR}/cmssw.git
 

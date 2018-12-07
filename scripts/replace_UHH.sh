@@ -6,13 +6,13 @@ set -x # Print command before executing it - easier for looking at logs
 echo "Doing replace_UHH"
 
 # In install.sh we clone the main branch, but on CI we want to test the PR of interest
-# So we need to remove the UHH2 inside CMSSW and copy our one over from $WORKDIR/UHH2
+# So we need to remove the UHH2 inside CMSSW and copy our one over from $CI_PROJECT_DIR/UHH2
 # (which got cloned by gitlab at the start of the job)
 # Copy not move as could still need to reference scripts etc from the yaml
 cd ${CMSSW_BASE}/src
-mv ${CMSSW_BASE}/src/UHH2/JECDatabase ${WORKDIR}/UHH2/
+mv ${CMSSW_BASE}/src/UHH2/JECDatabase ${CI_PROJECT_DIR}/UHH2/
 rm -rf "${CMSSW_BASE}/src/UHH2"
-cp -r ${WORKDIR}/UHH2 ${CMSSW_BASE}/src
+cp -r ${CI_PROJECT_DIR}/UHH2 ${CMSSW_BASE}/src
 ls ${CMSSW_BASE}/src
 if [ ! -d "${CMSSW_BASE}/src/UHH2" ];
 then
