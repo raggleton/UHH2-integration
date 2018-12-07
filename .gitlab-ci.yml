@@ -1,4 +1,5 @@
 variables:
+  CMSSW_GIT_REFERENCE: "${CI_PROJECT_DIR}/cmssw.git"
   TESTDIR: "${CI_PROJECT_DIR}/testdir"
 
 before_script:
