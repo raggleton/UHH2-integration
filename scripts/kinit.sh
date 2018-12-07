@@ -6,7 +6,7 @@
 # Should use a CERN Service account: https://account.cern.ch/account/Management/NewAccount.aspx
 
 set +x  # Make sure no variables visible
-set -e  # Quit on error
+# set -e  # Quit on error
 
 # mostly follwing https://gitlab.cern.ch/gitlabci-examples/kinit_example
 mkdir -p ~/.ssh

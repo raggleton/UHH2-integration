@@ -8,7 +8,9 @@
 # 
 
 set +x  # Make sure no variables visible
-set -e  # Quit on error
+# set -e  # Quit on error
 
+${CI_PROJECT_DIR}/scripts/kinit.sh
+echo "filename: $1"
 BNAME=$(basename "$1")
 xrdcp --nopbar -f --retry 3 "root://eosuser.cern.ch//eos/user/r/${EOS_USERNAME}/UHH2MiniAOD/${BNAME}" "${BNAME}"
