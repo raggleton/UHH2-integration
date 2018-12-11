@@ -41,6 +41,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Use the actual config object users will use
+    # Horrible hack to be able to import this from anywhere
+    template_filename = os.path.join(os.environ['CMSSW_BASE'], 'src/UHH2/scripts/crab/crab_template.py')
+    sys.path.append(os.path.dirname(template_filename))
     from crab_template import config as dummy_config
 
     # # Create dummy config file for testing - only needs JobType info
