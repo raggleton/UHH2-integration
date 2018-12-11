@@ -27,7 +27,9 @@ get-uhh:
       - UHH2
     expire_in: 2 days
 
-
+# -----------------------------------------------------------------------------
+# BUILD & COMPILE JOBS
+# -----------------------------------------------------------------------------
 build-new:
   # Build the new user's version
   tags:
@@ -38,7 +40,7 @@ build-new:
   except:
     - master
   artifacts:
-    name: ${CI_COMMIT_REF_NAME}-new
+    name: ${CI_COMMIT_REF_NAME}-new-setup
     expire_in: 6 mos
     paths:
       - ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz
@@ -73,7 +75,7 @@ build-ref:
   except:
     - master
   artifacts:
-    name: ${CI_COMMIT_REF_NAME}-ref
+    name: ${CI_COMMIT_REF_NAME}-ref-setup
     expire_in: 6 mos
     paths:
       - ${TESTDIR}/all_ref.tgz
@@ -91,6 +93,9 @@ build-ref:
     - cd ${TESTDIR} && python ${CI_PROJECT_DIR}/scripts/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz
 
 
+# -----------------------------------------------------------------------------
+# CMS RUN JOBS
+# -----------------------------------------------------------------------------
 cmsrun-2018-data-new:
   # Run 2018 data on PR
   tags:
@@ -98,13 +103,92 @@ cmsrun-2018-data-new:
   stage: cmsrun
   dependencies:
     - build-new
+  # TODO: only run for 102X ref branch
   except:
     - master
+  retry: 2
+  artifacts:
+    name: ${CI_COMMIT_REF_NAME}-2018-data-new
+    expire_in: 6 mos
+    when: always
+    paths:
+      - ${TESTDIR}/Ntuple*.root
+      - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${CMSSW_BASE}/python/UHH2/core/ntuplewriter_data_2018.py maxEvents=500 wantSummary=1 outputFile="Ntuple_2018_data_new.root"
+    - python ${CI_PROJECT_DIR}/script/cmsrun_jobs.py --year 2018 --isData --append "_new"
+
+cmsrun-2018-mc-new:
+  # Run 2018 mc on PR
+  tags:
+  - cvmfs
+  stage: cmsrun
+  dependencies:
+    - build-new
+  # TODO: only run for 102X ref branch
+  except:
+    - master
+  retry: 2
+  artifacts:
+    name: ${CI_COMMIT_REF_NAME}-2018-mc-new
+    expire_in: 6 mos
+    when: always
+    paths:
+      - ${TESTDIR}/Ntuple*.root
+      - ${TESTDIR}/log*.txt
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${CI_PROJECT_DIR}/script/cmsrun_jobs.py --year 2018 --append "_new"
 
 
+cmsrun-2018-data-ref:
+  # Run 2018 data on reference
+  tags:
+  - cvmfs
+  stage: cmsrun
+  dependencies:
+    - build-ref
+  # TODO: only run for 102X ref branch
+  except:
+    - master
+  retry: 2
+  artifacts:
+    name: ${CI_COMMIT_REF_NAME}-2018-data-ref
+    expire_in: 6 mos
+    when: always
+    paths:
+      - ${TESTDIR}/Ntuple*.root
+      - ${TESTDIR}/log*.txt
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${CI_PROJECT_DIR}/script/cmsrun_jobs.py --year 2018 --isData --append "_ref"
+
+cmsrun-2018-mc-ref:
+  # Run 2018 mc on reference
+  tags:
+  - cvmfs
+  stage: cmsrun
+  dependencies:
+    - build-ref
+  # TODO: only run for 102X ref branch
+  except:
+    - master
+  retry: 2
+  artifacts:
+    name: ${CI_COMMIT_REF_NAME}-2018-mc-ref
+    expire_in: 6 mos
+    when: always
+    paths:
+      - ${TESTDIR}/Ntuple*.root
+      - ${TESTDIR}/log*.txt
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${CI_PROJECT_DIR}/script/cmsrun_jobs.py --year 2018 --append "_ref"
+
+
+# -----------------------------------------------------------------------------
+# FINISHING UP STAGES
+# -----------------------------------------------------------------------------
 success:
   tags:
     - cvmfs
