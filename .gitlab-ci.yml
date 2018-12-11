@@ -55,6 +55,9 @@ build-new:
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
     - for f in ntuple*.py; do echo "$f"; python "$f" || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
+    # Check the CRAB tarball size
+    - source /cvmfs/cms.cern.ch/crab3/crab.sh; cd ${CMSSW_BASE}/src/UHH2/scripts/crab;
+      python ${CI_PROJECT_DIR}/scripts/makeCheckCrabTarball.py --output testTarball.tgz || source ${CI_PROJECT_DIR}/script/post_comment.sh "CRAB tarball exceeded limit, check logs"; rm testTarball.tgz
     # Tar up CMSSW & SFrame
     - cd ${TESTDIR} && python ${CI_PROJECT_DIR}/scripts/tarballEntireRelease.py -o ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz
 
