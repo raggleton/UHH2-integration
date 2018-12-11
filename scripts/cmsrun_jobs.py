@@ -200,7 +200,7 @@ if __name__ == "__main__":
 
         # Now run the actual cmsRun command
         append = "%s_%s_%s%s" % (type_str, args.year, job['name'], args.append)
-        
+
         cms_dict = deepcopy(job)
         cms_dict['inputfile'] = os.path.basename(job['inputfile'])
         cms_dict['config'] = config_filename
@@ -209,7 +209,10 @@ if __name__ == "__main__":
         cms_dict['cmdlineopt'] = job.get("cmdlineopt", "")  # for other commandline options
         cms_dict['numthreads'] = job.get("numthreads", 1)
         cms_dict['maxevents'] = job.get("maxevents", NEVENTS)
-        
+
+        # Hack to make cmsRun work on the images as no default site set
+        os.environ['CMS_PATH'] = '/cvmfs/cms-ib.cern.ch/'
+
         # Use tee to pipe to file & stdout simultaneously for monitoring
         cmsrun_cmd = ('cmsRun -n {numthreads} ${{CMSSW_BASE}}/python/UHH2/core/{config} {cmdlineopt} '
             'maxEvents={maxevents} wantSummary=1 inputFiles=file:{inputfile} outputFile={outputfile} '
