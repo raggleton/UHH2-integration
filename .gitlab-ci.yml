@@ -116,7 +116,7 @@ cmsrun-2018-data-new:
       - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${CI_PROJECT_DIR}/script/cmsrun_jobs.py --year 2018 --isData --append "_new"
+    - python ${CI_PROJECT_DIR}/scripts/cmsrun_jobs.py --year 2018 --isData --append "_new"
 
 cmsrun-2018-mc-new:
   # Run 2018 mc on PR
@@ -138,7 +138,7 @@ cmsrun-2018-mc-new:
       - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${CI_PROJECT_DIR}/script/cmsrun_jobs.py --year 2018 --append "_new"
+    - python ${CI_PROJECT_DIR}/scripts/cmsrun_jobs.py --year 2018 --append "_new"
 
 
 cmsrun-2018-data-ref:
@@ -161,7 +161,7 @@ cmsrun-2018-data-ref:
       - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${CI_PROJECT_DIR}/script/cmsrun_jobs.py --year 2018 --isData --append "_ref"
+    - python ${CI_PROJECT_DIR}/scripts/cmsrun_jobs.py --year 2018 --isData --append "_ref"
 
 cmsrun-2018-mc-ref:
   # Run 2018 mc on reference
@@ -183,7 +183,7 @@ cmsrun-2018-mc-ref:
       - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${CI_PROJECT_DIR}/script/cmsrun_jobs.py --year 2018 --append "_ref"
+    - python ${CI_PROJECT_DIR}/scripts/cmsrun_jobs.py --year 2018 --append "_ref"
 
 
 # -----------------------------------------------------------------------------
