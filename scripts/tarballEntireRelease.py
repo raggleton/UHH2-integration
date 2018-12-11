@@ -38,12 +38,12 @@ logger.addHandler(ch)
 def generate_deploy_script(script_kwargs, do_cmssw=True, do_sframe=True):
     script_lines = [
         "#!/usr/bin/env bash",
-        "#"
+        "#",
         "# You MUST run this as: source <filename>",
-        "# Otherwise the setup will not happen in your current shell"
+        "# Otherwise the setup will not happen in your current shell",
         "export SCRAM_ARCH={scram_arch}",
-        "shopt -s expand_aliases"
-        "source /cvmfs/cms.cern.ch/cmsset_default.sh"
+        "shopt -s expand_aliases",
+        "source /cvmfs/cms.cern.ch/cmsset_default.sh",
     ]
     if do_cmssw:
         script_lines.extend([
