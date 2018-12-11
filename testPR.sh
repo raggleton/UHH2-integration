@@ -17,7 +17,7 @@ PRID="$3"
 NEWBRANCH="test${PULLNUM}"
 git checkout master
 # If local branch already exists, delete it and do it again
-git branch --delete --force "${NEWBRANCH}"
+git branch -D "${NEWBRANCH}"
 # git rev-parse --quiet --verify "${NEWBRANCH}" || git branch -d "${NEWBRANCH}"
 git checkout -b "${NEWBRANCH}" master
 NEWFILE="scripts/to_test.sh"
