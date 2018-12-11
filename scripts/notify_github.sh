@@ -6,6 +6,8 @@ set +x  # Otherwise our token will get exposed!
 #
 # Usage:
 # ./notify_github.sh <keyword> <optional message>
+#
+# If keyword is not start, passed, or failed, it will be added as a github label
 
 PASS_LABEL="Passed"
 FAIL_LABEL="Failed"
