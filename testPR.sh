@@ -13,6 +13,8 @@ REFBRANCH="$2"
 PRID="$3"
 
 NEWBRANCH="test${PULLNUM}"
+# If local branch already exists, delete it and do it again
+git rev-parse --verify "${NEWBRANCH}" || git branch -d "${NEWBRANCH}"
 git checkout -b "${NEWBRANCH}" master
 NEWFILE="scripts/to_test.sh"
 echo "export PRNUM=${PULLNUM}" >> "${NEWFILE}"
