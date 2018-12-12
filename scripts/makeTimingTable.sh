@@ -5,7 +5,8 @@
 
 firstline=true
 
-rm timing_report.md
+TIMINGFILE="timing_report.md"
+rm "$TIMINGFILE"
 
 for newfile in timing*_new.json;
 do
@@ -17,6 +18,6 @@ do
         name=${name//_/ }
         headeropt=""
         if [ "$firstline" == true ]; then headeropt="--header"; firstline=false; fi
-        scripts/timingJsonTable.py  --ref "$reffile" --new "$newfile" --name "$name" "$headeropt" >> timing_report.md
+        scripts/timingJsonTable.py  --ref "$reffile" --new "$newfile" --name "$name" "$headeropt" >> "$TIMINGFILE"
     fi
 done
