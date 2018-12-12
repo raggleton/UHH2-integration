@@ -285,6 +285,7 @@ cmsrun-2018-data-ref:
   # TODO: only run for 102X ref branch
   except:
     - master
+  allow_failure: true
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-data-ref
@@ -307,6 +308,7 @@ cmsrun-2018-mc-ref:
   # TODO: only run for 102X ref branch
   except:
     - master
+  allow_failure: true
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-mc-ref
@@ -329,6 +331,7 @@ cmsrun-2017-data-ref:
   # TODO: only run for 102X ref branch
   except:
     - master
+  allow_failure: true
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-data-ref
@@ -351,6 +354,7 @@ cmsrun-2017-mc-ref:
   # TODO: only run for 102X ref branch
   except:
     - master
+  allow_failure: true
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-mc-ref
@@ -373,6 +377,7 @@ cmsrun-2016v3-data-ref:
   # TODO: only run for 102X ref branch
   except:
     - master
+  allow_failure: true
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-data-ref
@@ -395,6 +400,7 @@ cmsrun-2016v3-mc-ref:
   # TODO: only run for 102X ref branch
   except:
     - master
+  allow_failure: true
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-mc-ref
@@ -417,6 +423,7 @@ cmsrun-2016v2-data-ref:
   # TODO: only run for 102X ref branch
   except:
     - master
+  allow_failure: true
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-data-ref
@@ -439,6 +446,7 @@ cmsrun-2016v2-mc-ref:
   # TODO: only run for 102X ref branch
   except:
     - master
+  allow_failure: true
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-mc-ref
