@@ -481,7 +481,7 @@ success:
   script:
     - cd ${TESTDIR}
     - source ${SCRIPTDIR}/makeTimingTable.sh
-    - python ${SCRIPTDIR}/doPRReview.py --timing timing_report.md
+    - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md
     - source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"
 
 failure:
