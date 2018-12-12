@@ -216,7 +216,7 @@ if __name__ == "__main__":
         os.environ['CMS_PATH'] = '/cvmfs/cms-ib.cern.ch/'
 
         # Use tee to pipe to file & stdout simultaneously for monitoring
-        cmsrun_cmd = ('cmsRun -n {numthreads} ${{CMSSW_BASE}}/python/UHH2/core/{config} {cmdlineopt} '
+        cmsrun_cmd = ('time cmsRun -n {numthreads} ${{CMSSW_BASE}}/python/UHH2/core/{config} {cmdlineopt} '
             'maxEvents={maxevents} wantSummary=1 inputFiles=file:{inputfile} outputFile={outputfile} '
             '2>&1 | tee {logfile}'.format(**cms_dict))
         return_code = subprocess.call(cmsrun_cmd, shell=True, stderr=subprocess.STDOUT)
