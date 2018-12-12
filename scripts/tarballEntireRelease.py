@@ -144,6 +144,17 @@ if __name__ == "__main__":
                 check_directory(root)
                 tarfile.add(root, directory, recursive=True)
 
+        # Any additional files the user needs
+        additional_files = [
+            os.path.join(os.environ['CMSSW_BASE'], 'src/L1Prefiring/EventWeightProducer/files/L1PrefiringMaps_new.root') # Eurgh, fix this once properly integrated into CMSSW
+        ]
+        for filename in additional_files:
+            if not os.path.exists(filename):
+                continue
+            logger.debug("Adding file %s to tarball", filename)
+            rel_filename = filename.replace(CMSSW_BASE, CMSSW_VERSION)
+            tarfile.add(filename, rel_filename, recursive=True)
+
     do_sframe = args.contents in ['all', 'sframe']
 
     if do_sframe:
