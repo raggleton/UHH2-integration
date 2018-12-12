@@ -112,7 +112,9 @@ CONFIGS = {
             "jobs": [
                 {
                     "name": "JetHT",
-                    "inputfile": "/store/data/Run2016D/JetHT/MINIAOD/17Jul2018-v1/80000/601A2C83-5E8D-E811-9BF9-1CB72C0A3DBD.root",
+                    "inputfile": "/store/data/Run2016C/JetHT/MINIAOD/17Jul2018-v1/50000/DCEA62FA-148C-E811-BB6B-A0369FD0B3A4.root",
+                    # DON'T USE /store/data/Run2016D/JetHT/MINIAOD/17Jul2018-v1/80000/601A2C83-5E8D-E811-9BF9-1CB72C0A3DBD.root, VERY SLOW
+                    # /store/data/Run2016D/JetHT/MINIAOD/17Jul2018-v1/50000/94407A3C-A198-E811-A1EB-90E2BAC9B7A8.root
                 },
                 {
                     "name": "SingleMu",
