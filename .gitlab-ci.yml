@@ -111,7 +111,6 @@ cmsrun-2018-data-new:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-data-new
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -134,7 +133,6 @@ cmsrun-2018-mc-new:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-mc-new
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -157,7 +155,6 @@ cmsrun-2017-data-new:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-data-new
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -180,7 +177,6 @@ cmsrun-2017-mc-new:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-mc-new
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -203,7 +199,6 @@ cmsrun-2016v3-data-new:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-data-new
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -226,7 +221,6 @@ cmsrun-2016v3-mc-new:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-mc-new
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -249,7 +243,6 @@ cmsrun-2016v2-data-new:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-data-new
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -272,7 +265,6 @@ cmsrun-2016v2-mc-new:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-mc-new
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -297,7 +289,6 @@ cmsrun-2018-data-ref:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-data-ref
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -320,7 +311,6 @@ cmsrun-2018-mc-ref:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-mc-ref
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -343,7 +333,6 @@ cmsrun-2017-data-ref:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-data-ref
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -366,7 +355,6 @@ cmsrun-2017-mc-ref:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-mc-ref
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -389,7 +377,6 @@ cmsrun-2016v3-data-ref:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-data-ref
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -412,7 +399,6 @@ cmsrun-2016v3-mc-ref:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-mc-ref
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -435,7 +421,6 @@ cmsrun-2016v2-data-ref:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-data-ref
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
@@ -458,7 +443,6 @@ cmsrun-2016v2-mc-ref:
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-mc-ref
     expire_in: 6 mos
-    when: always
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
