@@ -218,4 +218,7 @@ if __name__ == "__main__":
             'maxEvents={maxevents} wantSummary=1 inputFiles=file:{inputfile} outputFile={outputfile} '
             '2>&1 | tee {logfile}'.format(**cms_dict))
         return_code = subprocess.call(cmsrun_cmd, shell=True, stderr=subprocess.STDOUT)
-        sys.exit(return_code)
+        if return_code != 0:
+            sys.exit(return_code)
+
+    sys.exit(0)
