@@ -10,7 +10,7 @@ import subprocess
 from copy import deepcopy
 
 
-NEVENTS = 2500
+NEVENTS = 2000
 
 # Setup for all configs
 # The first key must be a valid argument to the `year` arg in generate_process(),
