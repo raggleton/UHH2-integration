@@ -46,7 +46,7 @@ CONFIGS = {
                 {
                     "name": "EGamma",  # for 2018 they changed SingleElectron to EGamma
                     #  DO NOT USE /store/data/Run2018D/EGamma/MINIAOD/PromptReco-v2/000/320/500/00000/CEC0AF98-F895-E811-919A-FA163EE8C7E8.root, it takes forever to run ECFAdder
-                    "inputfile": "/store/data/Run2018D/EGamma/MINIAOD/PromptReco-v2/000/325/175/00000/9D0F9360-DD60-314A-BB24-33D62A3CD6BD.root ",
+                    "inputfile": "/store/data/Run2018D/EGamma/MINIAOD/PromptReco-v2/000/325/175/00000/9D0F9360-DD60-314A-BB24-33D62A3CD6BD.root",
                 },
             ]
         },
