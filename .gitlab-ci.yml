@@ -459,13 +459,14 @@ cmsrun-2016v2-mc-ref:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_ref"
 
+
 # -----------------------------------------------------------------------------
-# FINISHING UP STAGES
+# REVIEW
 # -----------------------------------------------------------------------------
-success:
+review-ntuples:
   tags:
     - cvmfs
-  stage: end
+  stage: review
   when: on_success
   except:
     - master
@@ -490,6 +491,19 @@ success:
     - cd ${TESTDIR}
     - source ${SCRIPTDIR}/makeTimingTable.sh
     - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md
+
+
+# -----------------------------------------------------------------------------
+# FINISHING UP STAGES
+# -----------------------------------------------------------------------------
+success:
+  tags:
+    - cvmfs
+  stage: end
+  when: on_success
+  except:
+    - master
+  script:
     - source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"
 
 failure:
@@ -507,4 +521,5 @@ stages:
   - getit
   - build
   - cmsrun
+  - review
   - end
