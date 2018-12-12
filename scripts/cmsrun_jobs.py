@@ -9,6 +9,8 @@ import argparse
 import subprocess
 from copy import deepcopy
 
+from parseCmsRunSummary import parse_and_dump
+
 
 NEVENTS = 2000
 
@@ -204,8 +206,8 @@ if __name__ == "__main__":
         cms_dict = deepcopy(job)
         cms_dict['inputfile'] = os.path.basename(job['inputfile'])
         cms_dict['config'] = config_filename
-        cms_dict['outputfile'] = "Ntuple_%s.root" % append
-        cms_dict['logfile'] = "log_%s.txt" % append
+        cms_dict['outputfile'] = "Ntuple_%s.root" % (append)
+        cms_dict['logfile'] = "log_%s.txt" % (append)
         cms_dict['cmdlineopt'] = job.get("cmdlineopt", "")  # for other commandline options
         cms_dict['numthreads'] = job.get("numthreads", 1)
         cms_dict['maxevents'] = job.get("maxevents", NEVENTS)
@@ -220,5 +222,9 @@ if __name__ == "__main__":
         return_code = subprocess.call(cmsrun_cmd, shell=True, stderr=subprocess.STDOUT)
         if return_code != 0:
             sys.exit(return_code)
+
+        # Parse logfile to JSON
+        timing_json = "timing_%s.json" % (append)
+        parse_and_dump(cms_dict['logfile'], timing_json)
 
     sys.exit(0)

@@ -115,6 +115,7 @@ cmsrun-2018-data-new:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_new"
@@ -137,6 +138,7 @@ cmsrun-2018-mc-new:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_new"
@@ -159,6 +161,7 @@ cmsrun-2017-data-new:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --isData --append "_new"
@@ -181,6 +184,7 @@ cmsrun-2017-mc-new:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --append "_new"
@@ -203,6 +207,7 @@ cmsrun-2016v3-data-new:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_new"
@@ -225,6 +230,7 @@ cmsrun-2016v3-mc-new:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_new"
@@ -247,6 +253,7 @@ cmsrun-2016v2-data-new:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_new"
@@ -269,6 +276,7 @@ cmsrun-2016v2-mc-new:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_new"
@@ -293,6 +301,7 @@ cmsrun-2018-data-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_ref"
@@ -315,6 +324,7 @@ cmsrun-2018-mc-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_ref"
@@ -337,6 +347,7 @@ cmsrun-2017-data-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --isData --append "_ref"
@@ -359,6 +370,7 @@ cmsrun-2017-mc-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --append "_ref"
@@ -381,6 +393,7 @@ cmsrun-2016v3-data-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_ref"
@@ -403,6 +416,7 @@ cmsrun-2016v3-mc-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_ref"
@@ -425,6 +439,7 @@ cmsrun-2016v2-data-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_ref"
@@ -447,6 +462,7 @@ cmsrun-2016v2-mc-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_ref"
