@@ -7,6 +7,7 @@ firstline=true
 
 TIMINGFILE="timing_report.md"
 rm -f "$TIMINGFILE"
+touch "$TIMINGFILE"  # ensures we have a file for future scripts
 
 for newfile in ${TESTDIR}/timing*_new.json;
 do

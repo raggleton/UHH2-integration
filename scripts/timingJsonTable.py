@@ -26,29 +26,39 @@ def print_table_entry(ref_filename, new_filename, sample_name, do_header=False):
         If True, print markdown table header
     """
     ref_dict = None
-    with open(ref_filename) as rf:
-        ref_dict = json.load(rf)
+    if os.path.isfile(ref_filename):
+        with open(ref_filename) as rf:
+            ref_dict = json.load(rf)
 
     new_dict = None
-    with open(new_filename) as nf:
-        new_dict = json.load(nf)
+    if os.path.isfile(new_filename):
+        with open(new_filename) as nf:
+            new_dict = json.load(nf)
 
     key_name = "event loop Real/event"
     if do_header:
         print("| Sample | Reference {0} [s] | PR {0} [s] | diff |".format(key_name.lower()))
         print("| ------ | ------ | ------ | ------ |".format(key_name))
 
-    reftime, newtime = 0, 0
-    reftime = ref_dict['event_timing'][key_name]
-    newtime = new_dict['event_timing'][key_name]
-    delta = newtime - reftime
-    delta_pc = 100 * delta / reftime
+    # Do it this way to handle if one or both of the dicts doesn't exist
     line_args = {
         "name": sample_name,
-        "reftime": "%.3f" % reftime,
-        "newtime": "%.3f" % newtime,
-        "diff": "%.3f / %.2f %%" % (delta, delta_pc)
+        "reftime": "N/A",
+        "newtime": "N/A",
+        "difftime": "N/A",
     }
+
+    if ref_dict:
+        reftime = ref_dict['event_timing'][key_name]
+        line_args["reftime"] = "%.3f" % reftime
+    if new_dict:
+        newtime = new_dict['event_timing'][key_name]
+        line_args["newtime"] = "%.3f" % newtime
+    if ref_dict and new_dict:
+        delta = newtime - reftime
+        delta_pc = 100 * delta / reftime
+        line_args["diff"] = "%.3f / %.2f %%" % (delta, delta_pc)
+
     print("| {name} | {reftime} | {newtime} | {diff} |".format(**line_args))
 
 
