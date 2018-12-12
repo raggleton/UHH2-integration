@@ -461,8 +461,25 @@ success:
   when: on_success
   except:
     - master
-  # dont need to specify dependencies as auto downloaded from cmsrun stage
+  dependencies:
+    - cmsrun-2018-data-new
+    - cmsrun-2018-mc-new
+    - cmsrun-2017-data-new
+    - cmsrun-2017-mc-new
+    - cmsrun-2016v3-data-new
+    - cmsrun-2016v3-mc-new
+    - cmsrun-2016v2-data-new
+    - cmsrun-2016v2-mc-new
+    - cmsrun-2018-data-ref
+    - cmsrun-2018-mc-ref
+    - cmsrun-2017-data-ref
+    - cmsrun-2017-mc-ref
+    - cmsrun-2016v3-data-ref
+    - cmsrun-2016v3-mc-ref
+    - cmsrun-2016v2-data-ref
+    - cmsrun-2016v2-mc-ref
   script:
+    - cd ${TESTDIR}
     - source ${SCRIPTDIR}/makeTimingTable.sh
     - python ${SCRIPTDIR}/doPRReview.py --timing timing_report.md
     - source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"
