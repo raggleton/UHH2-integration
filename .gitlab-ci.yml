@@ -1,15 +1,17 @@
 variables:
   CMSSW_GIT_REFERENCE: "${CI_PROJECT_DIR}/cmssw.git"
   TESTDIR: "${CI_PROJECT_DIR}/testdir"
+  SCRIPTDIR: "${CI_PROJECT_DIR}/scripts"
+
 
 before_script:
   # Common part to setup vars
   - source /cvmfs/grid.cern.ch/etc/profile.d/setup-cvmfs-ui.sh
   - source /cvmfs/cms.cern.ch/cmsset_default.sh
-  - source ${CI_PROJECT_DIR}/scripts/pre_install.sh  # setup general vars
-  - source ${CI_PROJECT_DIR}/scripts/to_test.sh
+  - source ${SCRIPTDIR}/pre_install.sh  # setup general vars
+  - source ${SCRIPTDIR}/to_test.sh
   # Update PRID env var if it wasn't already set & add to vars
-  - "[ -z \"$PRID\" ] && python scripts/get_pr_id.py --id $PRNUM --dumpFilename ${CI_PROJECT_DIR}/scripts/to_test.sh --dumpVarname PRID && source ${CI_PROJECT_DIR}/scripts/to_test.sh"
+  - "[ -z \"$PRID\" ] && python scripts/get_pr_id.py --id $PRNUM --dumpFilename ${SCRIPTDIR}/to_test.sh --dumpVarname PRID && source ${SCRIPTDIR}/to_test.sh"
 
 
 get-uhh:
@@ -20,8 +22,8 @@ get-uhh:
   except:
     - master
   script:
-    - source ${CI_PROJECT_DIR}/scripts/notify_github.sh "start"
-    - source ${CI_PROJECT_DIR}/scripts/get_uhh_ref_and_new.sh || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "Failed to checkout UHH2 & merge PR"
+    - source ${SCRIPTDIR}/notify_github.sh "start"
+    - source ${SCRIPTDIR}/get_uhh_ref_and_new.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "Failed to checkout UHH2 & merge PR"
   artifacts:
     paths:
       - UHH2
@@ -50,18 +52,18 @@ build-new:
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
     - mkdir -p ${TESTDIR} && cd ${TESTDIR}
     # deploy CMSSW, UHH
-    - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "install.sh failed, please check log"
-    - source ${CI_PROJECT_DIR}/scripts/replace_UHH.sh  # Use the UHH2 version we checked out
+    - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "install.sh failed, please check log"
+    - source ${SCRIPTDIR}/replace_UHH.sh  # Use the UHH2 version we checked out
     # Compile everything
-    - source ${CI_PROJECT_DIR}/scripts/post_install.sh  || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check log"
+    - source ${SCRIPTDIR}/post_install.sh  || source ${SCRIPTDIR}/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check log"
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
-    - for f in ntuple*.py; do echo "$f"; python "$f" || source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
+    - for f in ntuple*.py; do echo "$f"; python "$f" || source ${SCRIPTDIR}/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
     # Check the CRAB tarball size
     - source /cvmfs/cms.cern.ch/crab3/crab.sh; cd ${CMSSW_BASE}/src/UHH2/scripts/crab;
-      python ${CI_PROJECT_DIR}/scripts/makeCheckCrabTarball.py --output testTarball.tgz || source ${CI_PROJECT_DIR}/scripts/post_comment.sh "CRAB tarball creation failed or exceeded size limit"; rm testTarball.tgz
+      python ${SCRIPTDIR}/makeCheckCrabTarball.py --output testTarball.tgz || source ${SCRIPTDIR}/post_comment.sh "CRAB tarball creation failed or exceeded size limit"; rm testTarball.tgz
     # Tar up CMSSW & SFrame
-    - cd ${TESTDIR} && python ${CI_PROJECT_DIR}/scripts/tarballEntireRelease.py -o ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz
+    - cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz
 
 
 build-ref:
@@ -85,12 +87,8 @@ build-ref:
     - cd UHH2 && git checkout ${REFBRANCH} && cd .. # Use the reference branch
     - mkdir -p ${TESTDIR} && cd ${TESTDIR}
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
-    - source ${CI_PROJECT_DIR}/scripts/post_install.sh  # Compile everything
-    # Check the python is even valid
-    # - cd ${CMSSW_BASE}/src/UHH2/core/python
-    # - for f in ntuple*.py; do python "$f"; done
-    # Tar up CMSSW & SFrame
-    - cd ${TESTDIR} && python ${CI_PROJECT_DIR}/scripts/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz
+    - source ${SCRIPTDIR}/post_install.sh  # Compile everything
+    - cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz  # Tar up CMSSW & SFrame
 
 
 # -----------------------------------------------------------------------------
@@ -116,7 +114,7 @@ cmsrun-2018-data-new:
       - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${CI_PROJECT_DIR}/scripts/cmsrun_jobs.py --year 2018 --isData --append "_new"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_new"
 
 cmsrun-2018-mc-new:
   # Run 2018 mc on PR
@@ -138,7 +136,7 @@ cmsrun-2018-mc-new:
       - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${CI_PROJECT_DIR}/scripts/cmsrun_jobs.py --year 2018 --append "_new"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_new"
 
 
 cmsrun-2018-data-ref:
@@ -161,7 +159,7 @@ cmsrun-2018-data-ref:
       - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${CI_PROJECT_DIR}/scripts/cmsrun_jobs.py --year 2018 --isData --append "_ref"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_ref"
 
 cmsrun-2018-mc-ref:
   # Run 2018 mc on reference
@@ -183,7 +181,7 @@ cmsrun-2018-mc-ref:
       - ${TESTDIR}/log*.txt
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${CI_PROJECT_DIR}/scripts/cmsrun_jobs.py --year 2018 --append "_ref"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_ref"
 
 
 # -----------------------------------------------------------------------------
@@ -197,7 +195,7 @@ success:
   except:
     - master
   script:
-    - source ${CI_PROJECT_DIR}/scripts/notify_github.sh "passed" "Compilations & tests successful"
+    - source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"
 
 failure:
   tags:
@@ -207,7 +205,7 @@ failure:
   except:
     - master
   script:
-    - source ${CI_PROJECT_DIR}/scripts/notify_github.sh "failed" "Compilations and/or tests failed, please check logs"
+    - source ${SCRIPTDIR}/notify_github.sh "failed" "Compilations and/or tests failed, please check logs"
 
 
 stages:
