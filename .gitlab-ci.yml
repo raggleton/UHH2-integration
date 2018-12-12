@@ -1,4 +1,5 @@
 variables:
+  GIT_STRATEGY: clone   # use clone and not fetch otherwise rerunning jobs after a push fails
   CMSSW_GIT_REFERENCE: "${CI_PROJECT_DIR}/cmssw.git"
   TESTDIR: "${CI_PROJECT_DIR}/testdir"
   SCRIPTDIR: "${CI_PROJECT_DIR}/scripts"
