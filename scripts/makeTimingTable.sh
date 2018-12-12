@@ -6,7 +6,7 @@
 firstline=true
 
 TIMINGFILE="timing_report.md"
-rm "$TIMINGFILE"
+rm -f "$TIMINGFILE"
 
 for newfile in timing*_new.json;
 do
