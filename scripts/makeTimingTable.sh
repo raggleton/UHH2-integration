@@ -11,10 +11,11 @@ touch "$TIMINGFILE"  # ensures we have a file for future scripts
 
 for newfile in ${TESTDIR}/timing*_new.json;
 do
-    reffile=${newfile/_new/_ref}
+    reffile=${newfile/_new.json/_ref.json}
     if [ -f "$reffile" ]; then
         # Get sample name from filename
-        name=${newfile/timing_/}
+        name=$(basename "$newfile")
+        name=${name/timing_/}
         name=${name/_new.json/}
         name=${name//_/ }
         headeropt=""
