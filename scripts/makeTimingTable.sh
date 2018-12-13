@@ -20,6 +20,6 @@ do
         #nn#ame=${name//_/ }
         headeropt=""
         if [ "$firstline" == true ]; then headeropt="--header"; firstline=false; fi
-        ${CI_PROJECT_DIR}/scripts/timingJsonTable.py  --ref "$reffile" --new "$newfile" --name "$name" "$headeropt" >> "$TIMINGFILE"
+        ${CI_PROJECT_DIR}/scripts/timingJsonTable.py  --ref "$reffile" --new "$newfile" --name "$name" $headeropt >> "$TIMINGFILE"
     fi
 done
