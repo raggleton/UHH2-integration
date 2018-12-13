@@ -503,6 +503,8 @@ success:
   when: on_success
   except:
     - master
+  # don't need artifacts
+  dependencies:
   script:
     - source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"
 
@@ -513,6 +515,8 @@ failure:
   when: on_failure
   except:
     - master
+  # don't need artifacts
+  dependencies:
   script:
     - source ${SCRIPTDIR}/notify_github.sh "failed" "Compilations and/or tests failed, please check logs"
 
