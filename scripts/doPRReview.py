@@ -20,7 +20,7 @@ if __name__ == "__main__":
     if args.timing:
         if not os.path.isfile(args.timing):
             print("Cannot find timing file %s, skipping" % args.timing)
-        comment_text += "\n\n"
+        comment_text += "\n\n**Timing report**\n\n"
         with open(args.timing) as f:
             comment_text += f.read()
 
