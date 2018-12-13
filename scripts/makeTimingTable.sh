@@ -17,7 +17,7 @@ do
         name=$(basename "$newfile")
         name=${name/timing_/}
         name=${name/_new.json/}
-        name=${name//_/ }
+        #nn#ame=${name//_/ }
         headeropt=""
         if [ "$firstline" == true ]; then headeropt="--header"; firstline=false; fi
         ${CI_PROJECT_DIR}/scripts/timingJsonTable.py  --ref "$reffile" --new "$newfile" --name "$name" "$headeropt" >> "$TIMINGFILE"
