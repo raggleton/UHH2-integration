@@ -13,6 +13,7 @@ import subprocess
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--timing", help="Timing markdown table filename", default=None)
+    parser.add_argument("--size", help="Size markdown table filename", default=None)
     args = parser.parse_args()
 
     comment_text = "Report for PR %s\n\n" % (str(os.environ.get('PRNUM', None)))
@@ -23,8 +24,16 @@ if __name__ == "__main__":
         comment_text += "\n\n**Timing report**\n\n"
         with open(args.timing) as f:
             comment_text += f.read()
+        comment_text += "\n\n"
 
-    
+    if args.size:
+        if not os.path.isfile(args.size):
+            print("Cannot find size file %s, skipping" % args.size)
+        comment_text += "\n\n**Size report**\n\n"
+        with open(args.size) as f:
+            comment_text += f.read()
+        comment_text += "\n\n"
+
     comment_text = comment_text.replace("\n", "\\n").replace('"', '\\"')
     # print(comment_text)
     return_code = subprocess.call('source ${CI_PROJECT_DIR}/scripts/post_comment.sh "%s"' % (comment_text), shell=True)
