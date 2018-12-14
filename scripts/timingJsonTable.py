@@ -12,7 +12,7 @@ import argparse
 # Inspiration from https://gitlab.cern.ch/cms-nanoAOD/nanoAOD-integration/blob/master/scripts/compare_sizes_json.py
 
 def print_table_entry(ref_filename, new_filename, sample_name, do_header=False):
-    """Print line in markdown table comparing timing ffrom 2 JSON files
+    """Print line in markdown table comparing timing from 2 JSON files
     
     Parameters
     ----------
@@ -38,7 +38,7 @@ def print_table_entry(ref_filename, new_filename, sample_name, do_header=False):
     key_name = "event loop Real/event"
     if do_header:
         print("| Sample | Reference {0} [s] | PR {0} [s] | diff |".format(key_name.lower()))
-        print("| ------ | ------ | ------ | ------ |".format(key_name))
+        print("| ------ | ------ | ------ | ------ |")
 
     # Do it this way to handle if one or both of the dicts doesn't exist
     line_args = {
