@@ -490,7 +490,8 @@ review-ntuples:
   script:
     - cd ${TESTDIR}
     - source ${SCRIPTDIR}/makeTimingTable.sh
-    - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md
+    - source ${SCRIPTDIR}/makeSizeTable.sh
+    - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md --size ${TESTDIR}/size_report.md
 
 
 # -----------------------------------------------------------------------------
