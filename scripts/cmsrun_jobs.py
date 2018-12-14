@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-"""Do a cmsRun job, choosing from one of the pre-determined setups"""
+"""Do a cmsRun job, choosing from one of the pre-determined setups.
+
+Also run JSON producers afterwards to extract size, timings, etc
+"""
 
 
 import os
@@ -10,6 +13,7 @@ import subprocess
 from copy import deepcopy
 
 from parseCmsRunSummary import parse_and_dump
+from treeSizeReport import produce_size_json
 
 
 NEVENTS = 1000
@@ -231,5 +235,9 @@ if __name__ == "__main__":
         # Parse logfile to JSON
         timing_json = "timing_%s.json" % (append)
         parse_and_dump(cms_dict['logfile'], timing_json)
+
+        # Dump branch sizes to JSON
+        size_json = "size_%s.json" % (append)
+        produce_size_json(cms_dict['outputfile'], size_json, tree_name="AnalysisTree", verbose=False)
 
     sys.exit(0)
