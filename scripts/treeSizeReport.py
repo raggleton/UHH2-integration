@@ -11,7 +11,6 @@ import json
 import argparse
 
 
-
 class BranchInfo(object):
     """Class to store relevant info about a TBranch"""
 
@@ -85,21 +84,13 @@ def store_branches_recursively(tree, obj_list, indent=0):
         store_branches_recursively(b, obj_list, new_indent)
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("filename", help="ROOT filename")
-    parser.add_argument("--json", help="JSON output filename", default="size.json")
-    default_tree = "AnalysisTree"
-    parser.add_argument("--treeName", help="Name of TTree, defaults to %s" % default_tree, default=default_tree)
-    parser.add_argument("-v", help="Print branch infos", action='store_true')
-    args = parser.parse_args()
-
+def produce_size_json(input_filename, json_filename, tree_name, verbose=False):
     tree_info = []
 
     # Get all branch info
-    f = ROOT.TFile(args.filename)
-    tree = f.Get(args.treeName)
-    store_branches_recursively(tree, tree_info, 0 if args.v else None)
+    f = ROOT.TFile(input_filename)
+    tree = f.Get(tree_name)
+    store_branches_recursively(tree, tree_info, 0 if verbose else None)
 
     total_branch_size = sum([b.compressed_size for b in tree_info])
     file_size = f.GetSize() / B_TO_KB
@@ -118,9 +109,9 @@ if __name__ == "__main__":
     }
 
     for b in tree_info:
-        if b.name.startswith(args.treeName):
+        if b.name.startswith(tree_name):
             # top level i.e. the collections themselves
-            stripped_name = b.name.replace(args.treeName+".", "")
+            stripped_name = b.name.replace(tree_name+".", "")
             size_dict['branch_sizes'][stripped_name] = {
                 "size_frac": b.compressed_size_recursive / total_branch_size,
                 "size_per_event": b.compressed_size_recursive / n_entries,
@@ -139,5 +130,17 @@ if __name__ == "__main__":
             }
 
     # print(size_dict)
-    with open(args.json, 'w') as f:
+    with open(json_filename, 'w') as f:
         json.dump(size_dict, f, indent=2)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("input", help="Input ROOT ntuple filename")
+    parser.add_argument("--json", help="JSON output filename", default="size.json")
+    default_tree = "AnalysisTree"
+    parser.add_argument("--treeName", help="Name of TTree, defaults to %s" % default_tree, default=default_tree)
+    parser.add_argument("-v", help="Print branch infos", action='store_true')
+    args = parser.parse_args()
+
+    produce_size_json(args.input, args.json, args.treeName, args.v)
