@@ -88,6 +88,9 @@ def parse_and_dump(input_filename, json_filename):
                     "per_event": float(per_event),
                     "per_exec": float(per_exec),
                     "per_visit": float(per_visit),
+                    "per_event_frac": float(per_event) / float(event_timing['event loop Real/event']),
+                    "per_exec_frac": float(per_exec) / float(event_timing['event loop Real/event']),
+                    "per_visit_frac": float(per_visit) / float(event_timing['event loop Real/event']),
                 }
 
         # print(event_timing)
