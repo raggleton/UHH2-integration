@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Assemble grand timing markdown table, using only those matching _ref and _new JSONs
+# Assemble grand timing markdown table, using only those matching timing*_ref and timing*_new JSONs
 # Execute in UHH2-integration dir
 
 firstline=true
