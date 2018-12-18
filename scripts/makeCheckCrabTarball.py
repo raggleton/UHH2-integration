@@ -75,9 +75,9 @@ if __name__ == "__main__":
     new_limit_bytes = (FILE_SIZE_LIMIT - padding_bytes)
     limit_mb = "%3.1f MB" % (new_limit_bytes // (1024 * 1024))
 
+    subprocess.call("tar tvzf %s | sort -k3 -n" % tarball_name, shell=True)
     if size_bytes >= new_limit_bytes:
         # Print out contents sorted by reverse size
-        subprocess.call("tar tvzf %s | sort -k3 -n" % tarball_name, shell=True)
         logger.error("Error: tarball size %s exceeds the limit of %s" % (size_mb, limit_mb))
         sys.exit(1)
     else:
