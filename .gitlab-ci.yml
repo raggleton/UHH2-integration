@@ -65,8 +65,8 @@ build-new:
     # Check the CRAB tarball size
     - source /cvmfs/cms.cern.ch/crab3/crab.sh; cd ${CMSSW_BASE}/src/UHH2/scripts/crab;
       python ${SCRIPTDIR}/makeCheckCrabTarball.py --output testTarball.tgz || source ${SCRIPTDIR}/post_comment.sh "CRAB tarball creation failed or exceeded size limit"; rm testTarball.tgz
-    # Tar up CMSSW & SFrame
-    - cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz
+    # Tar up CMSSW & SFrame but only for 102X jobs where we actually run cmsrun jobs
+    - if [[ $REFBRANCH == "RunII_102X"* ]]; then cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz; fi
 
 
 build-ref:
@@ -91,7 +91,7 @@ build-ref:
     - mkdir -p ${TESTDIR} && cd ${TESTDIR}
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh # deploy CMSSW, UHH
     - source ${SCRIPTDIR}/post_install.sh  # Compile everything
-    - cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz  # Tar up CMSSW & SFrame
+    - if [[ $REFBRANCH == "RunII_102X"* ]]; then cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz; fi  # Tar up CMSSW & SFrame, only if doing cmsrun jobs
 
 
 
