@@ -24,6 +24,7 @@ get-uhh:
     - master
   script:
     - source ${SCRIPTDIR}/notify_github.sh "start"
+    - source ${SCRIPTDIR}/add_label.sh $REFBRANCH
     - source ${SCRIPTDIR}/get_uhh_ref_and_new.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "Failed to checkout UHH2 & merge PR"
   artifacts:
     paths:
