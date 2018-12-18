@@ -56,7 +56,8 @@ build-new:
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "install.sh failed, please check log"
     - source ${SCRIPTDIR}/replace_UHH.sh  # Use the UHH2 version we checked out
     # Compile everything
-    - source ${SCRIPTDIR}/post_install.sh  || source ${SCRIPTDIR}/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check log"
+    - source ${SCRIPTDIR}/post_install.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check log"
+    - source ${SCRIPTDIR}/post_comment.sh "Compilation with PR successful"
     # Check the python is even valid
     - cd ${CMSSW_BASE}/src/UHH2/core/python
     - for f in ntuple*.py; do echo "$f"; python "$f" || source ${SCRIPTDIR}/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
