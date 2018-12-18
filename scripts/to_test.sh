@@ -1,0 +1,5 @@
+export PRNUM=1078
+export REFBRANCH=RunII_94X_v1
+export REMOTEBRANCH=pull/1078/head
+export LOCALBRANCH=test1078
+export PRID=MDExOlB1bGxSZXF1ZXN0MjM5NDk1Nzg1
