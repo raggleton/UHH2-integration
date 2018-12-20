@@ -12,11 +12,20 @@ import subprocess
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--plots", help="Ntuple plots comparison markdown table filename", default=None)
     parser.add_argument("--timing", help="Timing markdown table filename", default=None)
     parser.add_argument("--size", help="Size markdown table filename", default=None)
     args = parser.parse_args()
 
     comment_text = "Report for PR %s\n\n" % (str(os.environ.get('PRNUM', None)))
+
+    if args.plots:
+        if not os.path.isfile(args.plots):
+            print("Cannot find plots comparison file %s, skipping" % args.plots)
+        comment_text += "\n\n**Ntuple comparison report**\n\n"
+        with open(args.plots) as f:
+            comment_text += f.read()
+        comment_text += "\n\n"
 
     if args.timing:
         if not os.path.isfile(args.timing):

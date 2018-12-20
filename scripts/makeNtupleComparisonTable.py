@@ -40,7 +40,7 @@ def main(in_args):
     status_descriptions = {}
     for label, idict in input_data.items():
         parsed_data[label] = OrderedDict()
-        parsed_data[label]['total'] = idict['total_number']
+        parsed_data[label]['total_#_hists'] = idict['total_number']
         parsed_data[label]['added_collections'] = get_number_safely(idict, 'added_collections')
         parsed_data[label]['removed_collections'] = get_number_safely(idict, 'removed_collections')
         parsed_data[label]['added_hists'] = get_number_safely(idict, 'added_hists')
@@ -55,7 +55,7 @@ def main(in_args):
     # want 1st col to be "same"
     all_statuses.insert(0, all_statuses.pop(all_statuses.index('SAME')))
 
-    fields = ['name', 'total', 'added_collections', 'added_hists', 'removed_collections', 'removed_hists']
+    fields = ['name', 'total_#_hists', 'added_collections', 'added_hists', 'removed_collections', 'removed_hists']
     fields.extend(all_statuses)
     header = "| " + ' | '.join([f.replace("_", " ").lower() for f in fields]) + " |"
     print(header)
