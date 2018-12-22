@@ -14,7 +14,7 @@ from collections import OrderedDict
 def get_number_safely(idict, key):
     entry = idict.get(key, None)
     if None:
-        return 0
+        return -1
     return int(entry['number'])
 
 
@@ -46,10 +46,10 @@ def main(in_args):
         parsed_data[label]['added_hists'] = get_number_safely(idict, 'added_hists')
         parsed_data[label]['removed_hists'] = get_number_safely(idict, 'removed_hists')
         comparison_dict = idict['comparison']
-        for sname, sentry in comparison_dict.items():
-            parsed_data[label][sname] = sentry['number']
-            all_statuses.append(sname)
-            status_descriptions[sname] = sentry['description']
+        for status_name, status_entry in comparison_dict.items():
+            parsed_data[label][status_name] = status_entry['number']
+            all_statuses.append(status_name)
+            status_descriptions[status_name] = status_entry['description']
 
     all_statuses = sorted(list(set(all_statuses)))
     # want 1st col to be "same"
