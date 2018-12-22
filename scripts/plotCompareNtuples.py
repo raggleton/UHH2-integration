@@ -362,7 +362,7 @@ def get_xy(graph):
     return xarr, yarr
 
 
-def plot_hists(h1, stats1, h2, stats2, output_dir=".", fmt='pdf', prepend="", append=""):
+def plot_hists(h1, stats1, h2, stats2, output_dir=".", canvas_size=(800, 600), fmt='pdf', prepend="", append=""):
     """Make a (comparison) plot from histogram h1 + stats box stats1, and h2+stats2 and save to file.
 
     h1/stats1 or h2/stats2 can be None, in which case a simpler plot is made
@@ -395,7 +395,7 @@ def plot_hists(h1, stats1, h2, stats2, output_dir=".", fmt='pdf', prepend="", ap
         return
 
     hname = h1.GetName().replace("h1_", "") if h1 else h2.GetName().replace("h2_", "")
-    c = ROOT.TCanvas("c"+hname, "", 800, 600)
+    c = ROOT.TCanvas("c"+hname, "", *canvas_size)
     c.SetTicks(1, 1)
 
     # Check if our version of ROOT has TRatioPlot
