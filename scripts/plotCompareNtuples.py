@@ -950,7 +950,7 @@ def analyse_hists(hist1, hist2):
     if xmax > range_lim or xmin < -range_lim:
         return HistSummary("EXTREME_VALUES", "x axis has very large values (+- %g)" % range_lim)
 
-    return HistSummary("SAME", "Histograms are the same")
+    return HistSummary("SAME", "Histograms are the same (lowest priority)")
 
 
 def check_tobj(tobj):
@@ -1042,6 +1042,7 @@ def save_to_json(json_data, hist_status, output_filename):
         new_entry = {"number": len(col), "names": col}
         my_dict[key] = new_entry
 
+    # Reorganise the added/removed hists to also store #s, easier for table
     _convert_entry(json_data, 'added_collections')
     _convert_entry(json_data, 'removed_collections')
     _convert_entry(json_data, 'added_hists')
@@ -1076,6 +1077,9 @@ if __name__ == "__main__":
                              "Pass space-separated list to save file in each format" % default_fmt,
                         nargs="+",
                         default=default_fmt)
+    parser.add_argument("--thumbnails",
+                        help="Make thumbnail plots in <outputDir>/thumbnails",
+                        action='store_true')
     parser.add_argument("--verbose", "-v",
                         help="Printout extra info",
                         action='store_true')
@@ -1139,14 +1143,17 @@ if __name__ == "__main__":
         json_data['removed_hists'].extend(removed_hists)
         json_data['common_hists'] = sorted(list(hists1 & hists2))
 
+    # Setup output dirs
     if not os.path.isdir(args.outputDir):
         os.makedirs(args.outputDir)
 
+    thumbnails_dir = os.path.join(args.outputDir, "thumbnails")
+    if args.thumbnails and not os.path.isdir(thumbnails_dir):
+        os.makedirs(thumbnails_dir)
+
     hist_status = OrderedDict()
 
-    # Make (comparison) hists
-    # Use tqdm to get nice prgress bar, and add hist name if verbose,
-    # padded to keep constant position for progress bar
+    # Make & plot (comparison) hists
     common_hists = sorted(json_data.get('common_hists', hist_list1)) # If only ref file, just do all
     added_hists = json_data.get('added_hists', [])
     removed_hists = json_data.get('removed_hists', [])
@@ -1172,7 +1179,17 @@ if __name__ == "__main__":
         # Plot to file
         if hist1 or hist2:
             for fmt in args.fmt:
-                plot_hists(hist1, stats1, hist2, stats2, args.outputDir, fmt=fmt, prepend=prepend, append="")
+                plot_hists(hist1, stats1, hist2, stats2,
+                           args.outputDir,
+                           canvas_size=(800, 600),
+                           fmt=fmt,
+                           prepend="", append="")
+            if args.thumbnails:
+                plot_hists(hist1, stats1, hist2, stats2,
+                           thumbnails_dir,
+                           canvas_size=(300, 200),
+                           fmt='gif',
+                           prepend="", append="")
 
         # Do comparison
         status = analyse_hists(hist1, hist2)
