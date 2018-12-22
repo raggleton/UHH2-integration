@@ -1027,7 +1027,10 @@ def save_to_json(json_data, hist_status, output_filename):
                                     "names": []
                                     }
 
+    added_removed_hists = json_data['added_hists'] + json_data['removed_hists']
     for hist_name, status in hist_status.items():
+        if hist_name in added_removed_hists:
+            continue
         status_dict[status.name]['number'] += 1
         status_dict[status.name]['names'].append(hist_name)
 
@@ -1148,14 +1151,16 @@ if __name__ == "__main__":
     added_hists = json_data.get('added_hists', [])
     removed_hists = json_data.get('removed_hists', [])
     all_hists = list(chain(common_hists, added_hists, removed_hists))
-    all_prepends = list(chain(['']*len(common_hists), ['ADDED_']*len(added_hists), ['REMOVED_']*len(removed_hists)))
+
     print("Producing", len(all_hists), "hists")
     json_data['total_number'] = len(all_hists)
 
-    pbar = tqdm(zip(all_hists, all_prepends))
+    # Use tqdm to get nice prgress bar, and add hist name if verbose,
+    # padded to keep constant position for progress bar
+    pbar = tqdm(all_hists)
     max_len = max(len(l) for l in all_hists)
     fmt_str = "{0: <%d}" % (max_len+2)
-    for method_str, prepend in pbar:
+    for method_str in pbar:
         if args.verbose:
             pbar.set_description(fmt_str.format(method_str))
 
