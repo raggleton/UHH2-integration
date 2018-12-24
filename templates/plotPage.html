@@ -68,8 +68,14 @@
               {% endfor %}
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#timing">Timing</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Timing
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#timing">Overall</a>
+              <a class="dropdown-item" href="#timingModule">By module</a>
+            </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Disk usage</a>
@@ -84,7 +90,7 @@
     <div class="container-fluid">
       <h1>Summary for PR {{ prnum }}, {{ sample }} sample</h1>
       <p></p>
-      <strong><font color="blue">h1</font></strong> is with the PR changes, <strong><font color="red">h2 (ref)</font></strong> is the current HEAD of the branch
+      <strong><font color="blue">h1 (new)</font></strong> is with the PR changes, <strong><font color="red">h2 (ref)</font></strong> is the current HEAD of the branch
       <p></p>
       <h2>Tree plots (Total: {{ num_plots }})</h2>
       {% for group in plot_data %}
@@ -106,14 +112,15 @@
         </section>
       {% endfor %}
       <hr>
-      <h2>Timing comparison</h2>
       <span class="anchor" id="timing"></span>
+      <section id="timing">
+      <h2>Timing comparison</h2>
       <h3>Overall</h3>
       <table id="timing_event_table" class="table hover order-column row-border compact">
         <thead class="thead-light">
               <tr>
               {% for header in timing_event_headers %}
-                <th><small>{{ header }}</small></th>
+                <th><small><strong>{{ header }}</strong></small></th>
               {% endfor %}
               </tr>
           </thead>
@@ -129,12 +136,13 @@
           </tbody>
       </table>
       <p></p>
-      <h3>By module</h3>
+      <span class="anchor" id="timingModule"></span>
+      <section id="timingModule"><h3>By module</h3>
       <table id="timing_module_table" class="table hover order-column row-border compact">
         <thead class="thead-light">
               <tr>
               {% for header in timing_mod_headers %}
-                <th><small>{{ header }}</small></th>
+                <th><small><strong>{{ header }}</strong></small></th>
               {% endfor %}
               </tr>
           </thead>

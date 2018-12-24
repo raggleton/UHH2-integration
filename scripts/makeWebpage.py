@@ -59,13 +59,17 @@ def add_plot_group(group_key, plot_names, plot_dir, skip_these=None):
         plots.append(Plot(this_id=plot_name,
                           thumbnailname=os.path.join(plot_dir, "thumbnails", this_thumbnailname),
                           filename=os.path.join(plot_dir, this_filename),
-                          caption=plot_name))
+                          # use <wbr> to allow line break, otherwise need spaces to wrap
+                          caption=plot_name.replace(".", "<wbr>.")
+                          )
+                    )
 
     this_title = group_key.replace("_", " ").title()
     this_title += " (%d)" % len(plots)
     this_item = Group(this_id=group_key.replace(" ", "_"),
                       title=this_title,
-                      plots=plots)
+                      plots=plots
+                      )
     return this_item
 
 
@@ -117,15 +121,15 @@ def main(in_args):
         # Get timing data
         with open(timing_ref_json) as f:
             timing_ref_data = json.load(f, object_pairs_hook=OrderedDict)
-        
+
         with open(timing_new_json) as f:
             timing_new_data = json.load(f, object_pairs_hook=OrderedDict)
-        
+
         # Per event timing
         df_event_timing_new = pd.DataFrame.from_dict(timing_new_data['event_timing'], orient='index')
         df_event_timing_new.rename(lambda x: 'New', axis='columns', inplace=True)
         df_event_timing_new.rename(lambda x: x+' [s]', inplace=True)
-        
+
         df_event_timing_ref = pd.DataFrame.from_dict(timing_ref_data['event_timing'], orient='index')
         df_event_timing_ref.rename(lambda x: 'Ref', axis='columns', inplace=True)
         df_event_timing_ref.rename(lambda x: x+' [s]', inplace=True)
@@ -143,18 +147,21 @@ def main(in_args):
         drop_cols = ['per_exec', 'per_visit']
         df_mod_timing_ref.drop(columns=drop_cols, inplace=True)
         df_mod_timing_ref.rename(lambda x: x.replace("_", " ").title() + " (Ref) [s]", axis='columns', inplace=True)
-        headers_ref = list(df_mod_timing_ref.columns.values)
+        for header in df_mod_timing_ref.columns.values:
+            df_mod_timing_ref[header.replace('[s]', '[%]')] = 100. * df_mod_timing_ref[header] / df_mod_timing_ref[header].sum(skipna=True)
 
         df_mod_timing_new = pd.DataFrame.from_dict(timing_new_data['module_timing'], orient='index')
         df_mod_timing_new.drop(columns=drop_cols, inplace=True)
         df_mod_timing_new.rename(lambda x: x.replace("_", " ").title() + " (New) [s]", axis='columns', inplace=True)
-        headers_new = list(df_mod_timing_new.columns.values)
+        for header in df_mod_timing_new.columns.values:
+            df_mod_timing_new[header.replace('[s]', '[%]')] = 100. * df_mod_timing_new[header] / df_mod_timing_new[header].sum(skipna=True)
 
         df_mod_timing_diff = df_mod_timing_ref.join(df_mod_timing_new, how='outer')
         df_mod_timing_diff = df_mod_timing_diff[~(df_mod_timing_diff==0).all(axis=1)]  # get rid of rows that are all 0s
-        for href, hnew in zip(headers_ref, headers_new):
-            df_mod_timing_diff[href.replace('[s]', '[%]')] = 100. * df_mod_timing_ref[href] / df_mod_timing_ref[href].sum(skipna=True)
-            df_mod_timing_diff[hnew.replace('[s]', '[%]')] = 100. * df_mod_timing_new[hnew] / df_mod_timing_new[hnew].sum(skipna=True)
+        for href, hnew in zip(df_mod_timing_ref.columns.values, df_mod_timing_new.columns.values):
+            if '%' in href:
+                # only do absolute differences, not diff in %s
+                continue
             df_mod_timing_diff['Diff '+href.replace(" (Ref)", "")] = df_mod_timing_new[hnew] - df_mod_timing_ref[href]
 
         timing_mod_dict = df_mod_timing_diff.to_dict(orient='split')
