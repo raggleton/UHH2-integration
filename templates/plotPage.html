@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
 
+    <!-- DataTables for jQuery, sorts & searches tables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+
     <!-- lazy loading lib lozad -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
 
@@ -66,7 +69,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Timing</a>
+            <a class="nav-link" href="#timing">Timing</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Disk usage</a>
@@ -102,7 +105,50 @@
           </div>
         </section>
       {% endfor %}
-
+      <hr>
+      <h2>Timing comparison</h2>
+      <span class="anchor" id="timing"></span>
+      <h3>Overall</h3>
+      <table id="timing_event_table" class="table hover order-column row-border compact">
+        <thead class="thead-light">
+              <tr>
+              {% for header in timing_event_headers %}
+                <th><small>{{ header }}</small></th>
+              {% endfor %}
+              </tr>
+          </thead>
+          <tbody>
+            {% for data in timing_event_rows %}
+            <tr>
+              <td><small>{{ data[0] }}</small></td>
+              {% for value in data[1:] %}
+              <td><small>{{ '%.6f' % value }}</small></td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      <p></p>
+      <h3>By module</h3>
+      <table id="timing_module_table" class="table hover order-column row-border compact">
+        <thead class="thead-light">
+              <tr>
+              {% for header in timing_mod_headers %}
+                <th><small>{{ header }}</small></th>
+              {% endfor %}
+              </tr>
+          </thead>
+          <tbody>
+            {% for data in timing_mod_rows %}
+            <tr>
+              <td><small>{{ data[0] }}</small></td>
+              {% for value in data[1:] %}
+              <td><small>{{ '%.6f' % value }}</small></td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
 
     </div> <!-- end container-fluid -->
 
@@ -111,12 +157,32 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
     <script type="text/javascript">
       // lazy loads elements with default selector as '.lozad'
       // need to put here *after* loading elements
       const observer = lozad();
       observer.observe();
+
+      // sort tables
+      $(document).ready( function () {
+        $('#timing_event_table').DataTable({
+          paging: false,
+          searching: false,
+          order: [],
+          info: false
+          });
+
+        $('#timing_module_table').DataTable({
+          paging: false,
+          searching: true,
+          order: [[5, "asc"]]
+          });
+        $(".dataTables_filter input").addClass('form-control');
+        $("#timing_module_table_filter").addClass('form-inline');
+      } );
+
     </script>
   </body>
 </html>
