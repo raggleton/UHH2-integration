@@ -11,6 +11,7 @@ import sys
 import json
 import argparse
 import pandas as pd
+import numpy as np
 from collections import OrderedDict
 from jinja2 import Template, Environment, FileSystemLoader
 try:
@@ -79,7 +80,8 @@ def main(in_args):
     parser.add_argument("--plotdir", help="Directory with plots in JSON file", required=True, action='append')
     parser.add_argument("--timingrefjson", help="Input reference timing JSON file", action='append')
     parser.add_argument("--timingnewjson", help="Input new timing JSON file", action='append')
-    # parser.add_argument("--sizejson", help="Input size JSON file", action='append')
+    parser.add_argument("--sizerefjson", help="Input reference size JSON file", action='append')
+    parser.add_argument("--sizenewjson", help="Input new size JSON file", action='append')
     parser.add_argument("--label", help="Label for given plot file.", required=True, action='append')
     parser.add_argument("--outputDir", help="Directory for output directories.", default=".")
     args = parser.parse_args(in_args)
@@ -97,7 +99,16 @@ def main(in_args):
     set_of_pages = [(label, os.path.join(args.outputDir, "%s.html" % label.replace(" ", "_")))
                     for label in args.label]
 
-    for plotjson, plotdir, timing_ref_json, timing_new_json, label in zip(args.plotjson, args.plotdir, args.timingrefjson, args.timingnewjson, args.label):
+    all_args = [args.plotjson, args.plotdir,
+                args.timingrefjson, args.timingnewjson,
+                args.sizerefjson, args.sizenewjson,
+                args.label]
+
+    for (plotjson, plotdir, timing_ref_json, timing_new_json, size_ref_json, size_new_json, label) in zip(*all_args):
+
+        #######################################################################
+        # PLOTS
+        #######################################################################
 
         with open(plotjson) as f:
             orig_plot_data = json.load(f, object_pairs_hook=OrderedDict)
@@ -118,6 +129,9 @@ def main(in_args):
                           for key in orig_plot_data['comparison']
                          ])
 
+        #######################################################################
+        # TIMING
+        #######################################################################
         # Get timing data
         with open(timing_ref_json) as f:
             timing_ref_data = json.load(f, object_pairs_hook=OrderedDict)
@@ -168,6 +182,123 @@ def main(in_args):
         timing_mod_headers = ['Module name'] + timing_mod_dict['columns']
         timing_mod_rows = [[m] + data for m, data in zip(timing_mod_dict['index'], timing_mod_dict['data'])]
 
+        #######################################################################
+        # FILESIZE
+        #######################################################################
+        # Get filesize data
+        with open(size_ref_json) as f:
+            size_ref_data = json.load(f, object_pairs_hook=OrderedDict)
+
+        with open(size_new_json) as f:
+            size_new_data = json.load(f, object_pairs_hook=OrderedDict)
+
+        # Overall info (over all collections)
+        headers = ["size_per_event", "size_frac"]
+
+        total_coll_name = "Total"
+        def _make_size_df(size_dict, label):
+            this_dict = {}
+            for colname, data in size_dict['branch_sizes'].items():
+                this_dict[colname] = {h:data[h] for h in headers}
+            # manually add total as another entry
+            this_dict[total_coll_name] = {
+                "size_per_event": size_dict["total_branch_size_per_event"],
+                "size_frac": size_dict["total_branch_frac"]
+            }
+            df_size = pd.DataFrame.from_dict(this_dict, orient='index')
+            df_size['size_frac'] = 100. * df_size['size_frac']
+            df_size.rename({"size_frac": "%", "size_per_event": "kb / event"}, axis=1, inplace=True)
+            df_size.rename(lambda x: x + " (" + label + ")", axis=1, inplace=True)  # do it last as we need originals for prior renaming
+            return df_size
+
+        df_size_ref = _make_size_df(size_ref_data, 'Ref')
+        df_size_new = _make_size_df(size_new_data, 'New')
+
+        df_size_diff = df_size_ref.join(df_size_new, how='outer')
+        df_size_diff = df_size_diff[~(df_size_diff==0).all(axis=1)]  # get rid of rows that are all 0s
+
+        # Add difference column(s)
+        for href, hnew in zip(df_size_ref.columns.values, df_size_new.columns.values):
+            if '%' in href:
+                # only do absolute differences, not diff in %s
+                continue
+            df_size_diff['Diff '+href.replace(" (Ref)", "")] = df_size_new[hnew] - df_size_ref[href]
+
+        size_overall_headers = ['Collection name'] + list(df_size_diff.columns.values)
+        size_mod_dict = df_size_diff.to_dict(orient='split')
+        size_overall_rows = [[m] + data for m, data in zip(size_mod_dict['index'], size_mod_dict['data']) if m != total_coll_name]
+        size_overall_total = [[m] + data for m, data in zip(size_mod_dict['index'], size_mod_dict['data']) if m == total_coll_name]
+
+        # Per collection info
+        size_mod_data = OrderedDict()
+        size_mod_headers = []
+
+        def _make_coll_size_df(col_size_dict, label):
+            this_dict = {}
+            total_frac = col_size_dict['size_frac']
+            if len(col_size_dict['children']) == 0:
+                return None
+            for varname, vardata in col_size_dict['children'].items():
+                this_dict[varname] = {
+                    'size_per_event': vardata['size_per_event'],
+                    'size_frac': 100. * vardata['size_frac'] / total_frac
+                }
+            df_size = pd.DataFrame.from_dict(this_dict, orient='index')
+            df_size.rename({"size_frac": "%", "size_per_event": "kb / event"}, axis=1, inplace=True)
+            df_size.rename(lambda x: x + " (" + label + ")", axis=1, inplace=True)  # do it last as we need originals for prior renaming
+            return df_size
+
+        for colname, data in size_ref_data['branch_sizes'].items():
+            df_mod_size_ref = _make_coll_size_df(data, "Ref")
+            if df_mod_size_ref is None:
+                continue
+            size_mod_data[colname] = [df_mod_size_ref, None]
+
+        for colname, data in size_new_data['branch_sizes'].items():
+            df_mod_size_new = _make_coll_size_df(data, "New")
+            if df_mod_size_new is None:
+                continue
+            existing = size_mod_data.get(colname, None)
+            if existing:
+                existing = existing[0]
+            size_mod_data[colname] = [existing, df_mod_size_new]
+
+        data_frames = OrderedDict()
+        for colname in sorted(size_mod_data.keys()):
+            data = size_mod_data[colname]
+            # account for missing collections
+            if data[0] is None and data[1] is not None:
+                existing = data[1]
+                data[0] = pd.DataFrame(np.zeros_like(existing), index=existing.index, columns=existing.columns)
+            elif data[0] is not None and data[0] is None:
+                existing = data[0]
+                data[1] = pd.DataFrame(np.zeros_like(existing), index=existing.index, columns=existing.columns)
+
+            if len(data) != 2:
+                raise RuntimeError("Each collection should have 2 dataframes")
+
+            df_size_ref, df_size_new = data
+            # Create combined dataframe
+            df_size_diff = df_size_ref.join(df_size_new, how='outer')
+            # Add difference column(s)
+            for href, hnew in zip(df_size_ref.columns.values, df_size_new.columns.values):
+                if '%' in href:
+                    # only do absolute differences, not diff in %s
+                    continue
+                df_size_diff['Diff '+href.replace(" (Ref)", "")] = df_size_new[hnew] - df_size_ref[href]
+
+            data_frames[colname] = df_size_diff
+
+        size_mod_headers = ['Member name'] + list(list(data_frames.values())[0].columns.values)
+        size_mod_rows = OrderedDict()
+        for colname, df in data_frames.items():
+            this_size_mod_dict = df.to_dict(orient='split')
+            size_rows = [[m] + data for m, data in zip(this_size_mod_dict['index'], this_size_mod_dict['data'])]
+            size_mod_rows[colname] = size_rows
+
+        #######################################################################
+        # MAKE FINAL HTML
+        #######################################################################
         # Render template with objects
         prnum = os.environ.get("PRNUM", -1)
         gitlab_url = os.environ.get("CI_PIPELINE_URL", "https://gitlab.cern.ch/raggleto/UHH2-integration/pipelines")
@@ -180,6 +311,11 @@ def main(in_args):
                                  timing_event_rows=timing_event_rows,
                                  timing_mod_headers=timing_mod_headers,
                                  timing_mod_rows=timing_mod_rows,
+                                 size_overall_headers=size_overall_headers,
+                                 size_overall_total=size_overall_total,  # do separately for own special fixed row
+                                 size_overall_rows=size_overall_rows,
+                                 size_mod_headers=size_mod_headers,
+                                 size_mod_data=size_mod_rows
                                 )
 
         html_filename = os.path.join(args.outputDir, "%s.html" % label.replace(" ", "_"))

@@ -28,6 +28,12 @@
       visibility: hidden;
       position: relative;
     }
+    /* This allows long dropdown menus to scroll */
+    .scrollable-menu {
+      height: auto;
+      max-height: 500px;
+      overflow-x: hidden;
+    }
     </style>
 
     <title>Summary for PR {{ prnum }}</title>
@@ -77,8 +83,16 @@
               <a class="dropdown-item" href="#timingModule">By module</a>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Disk usage</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filesize
+            </a>
+            <div class="dropdown-menu scrollable-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#size">Overall</a>
+              {% for modname in size_mod_data %}
+              <a class="dropdown-item" href="#size{{modname}}">{{modname}}</a>
+              {% endfor %}
+            </div>
           </li>
         </ul>
         <span class="navbar-text">
@@ -112,6 +126,7 @@
         </section>
       {% endfor %}
       <hr>
+      <!-- Add a table of timings for the whole process -->
       <span class="anchor" id="timing"></span>
       <section id="timing">
       <h2>Timing comparison</h2>
@@ -136,6 +151,7 @@
           </tbody>
       </table>
       <p></p>
+      <!-- Add a table of timings for each module -->
       <span class="anchor" id="timingModule"></span>
       <section id="timingModule"><h3>By module</h3>
       <table id="timing_module_table" class="table hover order-column row-border compact">
@@ -157,6 +173,70 @@
             {% endfor %}
           </tbody>
       </table>
+
+      <hr>
+      <!-- Add a table of collection sizes for the whole file -->
+      <span class="anchor" id="size"></span>
+      <section id="size">
+      <h2>Filesize comparison</h2>
+      <h3>Overall</h3>
+      <table id="size_overall_table" class="table hover order-column row-border compact">
+        <thead class="thead-light">
+          <tr>
+            {% for header in size_overall_headers %}
+            <th><small><strong>{{ header }}</strong></small></th>
+            {% endfor %}
+          </tr>
+          {% for data in size_overall_total %}
+          <tr>
+            <th><small>{{ data[0] }}</small></th>
+            {% for value in data[1:] %}
+              <th><small>{{ '%.4f' % value }}</small></th>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </thead>
+          <tbody>
+            {% for data in size_overall_rows %}
+            <tr>
+              <td><a href="#size{{data[0]}}"><small>{{ data[0] }}</small></a></td>
+              {% for value in data[1:] %}
+              <td><small>{{ '%.4f' % value }}</small></td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      <p></p>
+      <!-- Add a table of member sizes for each collection -->
+      <section id="sizeModule">
+      <h3>Per collection</h3>
+      {% for modname, moddata in size_mod_data.items() %}
+      <p></p>
+      <span class="anchor" id="size{{modname}}"></span>
+      <section id="size{{modname}}">
+      <h4>{{modname}}</h4>
+      <em>Percentages are relative to the collection, not the entire file</em>
+      <table id="size_module_table_{{modname}}" class="table hover order-column row-border compact">
+        <thead class="thead-light">
+          <tr>
+            {% for header in size_mod_headers %}
+              <th><small><strong>{{ header }}</strong></small></th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for data in moddata %}
+          <tr>
+            <td><small>{{ data[0] }}</small></td>
+            {% for value in data[1:] %}
+            <td><small>{{ '%.4f' % value }}</small></td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endfor %}
 
     </div> <!-- end container-fluid -->
 
@@ -187,6 +267,24 @@
           searching: true,
           order: [[5, "asc"]]
           });
+
+        $('#size_overall_table').DataTable({
+          paging: false,
+          searching: false,
+          order: [[5, "asc"]],
+          orderCellsTop: true
+          });
+
+        {% for modname, moddata in size_mod_data.items() %}
+        $('#size_module_table_{{modname}}').DataTable({
+          paging: false,
+          searching: false,
+          order: [[5, "asc"]],
+          orderCellsTop: true
+          });
+        {% endfor %}
+
+        // make the table search caption inline with the text entry element
         $(".dataTables_filter input").addClass('form-control');
         $("#timing_module_table_filter").addClass('form-inline');
       } );
