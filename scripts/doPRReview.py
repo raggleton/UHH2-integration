@@ -46,3 +46,5 @@ if __name__ == "__main__":
     comment_text = comment_text.replace("\n", "\\n").replace('"', '\\"')
     # print(comment_text)
     return_code = subprocess.call('source ${CI_PROJECT_DIR}/scripts/post_comment.sh "%s"' % (comment_text), shell=True)
+
+    sys.exit(0)

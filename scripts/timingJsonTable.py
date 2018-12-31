@@ -13,7 +13,7 @@ import argparse
 
 def print_table_entry(ref_filename, new_filename, sample_name, do_header=False):
     """Print line in markdown table comparing timing from 2 JSON files
-    
+
     Parameters
     ----------
     ref_filename : str

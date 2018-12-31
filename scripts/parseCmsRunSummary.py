@@ -19,14 +19,14 @@ import argparse
 
 def parse_and_dump(input_filename, json_filename):
     """Parse input file, dump relevant info to JSON file.
-    
+
     Parameters
     ----------
     input_filename : str
         Input filename with summary contents
     json_filename : str
         Output JSON filename
-    
+
     Raises
     ------
     IOError
@@ -39,7 +39,7 @@ def parse_and_dump(input_filename, json_filename):
 
     event_timing = {}
     module_timing = {}
-    
+
     with open(input_filename) as f:
         save_event_timing = False
         save_module_timing = False
@@ -79,7 +79,7 @@ def parse_and_dump(input_filename, json_filename):
                 newline = line.replace("TimeReport", "").strip()
                 if "per event" in line:
                     continue
-                
+
                 parts = newline.split()
                 if len(parts) != 4:
                     raise RuntimeError("len(parts) != 4, check parsing: %s" % parts)
@@ -108,4 +108,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     parse_and_dump(args.input, args.output)
-    
+
+    sys.exit(0)

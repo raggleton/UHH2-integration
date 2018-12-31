@@ -66,7 +66,7 @@ def main(in_args):
         for s in all_statuses:
             if s not in parsed_data[name]:
                 parsed_data[name][s] = 0
-        
+
         data_str = " | ".join(["{"+f+"}" for f in fields])
         table_entry = ("| " + data_str + " |").format(name=name, **parsed_data[name])
         print(table_entry)

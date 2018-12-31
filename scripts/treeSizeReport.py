@@ -6,9 +6,9 @@
 
 from __future__ import print_function
 
-import ROOT
 import json
 import argparse
+import ROOT
 
 
 class BranchInfo(object):

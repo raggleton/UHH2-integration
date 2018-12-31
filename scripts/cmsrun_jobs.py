@@ -56,7 +56,7 @@ CONFIGS = {
         },
         "mc": {
             "config": "ntuplewriter_mc_2018.py",
-            "jobs":[
+            "jobs": [
                 {
                     "name": "TTHadronic",
                     "inputfile": "/store/mc/RunIIAutumn18MiniAOD/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/2A6B8F74-04C7-1B46-A56E-8C786D0C2E84.root",
@@ -93,7 +93,7 @@ CONFIGS = {
         },
         "mc": {
             "config": "ntuplewriter_mc_2017.py",
-            "jobs":[
+            "jobs": [
                 {
                     "name": "TTHadronic",
                     "inputfile": "/store/mc/RunIIFall17MiniAOD/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/40000/2657B2FF-650D-E811-99F6-0025905A6060.root",
@@ -132,7 +132,7 @@ CONFIGS = {
         },
         "mc": {
             "config": "ntuplewriter_mc_2016v3.py",
-            "jobs":[
+            "jobs": [
                 {
                     "name": "TTbar",
                     "inputfile": "/store/mc/RunIISummer16MiniAODv3/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v1/00000/02AF6CD5-22C3-E811-B5AA-0CC47AFC3C64.root",
@@ -165,7 +165,7 @@ CONFIGS = {
         },
         "mc": {
             "config": "ntuplewriter_mc_2016v2.py",
-            "jobs":[
+            "jobs": [
                 {
                     "name": "TTbar",
                     "inputfile": "/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/E022CF80-0ABF-E611-B5CD-00259048A87C.root",
@@ -226,8 +226,8 @@ if __name__ == "__main__":
         # set -o pipefail VITAL to ensure error code passed through tee,
         # otherwise will use exit code from tee (0) not cmsRun
         cmsrun_cmd = ('set -o pipefail; time cmsRun -n {numthreads} ${{CMSSW_BASE}}/python/UHH2/core/{config} {cmdlineopt} '
-            'maxEvents={maxevents} wantSummary=1 inputFiles=file:{inputfile} outputFile={outputfile} '
-            '2>&1 | tee {logfile}'.format(**cms_dict))
+                      'maxEvents={maxevents} wantSummary=1 inputFiles=file:{inputfile} outputFile={outputfile} '
+                      '2>&1 | tee {logfile}'.format(**cms_dict))
         return_code = subprocess.call(cmsrun_cmd, shell=True, stderr=subprocess.STDOUT)
         if return_code != 0:
             sys.exit(return_code)

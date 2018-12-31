@@ -3,7 +3,7 @@
 """Script to create a CRAB tarball from this CMSSW environment, and optionally check the size."""
 
 
-from  __future__ import division   # make division work like in python3
+from __future__ import division, print_function   # make division work like in python3
 
 import re
 import os
@@ -14,11 +14,11 @@ import subprocess
 
 try:
     from CRABClient.JobType.UserTarball import UserTarball, FILE_SIZE_LIMIT
-    from CRABClient.UserUtilities import config
+    # from CRABClient.UserUtilities import config
 except ImportError as e:
-    print "ImportError:", e.message
-    print ""
-    print "Cannot import CRABClient library, make sure you do:\n\n    source /cvmfs/cms.cern.ch/crab3/crab.sh\n"
+    print("ImportError:", e.message)
+    print("")
+    print("Cannot import CRABClient library, make sure you do:\n\n    source /cvmfs/cms.cern.ch/crab3/crab.sh\n")
     sys.exit(1)
 
 
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     # in python3 and python2 with __future__ division, // means integer division
     size_mb = "%3.1f MB" % (size_bytes // (1024 * 1024))
 
-    padding_bytes = (3*1024*1024)  # padding for pickle file etc
+    padding_bytes = (3 * 1024 * 1024)  # padding for pickle file etc
     new_limit_bytes = (FILE_SIZE_LIMIT - padding_bytes)
     limit_mb = "%3.1f MB" % (new_limit_bytes // (1024 * 1024))
 

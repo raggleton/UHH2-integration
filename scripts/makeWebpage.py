@@ -58,8 +58,8 @@ def add_plot_group(group_key, plot_names, plot_dir, skip_these=None):
     for plot_name in plot_names:
         if plot_name in skip_these:
             continue
-        this_thumbnailname = plot_name.replace("()", "") + ".gif"
-        this_filename = plot_name.replace("()", "") + ".pdf"
+        this_thumbnailname = plot_name.replace("()", "") + ".gif"  # As specified in plotCompareNtuples.py
+        this_filename = plot_name.replace("()", "") + ".pdf"  # As specified in makeNtupleCOmparisonTableAll.sh
         plots.append(Plot(this_id=plot_name,
                           thumbnailname=os.path.join(plot_dir, "thumbnails", this_thumbnailname),
                           filename=os.path.join(plot_dir, this_filename),
@@ -112,6 +112,7 @@ def main(in_args):
     # no outputDir as relative to other pages, all of which in outputDir
     set_of_pages = [(label, "%s.html" % safe_str(label)) for label in args.label]
 
+    # Check length of args to ensure all matching arguments
     all_args = [args.plotjson, args.plotdir,
                 args.timingrefjson, args.timingnewjson,
                 args.sizerefjson, args.sizenewjson,
@@ -122,6 +123,7 @@ def main(in_args):
                            "--plotjson, plotdir, timingrefjson, timingnewjson, "
                            "sizerefjson, sizenewjson, label argument")
 
+    # Make page & everything for each sample
     for (plotjson, plotdir, timing_ref_json, timing_new_json,
          size_ref_json, size_new_json, label) in zip(*all_args):
 

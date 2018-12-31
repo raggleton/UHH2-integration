@@ -13,15 +13,15 @@ from __future__ import print_function
 
 import os
 import re
-from tqdm import tqdm
 import json
-import ROOT
 import argparse
 import inspect
 from array import array
 from operator import methodcaller, attrgetter
 from itertools import chain
 from collections import OrderedDict
+from tqdm import tqdm
+import ROOT
 
 
 ROOT.PyConfig.IgnoreCommandLineOptions = True
@@ -73,8 +73,8 @@ def store_branches(tree, obj_list, do_recursive=False, indent=0):
 
     Parameters
     ----------
-    tree : TTree, TBranch - anything that has branches
-        Description
+    tree : TTree, TBranch
+        Anything that has branches
     obj_list : list[BranchInfo]
         List to append BranchInfo objects to
     do_recursive : bool, optional
@@ -82,7 +82,6 @@ def store_branches(tree, obj_list, do_recursive=False, indent=0):
     indent : int, optional
         Indentation for printout. If None, does not print
     """
-    tree_name = tree.GetName()
     for b in tree.GetListOfBranches():
         this_name = b.GetName()
         classname = b.GetClassName()
@@ -95,11 +94,11 @@ def store_branches(tree, obj_list, do_recursive=False, indent=0):
                                   title=b.GetTitle())
         new_indent = indent
         if indent is not None:
-            print(" "*indent, this_br_info)
+            print(" " * indent, this_br_info)
             new_indent += 2
         obj_list.append(this_br_info)
         if do_recursive:
-            store_branches_recursively(b, obj_list, True, new_indent)
+            store_branches(b, obj_list, True, new_indent)
 
 
 def parse_function_signature(signature):
@@ -191,9 +190,9 @@ def get_class_getters_info(classname, class_infos, do_recursive=False):
 
     # Get getter methods
     for method in get_class_methods(classname):
-        if (method.startswith("set_") # skip setters
-            or "operator" in method   # skip operators for now
-            or method in ["Class"]):  # ROOT added or special methods
+        if (method.startswith("set_")  # skip setters
+            or "operator" in method    # skip operators for now
+            or method in ["Class"]):   # ROOT added or special methods
             continue
 
         return_type, method_name, args = get_function_info(classname, method)
@@ -219,9 +218,9 @@ def get_class_getters_info(classname, class_infos, do_recursive=False):
     # FIXME is it possible to get return type? normally int or float, but how to check?
     # __doc__ doesn't work, neither dir(), nor inspect
     properties = [m for m in get_class_properties(classname)
-                    if not (m.startswith("set_") # skip setters
-                            or "operator" in m # skip operators for now
-                            or m in ["Class"])  # ROOT added methods we don't want
+                    if not (m.startswith("set_")  # skip setters
+                            or "operator" in m    # skip operators for now
+                            or m in ["Class"])    # ROOT added methods we don't want
                  ]
 
     class_infos[classname] = {"methods": getter_info, "properties": properties}
@@ -341,7 +340,7 @@ def add_list_of_hists(branch_name, branch_type, class_infos, hist_list, do_prope
         for method_name, return_type in class_infos[branch_type]['methods'].items():
             return_type = unvectorise_classname(return_type)
             if return_type in BUILTIN_TYPES or return_type not in class_infos:
-                #trivial type
+                # trivial type, can therefore add and stop there
                 hist_list.append(join_char.join([branch_name, method_name]))
             else:
                 # return type is a class, so must go through all of its methods as well
@@ -443,8 +442,8 @@ def plot_hists(h1, stats1, h2, stats2, output_dir=".", canvas_size=(800, 600), f
             # GetM[ax|in]imum() doesn't work here
             default_min, default_max = 0.8, 1.2
             if len(ratio_y) > 0:
-                lower_gr.SetMinimum(max(default_min, 0.99*min(ratio_y)))
-                lower_gr.SetMaximum(min(default_max, 1.01*max(ratio_y)))
+                lower_gr.SetMinimum(max(default_min, 0.99 * min(ratio_y)))
+                lower_gr.SetMaximum(min(default_max, 1.01 * max(ratio_y)))
             else:
                 lower_gr.SetMinimum(default_min)
                 lower_gr.SetMaximum(default_max)
@@ -559,8 +558,8 @@ def do_ttree_draw(tree1, tree2, method_str):
         xmax = max(xmax, xmax2)
 
     delta = xmax - xmin
-    xmin -= 0.1*delta
-    xmax += 0.1*delta
+    xmin -= 0.1 * delta
+    xmax += 0.1 * delta
 
     # Now remake histograms, this time according to our binning
     # Yes this is kinda repetitive, but a priori we didn't know the right range
@@ -760,8 +759,8 @@ def do_event_loop_hists(tree1, tree2, method_str):
         xmax = max(chain(data1, data2))
         delta = xmax - xmin
         # bit of extra padding
-        xmin -= (0.1*delta)
-        xmax += (0.1*delta)
+        xmin -= (0.1 * delta)
+        xmax += (0.1 * delta)
 
     # Make hists
     h1, stats1 = None, None
@@ -791,7 +790,6 @@ def do_event_loop_hists(tree1, tree2, method_str):
     c.Clear()
 
     return h1, stats1, h2, stats2
-
 
 
 def make_hists(tree1, tree1_info, class_infos1, tree2, tree2_info, class_infos2, method_str):
@@ -854,7 +852,7 @@ def make_hists(tree1, tree1_info, class_infos1, tree2, tree2_info, class_infos2,
     tree1 = tree1 if (tree1 and len(return_types1) > 0) else None
     tree2 = tree2 if (tree2 and len(return_types2) > 0) else None
     if not tree1 and not tree2:
-        return  h1, stats1, h2, stats2
+        return h1, stats1, h2, stats2
 
     if n_vector_methods1 <= MAX_VECTOR_METHODS and n_vector_methods2 <= MAX_VECTOR_METHODS:
         # Quick ttree draw - need both in one method to make x axes same
@@ -994,15 +992,15 @@ def parse_tree(tree):
 
 
 def print_tree_summary(tree_info, class_info, label):
-    print("-"*80)
+    print("-" * 80)
     print("%s collections:" % (label))
-    print("-"*80)
+    print("-" * 80)
     [print(t) for t in tree_info]
-    print("-"*80)
+    print("-" * 80)
     print("%s class info:" % (label))
-    print("-"*80)
+    print("-" * 80)
     print(json.dumps(class_info, indent=2))
-    print("-"*80)
+    print("-" * 80)
 
 
 def save_to_json(json_data, hist_status, output_filename):
@@ -1025,7 +1023,7 @@ def save_to_json(json_data, hist_status, output_filename):
                                     "description": status.description,
                                     "number": 0,
                                     "names": []
-                                    }
+                                   }
 
     added_removed_hists = json_data['added_hists'] + json_data['removed_hists']
     for hist_name, status in hist_status.items():
@@ -1052,7 +1050,6 @@ def save_to_json(json_data, hist_status, output_filename):
         json.dump(json_data, jf, indent=2, sort_keys=True)
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("filename",
@@ -1073,7 +1070,7 @@ if __name__ == "__main__":
                         default=default_json_filename)
     default_fmt = "pdf"
     parser.add_argument("--fmt",
-                        help="Output plot file format, defaults to %s. " \
+                        help="Output plot file format, defaults to %s. "
                              "Pass space-separated list to save file in each format" % default_fmt,
                         nargs="+",
                         default=default_fmt)
@@ -1154,7 +1151,7 @@ if __name__ == "__main__":
     hist_status = OrderedDict()
 
     # Make & plot (comparison) hists
-    common_hists = sorted(json_data.get('common_hists', hist_list1)) # If only ref file, just do all
+    common_hists = sorted(json_data.get('common_hists', hist_list1))  # If only ref file, just do all
     added_hists = json_data.get('added_hists', [])
     removed_hists = json_data.get('removed_hists', [])
     all_hists = list(chain(common_hists, added_hists, removed_hists))

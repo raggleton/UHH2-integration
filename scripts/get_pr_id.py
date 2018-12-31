@@ -53,7 +53,7 @@ query = """
 GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', None)
 if not GITHUB_TOKEN:
     raise RuntimeError("No github token, cannot make API requests")
-headers = {'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization' : 'bearer %s' % GITHUB_TOKEN}
+headers = {'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': 'bearer %s' % GITHUB_TOKEN}
 blob = json.dumps(dict(query=query.strip())).encode('utf-8')
 this_request = Request("https://api.github.com/graphql", blob, headers)
 response = urlopen(this_request)

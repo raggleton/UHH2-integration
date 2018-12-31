@@ -15,11 +15,10 @@ Returns 0 if successful and below file size limit, 1 otherwise.
 """
 
 
-from  __future__ import division   # make division work like in python3
+from __future__ import division, print_function   # make division work like in python3
 
 import os
 import sys
-from glob import glob
 import logging
 import argparse
 import tarfile
@@ -49,7 +48,7 @@ def generate_deploy_script(script_kwargs, do_cmssw=True, do_sframe=True):
         script_lines.extend([
             "cmsrel {cmssw_ver}",
             "cd {cmssw_ver}/src",
-            "eval `scramv1 runtime -sh`", # as cmsenv behaves weirdly in a script
+            "eval `scramv1 runtime -sh`",  # as cmsenv behaves weirdly in a script
             "cd ../..",
             "tar xvzf {tar_filename}",
         ])
@@ -68,12 +67,12 @@ def generate_deploy_script(script_kwargs, do_cmssw=True, do_sframe=True):
 def check_directory(dir_):
     """Checking for infinite symbolic link loop"""
     try:
-        for root , _ , files in os.walk(dir_, followlinks = True):
+        for root, _, files in os.walk(dir_, followlinks=True):
             for file_ in files:
-                os.stat(os.path.join(root, file_ ))
+                os.stat(os.path.join(root, file_))
     except OSError as msg:
-        err = 'Error: Infinite directory loop found in: %s \nStderr: %s' % (dir_ , msg)
-        raise EnvironmentException(err)
+        print('Error: Infinite directory loop found in: %s \nStderr: %s' % (dir_, msg))
+        raise
 
 
 if __name__ == "__main__":
@@ -146,7 +145,8 @@ if __name__ == "__main__":
 
         # Any additional files the user needs
         additional_files = [
-            os.path.join(os.environ['CMSSW_BASE'], 'src/L1Prefiring/EventWeightProducer/files/L1PrefiringMaps_new.root') # Eurgh, fix this once properly integrated into CMSSW
+            # Eurgh, fix this once properly integrated into CMSSW
+            os.path.join(os.environ['CMSSW_BASE'], 'src/L1Prefiring/EventWeightProducer/files/L1PrefiringMaps_new.root')
         ]
         for filename in additional_files:
             if not os.path.exists(filename):
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     do_sframe = args.contents in ['all', 'sframe']
 
     if do_sframe:
-        sframe_dirs = ['bin', 'lib', 'setup.sh'] # 'core/include'
+        sframe_dirs = ['bin', 'lib', 'setup.sh']  # 'core/include'
         for directory in sframe_dirs:
             full_path = os.path.join(top_dir, 'SFrame', directory)
             if os.path.exists(full_path):
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     size_bytes = os.path.getsize(tar_filename)
     # in python3 and python2 with __future__ division, // means integer division
     size_mb = "%3.1f MB" % (size_bytes // (1024 * 1024))
-    file_size_limit = (100-3)*1024*1024  # 100MB, with some padding for safety/alert
+    file_size_limit = (100 - 3) * 1024 * 1024  # 100MB, with some padding for safety/alert
     limit_mb = "%3.1f MB" % (file_size_limit // (1024 * 1024))
 
     if size_bytes >= file_size_limit:
@@ -201,6 +201,4 @@ if __name__ == "__main__":
     else:
         logger.info("Success: tarball size %s is below limit of %s" % (size_mb, limit_mb))
 
-
     sys.exit(0)
-
