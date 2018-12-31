@@ -50,7 +50,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href=".">Home</a>
+            <a class="nav-link" href="..">Home</a>
           </li>
 
           <li class="nav-item dropdown">
@@ -116,7 +116,7 @@
                 <span class="anchor" id="{{ plot.id }}"></span>
                 <figure class="figure">
                   <a href="{{ plot.filename }}" target="_blank">
-                    <img src="templates/placeholder.jpg" data-src="{{ plot.thumbnailname }}" data-srcset="{{ plot.thumbnailname }}" class="lozad img-fluid" alt="{{ plot.caption }}" title="{{ plot.caption }}"/>
+                    <img src="{{ placeholder_img }}" data-src="{{ plot.thumbnailname }}" data-srcset="{{ plot.thumbnailname }}" class="lozad img-fluid" alt="{{ plot.title }}" title="{{ plot.title }}"/>
                   </a>
                   <figcaption class="figure-caption"><small>{{ plot.caption }}</small></figcaption>
                 </figure>

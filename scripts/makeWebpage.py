@@ -9,10 +9,12 @@ from __future__ import print_function
 import os
 import sys
 import json
+import shutil
 import argparse
 import pandas as pd
 import numpy as np
 from collections import OrderedDict
+from distutils.dir_util import copy_tree
 from jinja2 import Template, Environment, FileSystemLoader
 try:
     # py2
@@ -42,11 +44,12 @@ class Group(object):
 
 class Plot(object):
 
-    def __init__(self, this_id, thumbnailname, filename, caption):
+    def __init__(self, this_id, thumbnailname, filename, caption, title):
         self.id = this_id
         self.thumbnailname = thumbnailname
         self.filename = filename
         self.caption = caption
+        self.title = title
 
 
 def add_plot_group(group_key, plot_names, plot_dir, skip_these=None):
@@ -61,7 +64,8 @@ def add_plot_group(group_key, plot_names, plot_dir, skip_these=None):
                           thumbnailname=os.path.join(plot_dir, "thumbnails", this_thumbnailname),
                           filename=os.path.join(plot_dir, this_filename),
                           # use <wbr> to allow line break, otherwise need spaces to wrap
-                          caption=plot_name.replace(".", "<wbr>.")
+                          caption=plot_name.replace(".", "<wbr>."),
+                          title=plot_name,
                           )
                     )
 
@@ -74,7 +78,16 @@ def add_plot_group(group_key, plot_names, plot_dir, skip_these=None):
     return this_item
 
 
+def safe_str(label):
+    """Create HTML/filesystem safe str ie no spaces, etc"""
+    return label.replace(" ", "_")
+
+
 def main(in_args):
+    """This is setup to allow multiple pages to be made in one go,
+    which will have a common menu to switch between their samples.
+    Thus it is best used for all the pages from one CI pipeline run.
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plotjson", help="Input plots JSON file", required=True, action='append')
     parser.add_argument("--plotdir", help="Directory with plots in JSON file", required=True, action='append')
@@ -82,13 +95,13 @@ def main(in_args):
     parser.add_argument("--timingnewjson", help="Input new timing JSON file", action='append')
     parser.add_argument("--sizerefjson", help="Input reference size JSON file", action='append')
     parser.add_argument("--sizenewjson", help="Input new size JSON file", action='append')
-    parser.add_argument("--label", help="Label for given plot file.", required=True, action='append')
-    parser.add_argument("--outputDir", help="Directory for output directories.", default=".")
+    parser.add_argument("--label", help="Label for given plot file", required=True, action='append')
+    parser.add_argument("--outputDir", help="Directory for output files & figures", default=".")
     args = parser.parse_args(in_args)
     print(args)
 
     if not os.path.isdir(args.outputDir):
-        os.makedires(args.outputDir)
+        os.makedirs(args.outputDir)
 
     file_loader = FileSystemLoader('templates')
     # trim extra newlines around template entries
@@ -96,28 +109,54 @@ def main(in_args):
 
     template = env.get_template("plotPage.html")
 
-    set_of_pages = [(label, os.path.join(args.outputDir, "%s.html" % label.replace(" ", "_")))
-                    for label in args.label]
+    # no outputDir as relative to other pages, all of which in outputDir
+    set_of_pages = [(label, "%s.html" % safe_str(label)) for label in args.label]
 
     all_args = [args.plotjson, args.plotdir,
                 args.timingrefjson, args.timingnewjson,
                 args.sizerefjson, args.sizenewjson,
                 args.label]
 
-    for (plotjson, plotdir, timing_ref_json, timing_new_json, size_ref_json, size_new_json, label) in zip(*all_args):
+    if not all(len(x) == len(all_args[0]) for x in all_args[1:]):
+        raise RuntimeError("You must provide the same number of "
+                           "--plotjson, plotdir, timingrefjson, timingnewjson, "
+                           "sizerefjson, sizenewjson, label argument")
+
+    for (plotjson, plotdir, timing_ref_json, timing_new_json,
+         size_ref_json, size_new_json, label) in zip(*all_args):
+
+        label_safe = safe_str(label)
+        # Define this here first, since everything else will need to be relative to it
+        html_filename = os.path.join(args.outputDir, "%s.html" % (label_safe))
 
         #######################################################################
         # PLOTS
         #######################################################################
 
+        # Copy files to figs dir, including thumbnail
+        figs_dir = os.path.join(args.outputDir, label_safe + '_figs')
+        if not os.path.isdir(figs_dir):
+            os.makedirs(figs_dir)
+        placeholder_dest = os.path.join(figs_dir, 'placeholder.jpg')
+        # Get location of placeholder file relative to where this file is,
+        # since can't guarantee where this file is being run from
+        script_dir = os.path.dirname(__file__)
+        placeholder_src = os.path.normpath(os.path.join(script_dir, '..', 'templates', 'placeholder.jpg'))
+        shutil.copyfile(placeholder_src, placeholder_dest)
+        # location relative to HTML file, for use in the HTML
+        rel_placeholder_img = os.path.relpath(placeholder_dest, os.path.dirname(html_filename))
+        copy_tree(plotdir, figs_dir)
+
         with open(plotjson) as f:
             orig_plot_data = json.load(f, object_pairs_hook=OrderedDict)
 
-        # Do added/remove hists first:
+        # Do added/remove hists first
+        # Use new location for plots, relative to where HTML will end up
+        rel_figs_dir = os.path.relpath(figs_dir, os.path.dirname(html_filename))
         plot_data = [
                      add_plot_group(group_key=key,
                                     plot_names=orig_plot_data[key]['names'],
-                                    plot_dir=plotdir)
+                                    plot_dir=rel_figs_dir)
                      for key in ['added_hists', 'removed_hists']
                     ]
 
@@ -125,7 +164,7 @@ def main(in_args):
         plot_data.extend([
                           add_plot_group(group_key=key,
                                          plot_names=orig_plot_data['comparison'][key]['names'],
-                                         plot_dir=plotdir)
+                                         plot_dir=rel_figs_dir)
                           for key in orig_plot_data['comparison']
                          ])
 
@@ -306,6 +345,7 @@ def main(in_args):
                                  gitlab_url=gitlab_url,
                                  num_plots=orig_plot_data['total_number'],
                                  plot_data=plot_data,
+                                 placeholder_img=rel_placeholder_img,
                                  set_of_pages=set_of_pages,
                                  timing_event_headers=timing_event_headers,
                                  timing_event_rows=timing_event_rows,
@@ -318,7 +358,6 @@ def main(in_args):
                                  size_mod_data=size_mod_rows
                                 )
 
-        html_filename = os.path.join(args.outputDir, "%s.html" % label.replace(" ", "_"))
         print("Writing html to", html_filename)
         with open(html_filename, "w") as outf:
             outf.write(output)
