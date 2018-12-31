@@ -2,4 +2,20 @@
 __pycache__/
 
 *.patch
+*.json
+*.root
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.diff
+*.bak
+*.html
+!templates/plotPage.html
+*.txt
+*.md
+!README.md
+!README_APP.md
+
 dummy/
