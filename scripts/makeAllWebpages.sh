@@ -12,7 +12,7 @@ do
         name=$(basename "$newfile")
         name=${name/Ntuple_/}
         name=${name/_new.root/}
-        args="$args --plotsjson plots_${name}.json --plotdir plots_${name} \
+        args="$args --plotjson plots_${name}.json --plotdir plots_${name} \
                     --timingrefjson timing_${name}_ref.json --timingnewjson timing_${name}_new.json \
                     --sizerefjson size_${name}_ref.json --sizenewjson size_${name}_new.json \
                     --label ${name}"
