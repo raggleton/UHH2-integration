@@ -94,7 +94,7 @@ build-ref:
     - if [[ $REFBRANCH == "RunII_102X"* ]]; then cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz; fi  # Tar up CMSSW & SFrame, only if doing cmsrun jobs
 
 
-
+# Limit jobs to only run on 102X branch, since I haven't setup 94X to run cmssw jobs
 .onlydo102-template: &onlydo102
   only:
     variables:
@@ -513,11 +513,59 @@ review-ntuples:
     - cmsrun-2016v3-mc-ref
     - cmsrun-2016v2-data-ref
     - cmsrun-2016v2-mc-ref
+  artifacts:
+    paths:
+      - web
   script:
     - cd ${TESTDIR}
     - source ${SCRIPTDIR}/makeTimingTable.sh
     - source ${SCRIPTDIR}/makeSizeTable.sh
+    # generate the webpage here since we have all the necessary inputs
+    - source ${SCRIPTDIR}/makeAllWebpages.sh
     - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md --size ${TESTDIR}/size_report.md
+
+
+# -----------------------------------------------------------------------------
+# WEBPAGE STAGES
+# contents actually generated in review-ntuples job
+# https://gitlab.cern.ch/gitlabci-examples/deploy_dfs/
+# requires vars DFS_WEBSITE_NAME, DFS_WEBSITE_USERNAME, DFS_WEBSITE_PASSWORD
+# -----------------------------------------------------------------------------
+
+# This job MUST be named pages
+pages:
+  stage: pages
+  when: on_success
+  <<: *onlydo102
+  except:
+    - master
+  script:
+    # webpage contents MUST be put in dir named public
+    - mkdir public
+    - cp -r ${CI_PROJECT_DIR}/web/* public/
+  dependencies:
+    - review-ntuples
+  artifacts:
+    paths:
+      - public
+
+# Deploy the pages generated to DFS
+dfsdeploy:
+  stage: deploy
+  when: on_success
+  <<: *onlydo102
+  except:
+    - master
+  # Custom docker image providing the needed tools to deploy in DFS
+  image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer:latest
+  script:
+  # Script that performs the deploy to DFS. Makes use of the variables defined in the project
+  # It will not sync the generated content with the folder in DFS (risk of deleting DFS management files)
+  # It will just override the contents of DFS or copy new files
+  - deploy-dfs
+  # do not run any globally defined before_script or after_script for this step
+  before_script: []
+  after_script: []
 
 
 # -----------------------------------------------------------------------------
@@ -553,4 +601,6 @@ stages:
   - build
   - cmsrun
   - review
+  - pages
+  - deploy
   - end
