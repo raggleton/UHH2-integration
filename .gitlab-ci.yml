@@ -493,11 +493,11 @@ review-ntuples:
   tags:
     - cvmfs
   stage: review
-  when: on_success
   <<: *onlydo102
   except:
     - master
   dependencies:
+    - build-new  # to setup area with newer python etc
     - cmsrun-2018-data-new
     - cmsrun-2018-mc-new
     - cmsrun-2017-data-new
@@ -518,7 +518,9 @@ review-ntuples:
     paths:
       - web
   script:
-    - cd ${TESTDIR}
+    # Deploy our release to get a newer version of python etc, check packages
+    - cd ${TESTDIR} && source deploy_script_all_new.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt
     - source ${SCRIPTDIR}/makeTimingTable.sh
     - source ${SCRIPTDIR}/makeSizeTable.sh
     # generate the webpage here since we have all the necessary inputs
@@ -536,7 +538,6 @@ review-ntuples:
 # This job MUST be named pages
 pages:
   stage: pages
-  when: on_success
   <<: *onlydo102
   except:
     - master
@@ -553,7 +554,6 @@ pages:
 # Deploy the pages generated to DFS
 dfsdeploy:
   stage: deploy
-  when: on_success
   <<: *onlydo102
   except:
     - master
