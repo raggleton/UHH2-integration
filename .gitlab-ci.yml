@@ -3,14 +3,15 @@ variables:
   CMSSW_GIT_REFERENCE: "${CI_PROJECT_DIR}/cmssw.git"
   TESTDIR: "${CI_PROJECT_DIR}/testdir"
   SCRIPTDIR: "${CI_PROJECT_DIR}/scripts"
-
+#@TESTVARS@
+# DO NOT DELETE THE TESTVARS COMMENT - gets replaced for each branch with necessary variables
 
 before_script:
   # Common part to setup vars
   - source /cvmfs/grid.cern.ch/etc/profile.d/setup-cvmfs-ui.sh
   - source /cvmfs/cms.cern.ch/cmsset_default.sh
   - source ${SCRIPTDIR}/pre_install.sh  # setup general vars
-  - source ${SCRIPTDIR}/to_test.sh
+  # - source ${SCRIPTDIR}/to_test.sh
   # Update PRID env var if it wasn't already set & add to vars
   - "[ -z \"$PRID\" ] && python scripts/get_pr_id.py --id $PRNUM --dumpFilename ${SCRIPTDIR}/to_test.sh --dumpVarname PRID && source ${SCRIPTDIR}/to_test.sh"
 

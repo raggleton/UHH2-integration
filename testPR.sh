@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Test a PR by automatically updating to_test.sh
+# Test a PR by automatically updating .gitlab-ci.yml
 # then adding, committing, and pushing
 # 
 # Usage:
@@ -20,13 +20,20 @@ git checkout master
 git branch -D "${NEWBRANCH}"
 # git rev-parse --quiet --verify "${NEWBRANCH}" || git branch -d "${NEWBRANCH}"
 git checkout -b "${NEWBRANCH}" master
-NEWFILE="scripts/to_test.sh"
-echo "export PRNUM=${PULLNUM}" >> "${NEWFILE}"
-echo "export REFBRANCH=${REFBRANCH}" >> "${NEWFILE}"
-echo "export REMOTEBRANCH=pull/${PULLNUM}/head" >> "${NEWFILE}"
-echo "export LOCALBRANCH=${NEWBRANCH}" >> "${NEWFILE}"
-echo "export PRID=${PRID}" >> "${NEWFILE}"
-git add "${NEWFILE}"
+
+REPLACESTR="#@TESTVARS@"
+
+CONTENTS="  PRNUM: \"${PULLNUM}\"\n"
+CONTENTS="$CONTENTS  REFBRANCH: \"${REFBRANCH}\"\n"
+CONTENTS="$CONTENTS  REMOTEBRANCH: \"pull/${PULLNUM}/head\"\n"
+CONTENTS="$CONTENTS  LOCALBRANCH: \"${NEWBRANCH}\"\n"
+CONTENTS="$CONTENTS  PRID: \"${PRID}\"\n"
+CONTENTS="$CONTENTS$REPLACESTR\n"  # add REPLACESTR back on for any future replacements
+
+# Only work with gnu sed, be careful on mac
+sed -i -e "s|${REPLACESTR}|${CONTENTS}|g" .gitlab-ci.yml
+
+git add ".gitlab-ci.yml"
 git commit -m "Test PR ${PULLNUM}"
 git push -f origin "${NEWBRANCH}"  # use force push to overwrite existing branch
 echo "Pushed to origin/${NEWBRANCH}"
