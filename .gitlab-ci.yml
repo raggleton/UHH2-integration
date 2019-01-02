@@ -519,7 +519,7 @@ review-ntuples:
       - web
   script:
     # Deploy our release to get a newer version of python etc, check packages
-    - cd ${TESTDIR} && source deploy_script_all_new.sh && cd ${TESTDIR}
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt
     - source ${SCRIPTDIR}/makeTimingTable.sh
     - source ${SCRIPTDIR}/makeSizeTable.sh
