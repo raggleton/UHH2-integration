@@ -524,9 +524,11 @@ review-ntuples:
     - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt
     - source ${SCRIPTDIR}/makeTimingTable.sh
     - source ${SCRIPTDIR}/makeSizeTable.sh
+    - source ${SCRIPTDIR}/makeNtupleComparisonTableAll.sh
     # generate the webpage here since we have all the necessary inputs
+    - ls ${TESTDIR}
     - source ${SCRIPTDIR}/makeAllWebpages.sh
-    - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md --size ${TESTDIR}/size_report.md
+    - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md --size ${TESTDIR}/size_report.md --plots ${TESTDIR}/ntuple_report.md
 
 
 # -----------------------------------------------------------------------------
