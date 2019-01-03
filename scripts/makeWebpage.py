@@ -207,8 +207,8 @@ def main(in_args):
         for header in df_mod_timing_ref.columns.values:  # convert from fraction to %, drop fraction
             if 'frac' not in header:
                 continue
-            df_mod_timing_ref[header.replace('[s]', '[%]')] = 100. * df_mod_timing_ref[header]
-            df_mod_timing_ref.drop(columns=[header], inplace=True)
+            df_mod_timing_ref[header] = 100. * df_mod_timing_ref[header]
+            df_mod_timing_ref.rename(columns={header: header.replace('[s]', '[%]')}, inplace=True)
 
         df_mod_timing_new = pd.DataFrame.from_dict(timing_new_data['module_timing'], orient='index')
         df_mod_timing_new.drop(columns=drop_cols, inplace=True)
@@ -216,8 +216,8 @@ def main(in_args):
         for header in df_mod_timing_new.columns.values:
             if 'frac' not in header:
                 continue
-            df_mod_timing_new[header.replace('[s]', '[%]')] = 100. * df_mod_timing_new[header]
-            df_mod_timing_new.drop(columns=[header], inplace=True)
+            df_mod_timing_new[header] = 100. * df_mod_timing_new[header]
+            df_mod_timing_new.rename(columns={header: header.replace('[s]', '[%]')}, inplace=True)
 
         df_mod_timing_diff = df_mod_timing_ref.join(df_mod_timing_new, how='outer')
         df_mod_timing_diff = df_mod_timing_diff[~(df_mod_timing_diff==0).all(axis=1)]  # get rid of rows that are all 0s
