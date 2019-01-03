@@ -920,6 +920,19 @@ def analyse_hists(hist1, hist2):
     if n_entries2 != n_entries1:
         return HistSummary("DIFF_ENTRIES", "Differing number of entries")
 
+    # Check x axis range to see if unusually large, or occupies only large numbers
+    # X range should be same for both by design
+    xmin, xmax = hist1.GetXaxis().GetXmin(), hist1.GetXaxis().GetXmax()
+    delta = xmax - xmin
+    # hopefully nothing spans that range
+    range_lim = 1.0E10
+    if delta > range_lim:
+        return HistSummary("VERY_LARGE_RANGE", "Values have very large range (> %g)" % range_lim)
+
+    # Maybe range is small, but all values are very very large (or v.v.small)
+    if xmax > range_lim or xmin < -range_lim:
+        return HistSummary("EXTREME_VALUES", "x axis has very large values (+- %g)" % range_lim)
+
     # FIXME better float comparison to avoid floating point errors
     mean1, mean2 = hist1.GetMean(), hist2.GetMean()
     if mean1 != mean2:
@@ -934,19 +947,6 @@ def analyse_hists(hist1, hist2):
 
     if rms1 == 0 or rms2 == 0:
         return HistSummary("ZERO_RMS", "One or both RMSs are 0: stores same value")
-
-    # Check x axis range to see if unusually large, or occupies only large numbers
-    # X range should be same for both by design
-    xmin, xmax = hist1.GetXaxis().GetXmin(), hist1.GetXaxis().GetXmax()
-    delta = xmax - xmin
-    # hopefully nothing spans that range
-    range_lim = 1.0E10
-    if delta > range_lim:
-        return HistSummary("VERY_LARGE_RANGE", "Values have very large range (> %g)" % range_lim)
-
-    # Maybe range is small, but all values are very very large (or v.v.small)
-    if xmax > range_lim or xmin < -range_lim:
-        return HistSummary("EXTREME_VALUES", "x axis has very large values (+- %g)" % range_lim)
 
     return HistSummary("SAME", "Histograms are the same (lowest priority)")
 
