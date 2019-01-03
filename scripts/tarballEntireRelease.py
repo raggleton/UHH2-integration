@@ -132,7 +132,7 @@ if __name__ == "__main__":
         # Note that data_dirs are only looked-for and added under the src/ folder.
         # /data/ subdirs contain data files needed by the code
         # /interface/ subdirs contain C++ header files needed e.g. by ROOT6
-        data_dirs = ['data', 'interface']
+        data_dirs = ['data', 'interface', 'include']
 
         # Search for and tar up "data" directories in src/
         src_path = os.path.join(CMSSW_BASE, 'src')
