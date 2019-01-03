@@ -103,7 +103,12 @@ def main(in_args):
     if not os.path.isdir(args.outputDir):
         os.makedirs(args.outputDir)
 
-    file_loader = FileSystemLoader('templates')
+    # Get location of tempalte dir relative to where this file is,
+    # since can't guarantee where this file is being run from
+    script_dir = os.path.dirname(__file__)
+    TEMPLATE_DIR = os.path.normpath(os.path.join(script_dir, '..', 'templates'))
+    file_loader = FileSystemLoader(TEMPLATE_DIR)
+
     # trim extra newlines around template entries
     env = Environment(loader=file_loader, trim_blocks=True, lstrip_blocks=True)
 
@@ -140,10 +145,7 @@ def main(in_args):
         if not os.path.isdir(figs_dir):
             os.makedirs(figs_dir)
         placeholder_dest = os.path.join(figs_dir, 'placeholder.jpg')
-        # Get location of placeholder file relative to where this file is,
-        # since can't guarantee where this file is being run from
-        script_dir = os.path.dirname(__file__)
-        placeholder_src = os.path.normpath(os.path.join(script_dir, '..', 'templates', 'placeholder.jpg'))
+        placeholder_src = os.path.join(TEMPLATE_DIR, 'placeholder.jpg')
         shutil.copyfile(placeholder_src, placeholder_dest)
         # location relative to HTML file, for use in the HTML
         rel_placeholder_img = os.path.relpath(placeholder_dest, os.path.dirname(html_filename))
