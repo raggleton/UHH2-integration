@@ -16,7 +16,7 @@ do
         name=$(basename "$newfile")
         name=${name/Ntuple_/}
         name=${name/_new.root/}
-        python ${CI_PROJECT_DIR}/scripts/plotCompareNtuples.py "$newfile" --compareTo "$reffile" --json "${name}.json" --outputDir "plots_${name}" --fmt pdf
+        python ${CI_PROJECT_DIR}/scripts/plotCompareNtuples.py "$newfile" --compareTo "$reffile" --json "${name}.json" --outputDir "plots_${name}" --fmt pdf --thumbnails
         args="$args --json plots_${name}.json --label ${name}"
     else
         echo "Cannot find matching file $reffile"
