@@ -201,7 +201,7 @@ def main(in_args):
 
         # Per module timing
         df_mod_timing_ref = pd.DataFrame.from_dict(timing_ref_data['module_timing'], orient='index')
-        drop_cols = ['per_exec', 'per_visit']
+        drop_cols = ['per_exec', 'per_visit', 'per_exec_frac', 'per_visit_frac']
         df_mod_timing_ref.drop(columns=drop_cols, inplace=True)
         df_mod_timing_ref.rename(lambda x: x.replace("_", " ").title() + " (Ref) [s]", axis='columns', inplace=True)
         for header in df_mod_timing_ref.columns.values:
