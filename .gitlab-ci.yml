@@ -540,22 +540,6 @@ review-ntuples:
 # requires vars DFS_WEBSITE_NAME, DFS_WEBSITE_USERNAME, DFS_WEBSITE_PASSWORD
 # -----------------------------------------------------------------------------
 
-# This job MUST be named pages
-pages:
-  stage: pages
-  <<: *onlydo102
-  except:
-    - master
-  script:
-    # webpage contents MUST be put in dir named public
-    - mkdir public
-    - cp -r ${CI_PROJECT_DIR}/web/* public/
-  dependencies:
-    - review-ntuples
-  artifacts:
-    paths:
-      - public
-
 # Deploy the pages generated to DFS
 dfsdeploy:
   stage: deploy
@@ -607,6 +591,5 @@ stages:
   - build
   - cmsrun
   - review
-  - pages
   - deploy
   - end
