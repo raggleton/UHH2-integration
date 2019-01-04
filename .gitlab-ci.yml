@@ -529,7 +529,7 @@ review-ntuples:
     - cmsrun-2016v2-mc-ref
   artifacts:
     paths:
-      - web
+      - public
   script:
     # needed to get libSM
     - yum install -y libXext libSM libXrender
