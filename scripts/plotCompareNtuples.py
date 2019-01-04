@@ -1161,7 +1161,8 @@ if __name__ == "__main__":
 
     # Use tqdm to get nice prgress bar, and add hist name if verbose,
     # padded to keep constant position for progress bar
-    pbar = tqdm(all_hists)
+    # disable on non-TTY
+    pbar = tqdm(all_hists, disable=None)
     max_len = max(len(l) for l in all_hists)
     fmt_str = "{0: <%d}" % (max_len+2)
     for method_str in pbar:
