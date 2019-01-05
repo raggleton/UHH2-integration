@@ -35,14 +35,21 @@ def grouper(iterable, n, fillvalue=None):
 
 
 class Group(object):
-
+    """To hold Groups of things for outputting in HTML"""
     def __init__(self, this_id, title, contents):
         self.id = this_id
         self.title = title
         self.contents = contents
 
+    def __repr__(self):
+        return "Group(id='%s', title='%s', contents=%s)" % (self.id, self.title, self.contents)
+    
+    def __str__(self):
+        return "Group(id='%s', title='%s', contents=%s)" % (self.id, self.title, self.contents)
+
 
 class Plot(object):
+    """To hold a specific Plot figure"""
 
     def __init__(self, this_id, thumbnailname, filename, caption, title):
         self.id = this_id
@@ -51,26 +58,58 @@ class Plot(object):
         self.caption = caption
         self.title = title
 
+    def __repr__(self):
+        return "Plot(%s)" % (', '.join(["%s='%s'" % (k, v) for k, v in self.__dict__.items()]))
+    
+    def __str__(self):
+        return "Plot(%s)" % (', '.join(["%s='%s'" % (k, v) for k, v in self.__dict__.items()]))
+
+
+def is_collection(label):
+    # If no . in name, then means it is a tree-level var (i.e. not part of an obj)
+    return '.' in label
+
+
+def get_collection_name(label):
+    return label.split(".")[0].replace("()", "")
+
 
 def add_plot_group(group_key, plot_names, plot_dir):
-    plots = []
+    """Add a group of plots, each as a Plot object, collated by collection name"""
+    
+    # For each collection we have a Group
+    group_mapping = OrderedDict()
+    # for all plots not in a collection e.g. run, we put in one Group, makes HTML production easier
+    default_col = "_"
+    group_mapping[default_col] = Group(this_id="", title="", contents=[])  
+    # create Group for each collection in plot_names
+    col_names = sorted(list(set(get_collection_name(p) for p in plot_names if is_collection(p))))
+    for col in col_names:
+        group_mapping[col] = Group(this_id=col, title=col, contents=[])
+    
+    # Now create Plot obj, and assign to correct Group
     for plot_name in plot_names:
+        col = default_col
+        if is_collection(plot_name):
+            col = get_collection_name(plot_name)
         this_thumbnailname = plot_name.replace("()", "") + ".gif"  # As specified in plotCompareNtuples.py
         this_filename = plot_name.replace("()", "") + ".pdf"  # As specified in makeAllNtupleComparisons.sh
-        plots.append(Plot(this_id=plot_name,
-                          thumbnailname=os.path.join(plot_dir, "thumbnails", this_thumbnailname),
-                          filename=os.path.join(plot_dir, this_filename),
-                          # use <wbr> to allow line break, otherwise need spaces to wrap
-                          caption=plot_name.replace(".", "<wbr>."),
-                          title=plot_name,
-                          )
-                    )
-
+        group_mapping[col].contents.append(
+            Plot(this_id=plot_name,
+                 thumbnailname=os.path.join(plot_dir, "thumbnails", this_thumbnailname),
+                 filename=os.path.join(plot_dir, this_filename),
+                 # use <wbr> to allow line break, otherwise need spaces to wrap
+                 caption=plot_name.replace(".", "<wbr>."),
+                 title=plot_name,
+                )
+        )
+    
+    contents = [group_mapping[col] for col in [default_col]+col_names]
     this_title = group_key.replace("_", " ").title()
-    this_title += " (%d)" % len(plots)
+    this_title += " (%d)" % len(plot_names)
     this_item = Group(this_id=group_key.replace(" ", "_"),
                       title=this_title,
-                      contents=plots
+                      contents=contents
                       )
     return this_item
 
@@ -150,6 +189,8 @@ def main(in_args):
 
         with open(plotjson) as f:
             orig_plot_data = json.load(f, object_pairs_hook=OrderedDict)
+
+        # Add groups of plots, each group will have its own header etc
 
         # Do added/remove hists first
         # Use new location for plots, relative to where HTML will end up

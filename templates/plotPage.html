@@ -110,21 +110,25 @@
       {% for group in plot_data %}
         <span class="anchor" id="{{group.id}}"></span>
         <section id="{{group.id}}"><h3>{{group.title}}</h3>
-          <div class="row">
-            {% for plot in group.contents %}
+        {% for collection in group.contents %}
+          <section id="{{collection.title}}"><h4>{{collection.title}}</h4>
+            <div class="row">
+            {% for plot in collection.contents %}
               <div class="col-sm-3">
-                <span class="anchor" id="{{plot.id}}"></span>
-                <figure class="figure">
-                  <a href="{{plot.filename}}" target="_blank">
-                    <img src="{{placeholder_img}}" data-src="{{plot.thumbnailname}}" data-srcset="{{plot.thumbnailname}}" class="lozad img-fluid" alt="{{plot.title}}" title="{{plot.title}}"/>
-                  </a>
-                  <figcaption class="figure-caption"><small>{{plot.caption}}</small></figcaption>
-                </figure>
+              <span class="anchor" id="{{plot.id}}"></span>
+              <figure class="figure">
+                <a href="{{plot.filename}}" target="_blank">
+                <img src="{{placeholder_img}}" data-src="{{plot.thumbnailname}}" data-srcset="{{plot.thumbnailname}}" class="lozad img-fluid" alt="{{plot.title}}" title="{{plot.title}}"/>
+                </a>
+                <figcaption class="figure-caption"><small>{{plot.caption}}</small></figcaption>
+              </figure>
               </div>
             {% endfor %}
-          </div>
+            </div>
+          </section>
+        {% endfor %} {# collection in group.contents #}
         </section>
-      {% endfor %}
+      {% endfor %} {# group in plot_data #}
       <hr>
       <!-- Add a table of timings for the whole process -->
       <span class="anchor" id="timing"></span>
