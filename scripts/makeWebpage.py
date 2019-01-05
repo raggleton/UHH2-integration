@@ -43,7 +43,7 @@ class Group(object):
 
     def __repr__(self):
         return "Group(id='%s', title='%s', contents=%s)" % (self.id, self.title, self.contents)
-    
+
     def __str__(self):
         return "Group(id='%s', title='%s', contents=%s)" % (self.id, self.title, self.contents)
 
@@ -60,7 +60,7 @@ class Plot(object):
 
     def __repr__(self):
         return "Plot(%s)" % (', '.join(["%s='%s'" % (k, v) for k, v in self.__dict__.items()]))
-    
+
     def __str__(self):
         return "Plot(%s)" % (', '.join(["%s='%s'" % (k, v) for k, v in self.__dict__.items()]))
 
@@ -76,17 +76,17 @@ def get_collection_name(label):
 
 def add_plot_group(group_key, plot_names, plot_dir):
     """Add a group of plots, each as a Plot object, collated by collection name"""
-    
+
     # For each collection we have a Group
     group_mapping = OrderedDict()
     # for all plots not in a collection e.g. run, we put in one Group, makes HTML production easier
     default_col = "_"
-    group_mapping[default_col] = Group(this_id="NA", title="-", contents=[])  
+    group_mapping[default_col] = Group(this_id="NA", title="-", contents=[])
     # create Group for each collection in plot_names
     col_names = sorted(list(set(get_collection_name(p) for p in plot_names if is_collection(p))))
     for col in col_names:
         group_mapping[col] = Group(this_id=col, title=col, contents=[])
-    
+
     # Now create Plot obj, and assign to correct Group
     for plot_name in plot_names:
         col = default_col
@@ -103,7 +103,7 @@ def add_plot_group(group_key, plot_names, plot_dir):
                  title=plot_name,
                 )
         )
-    
+
     contents = [group_mapping[col] for col in [default_col]+col_names if len(group_mapping[col].contents) > 0]
     this_title = group_key.replace("_", " ").title()
     this_title += " (%d)" % len(plot_names)
