@@ -11,9 +11,9 @@ do
     echo $plotfile
     # Get sample name from filename
     name=$(basename "$plotfile")
-    name=${name/plot_/}
+    name=${name/plots_/}
     name=${name/.json/}
-    args="$args --json plots_${name}.json --label ${name}"
+    args="$args --json ${plotfile} --label ${name}"
 done
 echo "args: $args"
 ${CI_PROJECT_DIR}/scripts/makeNtupleComparisonTable.py $args >> "$REPORTFILE"
