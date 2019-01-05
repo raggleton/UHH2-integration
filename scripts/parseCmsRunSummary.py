@@ -15,6 +15,7 @@ import os
 import sys
 import json
 import argparse
+from collections import OrderedDict
 
 
 def parse_and_dump(input_filename, json_filename):
@@ -84,14 +85,14 @@ def parse_and_dump(input_filename, json_filename):
                 if len(parts) != 4:
                     raise RuntimeError("len(parts) != 4, check parsing: %s" % parts)
                 per_event, per_exec, per_visit, name = parts
-                module_timing[name] = {
-                    "per_event": float(per_event),
-                    "per_exec": float(per_exec),
-                    "per_visit": float(per_visit),
-                    "per_event_frac": float(per_event) / float(event_timing['event loop Real/event']),
-                    "per_exec_frac": float(per_exec) / float(event_timing['event loop Real/event']),
-                    "per_visit_frac": float(per_visit) / float(event_timing['event loop Real/event']),
-                }
+                timing_dict = OrderedDict()  # to keep order
+                timing_dict["per_event"] = float(per_event)
+                timing_dict["per_event_frac"] = float(per_event) / float(event_timing['event loop Real/event'])
+                timing_dict["per_exec"] = float(per_exec)
+                timing_dict["per_exec_frac"] = float(per_exec) / float(event_timing['event loop Real/event'])
+                timing_dict["per_visit"] = float(per_visit)
+                timing_dict["per_visit_frac"] = float(per_visit) / float(event_timing['event loop Real/event'])
+                module_timing[name] = timing_dict
 
         # print(event_timing)
         # print(module_timing)
