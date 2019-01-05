@@ -447,9 +447,6 @@ review-ntuples:
     - cmsrun-2016v2-mc-new
     - cmsrun-2016v2-mc-ref
     - compare-webpage-2016v2-mc
-  artifacts:
-    paths:
-      - public
   script:
     # Deploy our release to get a newer version of python etc, check packages
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -458,7 +455,7 @@ review-ntuples:
     - source ${SCRIPTDIR}/makeTimingTable.sh
     - source ${SCRIPTDIR}/makeSizeTable.sh
     - source ${SCRIPTDIR}/makeNtupleComparisonTableAll.sh
-    # generate the webpage here since we have all the necessary inputs
+    # do PR review with all the necessary inputs
     - ls ${TESTDIR}
     - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md --size ${TESTDIR}/size_report.md --plots ${TESTDIR}/ntuple_report.md
 
