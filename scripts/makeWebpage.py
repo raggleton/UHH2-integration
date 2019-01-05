@@ -205,7 +205,7 @@ def main(in_args):
         df_mod_timing_ref.drop(columns=drop_cols, inplace=True)
         df_mod_timing_ref.rename(lambda x: x.replace("_", " ").title() + " (Ref) [s]", axis='columns', inplace=True)
         for header in df_mod_timing_ref.columns.values:  # convert from fraction to %, drop fraction
-            if 'frac' not in header:
+            if 'frac' not in header.lower():
                 continue
             df_mod_timing_ref[header] = 100. * df_mod_timing_ref[header]
             df_mod_timing_ref.rename(columns={header: header.replace('[s]', '[%]')}, inplace=True)
@@ -214,7 +214,7 @@ def main(in_args):
         df_mod_timing_new.drop(columns=drop_cols, inplace=True)
         df_mod_timing_new.rename(lambda x: x.replace("_", " ").title() + " (New) [s]", axis='columns', inplace=True)
         for header in df_mod_timing_new.columns.values:
-            if 'frac' not in header:
+            if 'frac' not in header.lower():
                 continue
             df_mod_timing_new[header] = 100. * df_mod_timing_new[header]
             df_mod_timing_new.rename(columns={header: header.replace('[s]', '[%]')}, inplace=True)
