@@ -111,7 +111,7 @@
         <span class="anchor" id="{{ group.id }}"></span>
         <section id="{{ group.id }}"><h3>{{ group.title }}</h3>
           <div class="row">
-            {% for plot in group.plots %}
+            {% for plot in group.contents %}
               <div class="col-sm-3">
                 <span class="anchor" id="{{ plot.id }}"></span>
                 <figure class="figure">

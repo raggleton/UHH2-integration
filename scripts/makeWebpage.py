@@ -36,10 +36,10 @@ def grouper(iterable, n, fillvalue=None):
 
 class Group(object):
 
-    def __init__(self, this_id, title, plots):
+    def __init__(self, this_id, title, contents):
         self.id = this_id
         self.title = title
-        self.plots = plots
+        self.contents = contents
 
 
 class Plot(object):
@@ -73,7 +73,7 @@ def add_plot_group(group_key, plot_names, plot_dir, skip_these=None):
     this_title += " (%d)" % len(plots)
     this_item = Group(this_id=group_key.replace(" ", "_"),
                       title=this_title,
-                      plots=plots
+                      contents=plots
                       )
     return this_item
 
