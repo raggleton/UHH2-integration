@@ -102,6 +102,37 @@ build-ref:
     variables:
       - $REFBRANCH =~ /^RunII_102X.*/
 
+# cmsRun job templates
+.cmsrun-template: &cmsrun
+  tags:
+  - cvmfs
+  stage: cmsrun
+  <<: *onlydo102
+  except:
+    - master
+  retry: 2
+  artifacts:
+    expire_in: 6 mos
+    paths:
+      - ${TESTDIR}/Ntuple*.root
+      - ${TESTDIR}/log*.txt
+      - ${TESTDIR}/timing*.json
+      - ${TESTDIR}/size*.json
+
+.cmsrun-new-template: &cmsrun-new
+  # Run cmsRun on PR
+  <<: *cmsrun
+  dependencies:
+    - build-new
+
+.cmsrun-ref-template: &cmsrun-ref
+  # Run cmsRun on reference setup
+  # we allow this one to fail, since the PR might be fixing some error in the repo
+  <<: *cmsrun
+  dependencies:
+    - build-ref
+  allow_failure: true
+
 # Comparison & webpage job between ntuples
 # Must set dependencies manually, including build-new
 .compare-webpage-template: &compare-webpage
@@ -157,47 +188,18 @@ build-ref:
 
 cmsrun-2018-data-new:
   # Run 2018 data on PR
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-new
-  <<: *onlydo102
-  except:
-    - master
-  retry: 2
+  <<: *cmsrun-new
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-data-new
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_new"
 
 cmsrun-2018-data-ref:
   # Run 2018 data on reference
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-ref
-  <<: *onlydo102
-  except:
-    - master
-  allow_failure: true
-  retry: 2
+  <<: *cmsrun-ref
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-data-ref
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_ref"
@@ -218,47 +220,18 @@ dfsdeploy-2018-data:
 
 cmsrun-2018-mc-new:
   # Run 2018 mc on PR
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-new
-  <<: *onlydo102
-  except:
-    - master
-  retry: 2
+  <<: *cmsrun-new
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-mc-new
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_new"
 
 cmsrun-2018-mc-ref:
   # Run 2018 mc on reference
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-ref
-  <<: *onlydo102
-  except:
-    - master
-  allow_failure: true
-  retry: 2
+  <<: *cmsrun-ref
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2018-mc-ref
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_ref"
@@ -279,47 +252,18 @@ dfsdeploy-2018-mc:
 
 cmsrun-2017-data-new:
   # Run 2017 data on PR
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-new
-  <<: *onlydo102
-  except:
-    - master
-  retry: 2
+  <<: *cmsrun-new
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-data-new
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --isData --append "_new"
 
 cmsrun-2017-data-ref:
   # Run 2017 data on reference
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-ref
-  <<: *onlydo102
-  except:
-    - master
-  allow_failure: true
-  retry: 2
+  <<: *cmsrun-ref
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-data-ref
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --isData --append "_ref"
@@ -340,47 +284,18 @@ dfsdeploy-2017-data:
 
 cmsrun-2017-mc-new:
   # Run 2017 mc on PR
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-new
-  <<: *onlydo102
-  except:
-    - master
-  retry: 2
+  <<: *cmsrun-new
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-mc-new
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --append "_new"
 
 cmsrun-2017-mc-ref:
   # Run 2017 mc on reference
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-ref
-  <<: *onlydo102
-  except:
-    - master
-  allow_failure: true
-  retry: 2
+  <<: *cmsrun-ref
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2017-mc-ref
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --append "_ref"
@@ -401,47 +316,18 @@ dfsdeploy-2017-mc:
 
 cmsrun-2016v3-data-new:
   # Run 2016v3 data on PR
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-new
-  <<: *onlydo102
-  except:
-    - master
-  retry: 2
+  <<: *cmsrun-new
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-data-new
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_new"
 
 cmsrun-2016v3-data-ref:
   # Run 2016v3 data on reference
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-ref
-  <<: *onlydo102
-  except:
-    - master
-  allow_failure: true
-  retry: 2
+  <<: *cmsrun-ref
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-data-ref
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_ref"
@@ -462,47 +348,18 @@ dfsdeploy-2016v3-data:
 
 cmsrun-2016v3-mc-new:
   # Run 2016v3 mc on PR
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-new
-  <<: *onlydo102
-  except:
-    - master
-  retry: 2
+  <<: *cmsrun-new
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-mc-new
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_new"
 
 cmsrun-2016v3-mc-ref:
   # Run 2016v3 mc on reference
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-ref
-  <<: *onlydo102
-  except:
-    - master
-  allow_failure: true
-  retry: 2
+  <<: *cmsrun-ref
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v3-mc-ref
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_ref"
@@ -523,47 +380,18 @@ dfsdeploy-2016v3-mc:
 
 cmsrun-2016v2-data-new:
   # Run 2016v2 data on PR
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-new
-  <<: *onlydo102
-  except:
-    - master
-  retry: 2
+  <<: *cmsrun-new
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-data-new
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_new"
 
 cmsrun-2016v2-data-ref:
   # Run 2016v2 data on reference
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-ref
-  <<: *onlydo102
-  except:
-    - master
-  allow_failure: true
-  retry: 2
+  <<: *cmsrun-ref
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-data-ref
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_ref"
@@ -584,47 +412,18 @@ dfsdeploy-2016v2-data:
 
 cmsrun-2016v2-mc-new:
   # Run 2016v2 mc on PR
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-new
-  <<: *onlydo102
-  except:
-    - master
-  retry: 2
+  <<: *cmsrun-new
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-mc-new
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_new"
 
 cmsrun-2016v2-mc-ref:
   # Run 2016v2 mc on reference
-  tags:
-  - cvmfs
-  stage: cmsrun
-  dependencies:
-    - build-ref
-  <<: *onlydo102
-  except:
-    - master
-  allow_failure: true
-  retry: 2
+  <<: *cmsrun-ref
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-2016v2-mc-ref
-    expire_in: 6 mos
-    paths:
-      - ${TESTDIR}/Ntuple*.root
-      - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_ref"
