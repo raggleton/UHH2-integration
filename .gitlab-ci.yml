@@ -151,7 +151,7 @@ build-ref:
 # -----------------------------------------------------------------------------
 # CMS RUN JOBS
 # -----------------------------------------------------------------------------
-# Each {era, type} should have a new job (to run on PR), 
+# Each {era, type} should have a new job (to run on PR),
 # a ref job (to run on current HEAD), a comparison & webpage maker job,
 # and a dfs uploader job
 
@@ -205,7 +205,7 @@ cmsrun-2018-data-ref:
 compare-webpage-2018-data:
   <<: *compare-webpage
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2018-data-new
     - cmsrun-2018-data-ref
 
@@ -266,7 +266,7 @@ cmsrun-2018-mc-ref:
 compare-webpage-2018-mc:
   <<: *compare-webpage
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2018-mc-new
     - cmsrun-2018-mc-ref
 
@@ -327,7 +327,7 @@ cmsrun-2017-data-ref:
 compare-webpage-2017-data:
   <<: *compare-webpage
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2017-data-new
     - cmsrun-2017-data-ref
 
@@ -388,7 +388,7 @@ cmsrun-2017-mc-ref:
 compare-webpage-2017-mc:
   <<: *compare-webpage
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2017-mc-new
     - cmsrun-2017-mc-ref
 
@@ -449,7 +449,7 @@ cmsrun-2016v3-data-ref:
 compare-webpage-2016v3-data:
   <<: *compare-webpage
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2016v3-data-new
     - cmsrun-2016v3-data-ref
 
@@ -510,7 +510,7 @@ cmsrun-2016v3-mc-ref:
 compare-webpage-2016v3-mc:
   <<: *compare-webpage
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2016v3-mc-new
     - cmsrun-2016v3-mc-ref
 
@@ -571,7 +571,7 @@ cmsrun-2016v2-data-ref:
 compare-webpage-2016v2-data:
   <<: *compare-webpage
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2016v2-data-new
     - cmsrun-2016v2-data-ref
 
@@ -632,7 +632,7 @@ cmsrun-2016v2-mc-ref:
 compare-webpage-2016v2-mc:
   <<: *compare-webpage
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2016v2-mc-new
     - cmsrun-2016v2-mc-ref
 
@@ -652,23 +652,31 @@ review-ntuples:
   except:
     - master
   dependencies:
-    - build-new  # to setup area with newer python etc
+    - build-new
     - cmsrun-2018-data-new
-    - cmsrun-2018-mc-new
-    - cmsrun-2017-data-new
-    - cmsrun-2017-mc-new
-    - cmsrun-2016v3-data-new
-    - cmsrun-2016v3-mc-new
-    - cmsrun-2016v2-data-new
-    - cmsrun-2016v2-mc-new
     - cmsrun-2018-data-ref
+    - compare-webpage-2018-data
+    - cmsrun-2018-mc-new
     - cmsrun-2018-mc-ref
+    - compare-webpage-2018-mc
+    - cmsrun-2017-data-new
     - cmsrun-2017-data-ref
+    - compare-webpage-2017-data
+    - cmsrun-2017-mc-new
     - cmsrun-2017-mc-ref
+    - compare-webpage-2017-mc
+    - cmsrun-2016v3-data-new
     - cmsrun-2016v3-data-ref
+    - compare-webpage-2016v3-data
+    - cmsrun-2016v3-mc-new
     - cmsrun-2016v3-mc-ref
+    - compare-webpage-2016v3-mc
+    - cmsrun-2016v2-data-new
     - cmsrun-2016v2-data-ref
+    - compare-webpage-2016v2-data
+    - cmsrun-2016v2-mc-new
     - cmsrun-2016v2-mc-ref
+    - compare-webpage-2016v2-mc
   artifacts:
     paths:
       - public
