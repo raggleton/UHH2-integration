@@ -134,7 +134,6 @@ def main(in_args):
     parser.add_argument("--label", help="Label for given plot file", required=True, action='append')
     parser.add_argument("--outputDir", help="Directory for output files & figures", default=".")
     args = parser.parse_args(in_args)
-    print(args)
 
     if not os.path.isdir(args.outputDir):
         os.makedirs(args.outputDir)
