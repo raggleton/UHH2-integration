@@ -104,7 +104,7 @@ def add_plot_group(group_key, plot_names, plot_dir):
                 )
         )
     
-    contents = [group_mapping[col] for col in [default_col]+col_names]
+    contents = [group_mapping[col] for col in [default_col]+col_names if len(group_mapping[col].contents) > 0]
     this_title = group_key.replace("_", " ").title()
     this_title += " (%d)" % len(plot_names)
     this_item = Group(this_id=group_key.replace(" ", "_"),
