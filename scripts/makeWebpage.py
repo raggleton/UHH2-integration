@@ -52,14 +52,11 @@ class Plot(object):
         self.title = title
 
 
-def add_plot_group(group_key, plot_names, plot_dir, skip_these=None):
+def add_plot_group(group_key, plot_names, plot_dir):
     plots = []
-    skip_these = skip_these or []
     for plot_name in plot_names:
-        if plot_name in skip_these:
-            continue
         this_thumbnailname = plot_name.replace("()", "") + ".gif"  # As specified in plotCompareNtuples.py
-        this_filename = plot_name.replace("()", "") + ".pdf"  # As specified in makeNtupleCOmparisonTableAll.sh
+        this_filename = plot_name.replace("()", "") + ".pdf"  # As specified in makeAllNtupleComparisons.sh
         plots.append(Plot(this_id=plot_name,
                           thumbnailname=os.path.join(plot_dir, "thumbnails", this_thumbnailname),
                           filename=os.path.join(plot_dir, this_filename),
@@ -312,6 +309,7 @@ def main(in_args):
                 existing = existing[0]
             size_mod_data[colname] = [existing, df_mod_size_new]
 
+        # Make dataframe per collection
         data_frames = OrderedDict()
         for colname in sorted(size_mod_data.keys()):
             data = size_mod_data[colname]
