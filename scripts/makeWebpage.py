@@ -81,7 +81,7 @@ def add_plot_group(group_key, plot_names, plot_dir):
     group_mapping = OrderedDict()
     # for all plots not in a collection e.g. run, we put in one Group, makes HTML production easier
     default_col = "_"
-    group_mapping[default_col] = Group(this_id="", title="", contents=[])  
+    group_mapping[default_col] = Group(this_id="NA", title="-", contents=[])  
     # create Group for each collection in plot_names
     col_names = sorted(list(set(get_collection_name(p) for p in plot_names if is_collection(p))))
     for col in col_names:
