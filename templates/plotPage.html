@@ -107,12 +107,15 @@
       <strong><font color="blue">h1 (new)</font></strong> is with the PR changes, <strong><font color="red">h2 (ref)</font></strong> is the current HEAD of the branch
       <p></p>
       <h2>Tree plots (Total: {{num_plots}})</h2>
+      <button type="button" class="btn btn-outline-secondary btn-sm" id="expandBtn">Expand all</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" id="collapseBtn">Collapse all</button>
       {% for group in plot_data %}
+        <!-- The span class allows us to put in an offset for the navbar -->
         <span class="anchor" id="{{group.id}}"></span>
         <section id="{{group.id}}"><h3>{{group.title}}</h3>
         {% for collection in group.contents %}
           <section id="{{collection.title}}">
-            <details>
+            <details class="plotDetail">
               <summary><strong>{{collection.title}}</strong></summary>
               <div class="row">
               {% for plot in collection.contents %}
@@ -294,6 +297,21 @@
         // make the table search caption inline with the text entry element
         $(".dataTables_filter input").addClass('form-control');
         $("#timing_module_table_filter").addClass('form-inline');
+      } );
+
+      // actions for expand all/collapse all buttons
+      $("#expandBtn").click( function() {
+        $(".plotDetail").each( function(i, el) {
+          var elem = $(el);
+          elem.attr("open", true);
+        } );
+      } );
+
+      $("#collapseBtn").click( function() {
+        $(".plotDetail").each( function(i, el) {
+          var elem = $(el);
+          elem.attr("open", false);
+        } );
       } );
 
     </script>
