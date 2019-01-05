@@ -36,13 +36,13 @@
     }
     </style>
 
-    <title>Summary for PR {{ prnum }}</title>
+    <title>Summary for PR {{prnum}}</title>
   </head>
   <body>
 
     <nav class="navbar sticky-top navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
 
-      <a class="navbar-brand" href="#">UHH2 integration <small class="text-muted">PR {{ prnum }}</small></a>
+      <a class="navbar-brand" href="#">UHH2 integration <small class="text-muted">PR {{prnum}}</small></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -59,7 +59,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               {% for label, link in set_of_pages %}
-                <a class="dropdown-item" href="{{ link }}">{{ label }}</a>
+                <a class="dropdown-item" href="{{link}}">{{label}}</a>
               {% endfor %}
             </div>
           </li>
@@ -70,7 +70,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               {% for group in plot_data %}
-                <a class="dropdown-item" href="#{{ group.id }}">{{ group.title }}</a>
+                <a class="dropdown-item" href="#{{group.id}}">{{group.title}}</a>
               {% endfor %}
             </div>
           </li>
@@ -96,29 +96,29 @@
           </li>
         </ul>
         <span class="navbar-text">
-          <a href="https://github.com/UHH2/UHH2/pull/{{ prnum }}"><i class="fab fa-github"></i>&nbsp;github PR</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ gitlab_url }}"><i class="fab fa-gitlab"></i>&nbsp;gitlab integration</a>
+          <a href="https://github.com/UHH2/UHH2/pull/{{prnum}}"><i class="fab fa-github"></i>&nbsp;github PR</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{gitlab_url}}"><i class="fab fa-gitlab"></i>&nbsp;gitlab integration</a>
         </span>
       </div> <!-- end navbarSupportedContent -->
     </nav>
 
     <div class="container-fluid">
-      <h1>Summary for PR {{ prnum }}, {{ sample }} sample</h1>
+      <h1>Summary for PR {{prnum}}, {{sample}} sample</h1>
       <p></p>
       <strong><font color="blue">h1 (new)</font></strong> is with the PR changes, <strong><font color="red">h2 (ref)</font></strong> is the current HEAD of the branch
       <p></p>
-      <h2>Tree plots (Total: {{ num_plots }})</h2>
+      <h2>Tree plots (Total: {{num_plots}})</h2>
       {% for group in plot_data %}
-        <span class="anchor" id="{{ group.id }}"></span>
-        <section id="{{ group.id }}"><h3>{{ group.title }}</h3>
+        <span class="anchor" id="{{group.id}}"></span>
+        <section id="{{group.id}}"><h3>{{group.title}}</h3>
           <div class="row">
             {% for plot in group.contents %}
               <div class="col-sm-3">
-                <span class="anchor" id="{{ plot.id }}"></span>
+                <span class="anchor" id="{{plot.id}}"></span>
                 <figure class="figure">
-                  <a href="{{ plot.filename }}" target="_blank">
-                    <img src="{{ placeholder_img }}" data-src="{{ plot.thumbnailname }}" data-srcset="{{ plot.thumbnailname }}" class="lozad img-fluid" alt="{{ plot.title }}" title="{{ plot.title }}"/>
+                  <a href="{{plot.filename}}" target="_blank">
+                    <img src="{{placeholder_img}}" data-src="{{plot.thumbnailname}}" data-srcset="{{plot.thumbnailname}}" class="lozad img-fluid" alt="{{plot.title}}" title="{{plot.title}}"/>
                   </a>
-                  <figcaption class="figure-caption"><small>{{ plot.caption }}</small></figcaption>
+                  <figcaption class="figure-caption"><small>{{plot.caption}}</small></figcaption>
                 </figure>
               </div>
             {% endfor %}
@@ -135,16 +135,16 @@
         <thead class="thead-light">
               <tr>
               {% for header in timing_event_headers %}
-                <th><small><strong>{{ header }}</strong></small></th>
+                <th><small><strong>{{header}}</strong></small></th>
               {% endfor %}
               </tr>
           </thead>
           <tbody>
             {% for data in timing_event_rows %}
             <tr>
-              <td><small>{{ data[0] }}</small></td>
+              <td><small>{{data[0]}}</small></td>
               {% for value in data[1:] %}
-              <td><small>{{ '%.6f' % value }}</small></td>
+              <td><small>{{'%.6f' % value}}</small></td>
               {% endfor %}
             </tr>
             {% endfor %}
@@ -158,16 +158,16 @@
         <thead class="thead-light">
               <tr>
               {% for header in timing_mod_headers %}
-                <th><small><strong>{{ header }}</strong></small></th>
+                <th><small><strong>{{header}}</strong></small></th>
               {% endfor %}
               </tr>
           </thead>
           <tbody>
             {% for data in timing_mod_rows %}
             <tr>
-              <td><small>{{ data[0] }}</small></td>
+              <td><small>{{data[0]}}</small></td>
               {% for value in data[1:] %}
-              <td><small>{{ '%.6f' % value }}</small></td>
+              <td><small>{{'%.6f' % value}}</small></td>
               {% endfor %}
             </tr>
             {% endfor %}
@@ -184,14 +184,14 @@
         <thead class="thead-light">
           <tr>
             {% for header in size_overall_headers %}
-            <th><small><strong>{{ header }}</strong></small></th>
+            <th><small><strong>{{header}}</strong></small></th>
             {% endfor %}
           </tr>
           {% for data in size_overall_total %}
           <tr>
-            <th><small>{{ data[0] }}</small></th>
+            <th><small>{{data[0]}}</small></th>
             {% for value in data[1:] %}
-              <th><small>{{ '%.4f' % value }}</small></th>
+              <th><small>{{'%.4f' % value}}</small></th>
             {% endfor %}
           </tr>
           {% endfor %}
@@ -199,9 +199,9 @@
           <tbody>
             {% for data in size_overall_rows %}
             <tr>
-              <td><a href="#size{{data[0]}}"><small>{{ data[0] }}</small></a></td>
+              <td><a href="#size{{data[0]}}"><small>{{data[0]}}</small></a></td>
               {% for value in data[1:] %}
-              <td><small>{{ '%.4f' % value }}</small></td>
+              <td><small>{{'%.4f' % value}}</small></td>
               {% endfor %}
             </tr>
             {% endfor %}
@@ -221,16 +221,16 @@
         <thead class="thead-light">
           <tr>
             {% for header in size_mod_headers %}
-              <th><small><strong>{{ header }}</strong></small></th>
+              <th><small><strong>{{header}}</strong></small></th>
             {% endfor %}
           </tr>
         </thead>
         <tbody>
           {% for data in moddata %}
           <tr>
-            <td><small>{{ data[0] }}</small></td>
+            <td><small>{{data[0]}}</small></td>
             {% for value in data[1:] %}
-            <td><small>{{ '%.4f' % value }}</small></td>
+            <td><small>{{'%.4f' % value}}</small></td>
             {% endfor %}
           </tr>
           {% endfor %}
