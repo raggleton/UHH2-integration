@@ -702,7 +702,10 @@ success:
   stage: end
   when: on_success
   except:
-    - master
+    refs:
+      - master
+    variables:
+      - $REFBRANCH =~ /^RunII_102X.*/
   # don't need artifacts
   dependencies:
   script:
