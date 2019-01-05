@@ -146,6 +146,7 @@ build-ref:
   artifacts:
     paths:
       - public
+      - ${TESTDIR}/*.json
   script:
     # needed to get libSM
     - yum install -y libXext libSM libXrender
