@@ -480,7 +480,7 @@ def plot_hists(h1, stats1, h2, stats2, output_dir=".", canvas_size=(800, 600), f
         stats1.SetY2NDC(0.9)
         stats1.SetStatFormat(fmt_str)
         stats1.SetTextColor(h1_colour)
-        stats1.GetListOfLines()[0].SetTitle("h1")
+        stats1.GetListOfLines()[0].SetTitle("h1 (new)")
         stats1.Draw()
 
     if stats2:
@@ -490,7 +490,7 @@ def plot_hists(h1, stats1, h2, stats2, output_dir=".", canvas_size=(800, 600), f
         stats2.SetY2NDC(0.7)
         stats2.SetStatFormat(fmt_str)
         stats2.SetTextColor(h2_colour)
-        stats2.GetListOfLines()[0].SetTitle("h2")
+        stats2.GetListOfLines()[0].SetTitle("h2 (ref)")
         stats2.Draw()
 
     c.Modified()
@@ -1053,9 +1053,9 @@ def save_to_json(json_data, hist_status, output_filename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("filename",
-                        help="ROOT Ntuple filename")
+                        help='ROOT Ntuple filename (labelled "new")')
     parser.add_argument("--compareTo", dest='compare',
-                        help="Optional reference comparison ROOT filename")
+                        help='Optional reference comparison ROOT filename (labelled "ref")')
     default_tree = "AnalysisTree"
     parser.add_argument("--treeName",
                         help="Name of TTree, defaults to %s" % default_tree,
