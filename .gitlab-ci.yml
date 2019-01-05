@@ -112,13 +112,14 @@ build-ref:
     - master
   retry: 2
   artifacts:
+    name: ${CI_COMMIT_REF_NAME}-${CI_JOB_STAGE}
     expire_in: 6 mos
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
       - ${TESTDIR}/timing*.json
       - ${TESTDIR}/size*.json
-
+  
 .cmsrun-new-template: &cmsrun-new
   # Run cmsRun on PR
   <<: *cmsrun
@@ -189,8 +190,6 @@ build-ref:
 cmsrun-2018-data-new:
   # Run 2018 data on PR
   <<: *cmsrun-new
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2018-data-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_new"
@@ -198,8 +197,6 @@ cmsrun-2018-data-new:
 cmsrun-2018-data-ref:
   # Run 2018 data on reference
   <<: *cmsrun-ref
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2018-data-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_ref"
@@ -221,8 +218,6 @@ dfsdeploy-2018-data:
 cmsrun-2018-mc-new:
   # Run 2018 mc on PR
   <<: *cmsrun-new
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2018-mc-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_new"
@@ -230,8 +225,6 @@ cmsrun-2018-mc-new:
 cmsrun-2018-mc-ref:
   # Run 2018 mc on reference
   <<: *cmsrun-ref
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2018-mc-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_ref"
@@ -253,8 +246,6 @@ dfsdeploy-2018-mc:
 cmsrun-2017-data-new:
   # Run 2017 data on PR
   <<: *cmsrun-new
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2017-data-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --isData --append "_new"
@@ -262,8 +253,6 @@ cmsrun-2017-data-new:
 cmsrun-2017-data-ref:
   # Run 2017 data on reference
   <<: *cmsrun-ref
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2017-data-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --isData --append "_ref"
@@ -285,8 +274,6 @@ dfsdeploy-2017-data:
 cmsrun-2017-mc-new:
   # Run 2017 mc on PR
   <<: *cmsrun-new
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2017-mc-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --append "_new"
@@ -294,8 +281,6 @@ cmsrun-2017-mc-new:
 cmsrun-2017-mc-ref:
   # Run 2017 mc on reference
   <<: *cmsrun-ref
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2017-mc-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --append "_ref"
@@ -317,8 +302,6 @@ dfsdeploy-2017-mc:
 cmsrun-2016v3-data-new:
   # Run 2016v3 data on PR
   <<: *cmsrun-new
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2016v3-data-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_new"
@@ -326,8 +309,6 @@ cmsrun-2016v3-data-new:
 cmsrun-2016v3-data-ref:
   # Run 2016v3 data on reference
   <<: *cmsrun-ref
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2016v3-data-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_ref"
@@ -349,8 +330,6 @@ dfsdeploy-2016v3-data:
 cmsrun-2016v3-mc-new:
   # Run 2016v3 mc on PR
   <<: *cmsrun-new
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2016v3-mc-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_new"
@@ -358,8 +337,6 @@ cmsrun-2016v3-mc-new:
 cmsrun-2016v3-mc-ref:
   # Run 2016v3 mc on reference
   <<: *cmsrun-ref
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2016v3-mc-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_ref"
@@ -381,8 +358,6 @@ dfsdeploy-2016v3-mc:
 cmsrun-2016v2-data-new:
   # Run 2016v2 data on PR
   <<: *cmsrun-new
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2016v2-data-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_new"
@@ -390,8 +365,6 @@ cmsrun-2016v2-data-new:
 cmsrun-2016v2-data-ref:
   # Run 2016v2 data on reference
   <<: *cmsrun-ref
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2016v2-data-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_ref"
@@ -413,8 +386,6 @@ dfsdeploy-2016v2-data:
 cmsrun-2016v2-mc-new:
   # Run 2016v2 mc on PR
   <<: *cmsrun-new
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2016v2-mc-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_new"
@@ -422,8 +393,6 @@ cmsrun-2016v2-mc-new:
 cmsrun-2016v2-mc-ref:
   # Run 2016v2 mc on reference
   <<: *cmsrun-ref
-  artifacts:
-    name: ${CI_COMMIT_REF_NAME}-2016v2-mc-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_ref"
