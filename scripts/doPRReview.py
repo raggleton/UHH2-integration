@@ -20,7 +20,7 @@ if __name__ == "__main__":
     comment_text = "Report for PR %s\n" % (str(os.environ.get('PRNUM', None)))
     # this is set in makeAllWebpages, but we also include a backup incase something went wrong
     web_ending = os.environ.get('WEBEND', 'UHH2integration/'+os.environ['LOCALBRANCH'])
-    comment_text += "Webpage with full plots, timing & size info: http://uhh2-integration.web.cern.ch/%s\n\n" % (web_ending)
+    comment_text += "Webpages with full plots, timing & size info: http://uhh2-integration.web.cern.ch/%s\n\n" % (web_ending)
 
     if args.plots:
         if not os.path.isfile(args.plots):
