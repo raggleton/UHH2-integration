@@ -68,6 +68,10 @@ def main(in_args):
                 parsed_data[name][s] = 0
 
         data_str = " | ".join(["{"+f+"}" for f in fields])
+        # update name to include link to webpage
+        # TODO: some way to coordinate this with doPRReview, etc
+        url = "https://uhh2-integration.web.cern.ch/UHH2integration/%s/%s.html" % (os.environ['LOCALBRANCH'], name)
+        name = "(%s)[%s]" % (name, url)
         table_entry = ("| " + data_str + " |").format(name=name, **parsed_data[name])
         print(table_entry)
     print("\n")
