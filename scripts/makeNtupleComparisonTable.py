@@ -38,7 +38,8 @@ def main(in_args):
     parsed_data = OrderedDict()
     all_statuses = []
     status_descriptions = {}
-    for label, idict in input_data.items():
+    for label in sorted(list(input_data.keys())):
+        idict = input_data[label]
         parsed_data[label] = OrderedDict()
         parsed_data[label]['total_#_hists'] = idict['total_number']
         parsed_data[label]['added_collections'] = get_number_safely(idict, 'added_collections')
