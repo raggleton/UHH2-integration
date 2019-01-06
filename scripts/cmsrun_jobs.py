@@ -16,7 +16,7 @@ from parseCmsRunSummary import parse_and_dump
 from treeSizeReport import produce_size_json
 
 
-NEVENTS = 100
+NEVENTS = 500
 
 # Setup for all configs
 # The first key must be a valid argument to the `year` arg in generate_process(),
