@@ -112,7 +112,7 @@ build-ref:
     - master
   retry: 2
   artifacts:
-    name: ${CI_COMMIT_REF_NAME}-${CI_JOB_STAGE}
+    name: ${CI_COMMIT_REF_NAME}-${CI_JOB_NAME}
     expire_in: 6 mos
     paths:
       - ${TESTDIR}/Ntuple*.root
