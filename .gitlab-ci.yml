@@ -144,6 +144,7 @@ build-ref:
   except:
     - master
   artifacts:
+    name: webpage-${CI_JOB_NAME}
     paths:
       - public
       - ${TESTDIR}/*.json
