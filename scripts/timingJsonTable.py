@@ -43,7 +43,7 @@ def print_table_entry(ref_filename, new_filename, sample_name, do_header=False):
     # update name to include link to webpage
     # TODO: some way to coordinate this with doPRReview, etc
     url = "https://uhh2-integration.web.cern.ch/UHH2integration/%s/%s.html#timing" % (os.environ['LOCALBRANCH'], sample_name)
-    sample_name = "(%s)[%s]" % (sample_name, url)
+    sample_name = "[%s](%s)" % (sample_name, url)
 
     # Do it this way to handle if one or both of the dicts doesn't exist
     line_args = {

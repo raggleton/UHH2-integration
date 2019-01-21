@@ -72,7 +72,7 @@ def main(in_args):
         # update name to include link to webpage
         # TODO: some way to coordinate this with doPRReview, etc
         url = "https://uhh2-integration.web.cern.ch/UHH2integration/%s/%s.html" % (os.environ['LOCALBRANCH'], name)
-        fancy_name = "(%s)[%s]" % (name, url)
+        fancy_name = "[%s](%s)" % (name, url)
         table_entry = ("| " + data_str + " |").format(name=fancy_name, **parsed_data[name])
         print(table_entry)
     print("\n")
