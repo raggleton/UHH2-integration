@@ -356,15 +356,20 @@ def main(in_args):
             # account for missing collections
             if data[0] is None and data[1] is not None:
                 existing = data[1]
-                data[0] = pd.DataFrame(np.zeros_like(existing), index=existing.index, columns=existing.columns)
-            elif data[0] is not None and data[0] is None:
+                data[0] = pd.DataFrame(np.zeros_like(existing),
+                                       index=existing.index,
+                                       columns=[c.replace("New", "Ref").replace("new", "ref") for c in existing.columns])  # update column names accordingly
+            elif data[0] is not None and data[1] is None:
                 existing = data[0]
-                data[1] = pd.DataFrame(np.zeros_like(existing), index=existing.index, columns=existing.columns)
+                data[1] = pd.DataFrame(np.zeros_like(existing),
+                                       index=existing.index,
+                                       columns=[c.replace("Ref", "New").replace("ref", "new") for c in existing.columns])
 
             if len(data) != 2:
                 raise RuntimeError("Each collection should have 2 dataframes")
 
             df_size_ref, df_size_new = data
+
             # Create combined dataframe
             df_size_diff = df_size_ref.join(df_size_new, how='outer')
             # Add difference column(s)
