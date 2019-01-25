@@ -117,9 +117,8 @@ build-ref:
     paths:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
-      - ${TESTDIR}/timing*.json
-      - ${TESTDIR}/size*.json
-  
+      - ${TESTDIR}/*.json
+
 .cmsrun-new-template: &cmsrun-new
   # Run cmsRun on PR
   <<: *cmsrun
@@ -166,6 +165,8 @@ build-ref:
 # https://gitlab.cern.ch/gitlabci-examples/deploy_dfs/
 # requires vars DFS_WEBSITE_NAME, DFS_WEBSITE_USERNAME, DFS_WEBSITE_PASSWORD
 # Must set dependencies to compare job
+# We do this in separate jobs since the upload is slow, so we want to
+# parallelise it as much as possible
 .dfsdeploy-template: &dfs-deploy
   stage: deploy
   <<: *onlydo102
@@ -174,12 +175,12 @@ build-ref:
   # Custom docker image providing the needed tools to deploy in DFS
   image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer:latest
   script:
-  # Script that performs the deploy to DFS. Makes use of the variables defined in the project
-  # It will not sync the generated content with the folder in DFS (risk of deleting DFS management files)
-  # It will just override the contents of DFS or copy new files
-  # redirect to dev null otherwise too much log text
-  - deploy-dfs > /dev/null 2>&1
-  # do not run any globally defined before_script or after_script for this step
+    # Script that performs the deploy to DFS. Makes use of the variables defined in the project
+    # It will not sync the generated content with the folder in DFS (risk of deleting DFS management files)
+    # It will just override the contents of DFS or copy new files
+    # redirect to dev null otherwise too much log text
+    - deploy-dfs > /dev/null 2>&1
+    # do not run any globally defined before_script or after_script for this step
   before_script: []
   after_script: []
 

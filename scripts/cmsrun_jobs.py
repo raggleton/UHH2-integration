@@ -14,6 +14,7 @@ from copy import deepcopy
 
 from parseCmsRunSummary import parse_and_dump
 from treeSizeReport import produce_size_json
+from dumpNtuple import flatten_ntuple_write
 
 
 NEVENTS = 500
@@ -238,6 +239,12 @@ if __name__ == "__main__":
 
         # Dump branch sizes to JSON
         size_json = "size_%s.json" % (append)
-        produce_size_json(cms_dict['outputfile'], size_json, tree_name="AnalysisTree", verbose=False)
+        tree_name = "AnalysisTree"
+        produce_size_json(cms_dict['outputfile'], size_json, tree_name=tree_name, verbose=False)
+
+        # Dump data to JSON
+        data_json = "data_%s.json" % (append)
+        flatten_ntuple_write(input_filename=cms_dict['outputfile'], tree_name=tree_name,
+                             output_filename=data_json)
 
     sys.exit(0)
