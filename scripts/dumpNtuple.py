@@ -117,6 +117,34 @@ def store_branches(tree, obj_list, do_recursive=False, indent=0):
             store_branches(b, obj_list, True, new_indent)
 
 
+def resolve_type(typename):
+    """Convert the cppyy type to python types
+
+    e.g. Muon::SimType -> int
+
+    Parameters
+    ----------
+    typename : str
+
+    Returns
+    -------
+    str
+        Resolved type
+    """
+    if "LorentzVector" in typename or typename == "void":
+        return typename
+
+    typename = unvectorise_classname(typename).replace("::", ".")
+    parts = typename.split(".")
+    if parts[0] not in BUILTIN_TYPES:
+        current = getattr(ROOT, parts[0])
+        for p in parts[1:]:
+            current = getattr(current, p)
+        return current.__name__
+    else:
+        return parts[0]
+
+
 def parse_function_signature(signature):
     """Handle cpp function signature, giving return type & function name
 
@@ -215,6 +243,8 @@ def get_class_getters_info(classname, class_infos, do_recursive=False):
         # ensure we only have getters
         if (return_type is None or return_type == "void" or return_type.startswith("_") or args != ""):
             continue
+
+        return_type = resolve_type(return_type)  # since enums are really ints, etc
 
         method_name += "()"  # need to store the () to distinguish from properties
         # make python-friendly so it can be used in getattr
