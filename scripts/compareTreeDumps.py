@@ -10,6 +10,7 @@ The results are saved to a JSON file.
 
 
 from __future__ import print_function
+from six import string_types
 
 import os
 import re
@@ -83,7 +84,9 @@ def make_hists_ROOT(data1, data2, method_str):
     h1, stats1, h2, stats2 = None, None, None, None
 
     # Need special procedure for strings
-    if (data1 and isinstance(data1[0], str)) or (data2 and isinstance(data2[0], str)):
+    # Use six.string_types to handle string in both py2 and 3
+    # Since they are u'xxx' in py2, and 'xxx' in py3
+    if (data1 and isinstance(data1[0], string_types)) or (data2 and isinstance(data2[0], string_types)):
         counter1 = Counter(data1)
         counter2 = Counter(data2)
         all_values = set(data1) | set(data2)
