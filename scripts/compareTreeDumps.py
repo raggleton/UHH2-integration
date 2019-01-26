@@ -510,8 +510,6 @@ if __name__ == "__main__":
             tree_data2 = json.load(f)
             print(len(tree_data2), "hists in compareTo file")
 
-    tree_data2 = {k:v for k,v in tree_data2.items() if "packedPatJetsAk8CHSJets_SoftDropCHS" not in k}
-
     json_data = {
         "added_collections": [],
         "removed_collections": [],
