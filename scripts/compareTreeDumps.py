@@ -174,7 +174,9 @@ def get_xy(graph):
     return xarr, yarr
 
 
-def plot_hists_ROOT(h1, stats1, h2, stats2, output_dir=".", canvas_size=(800, 600), fmt='pdf', prepend="", append=""):
+def plot_hists_ROOT(h1, stats1, h2, stats2, output_dir=".",
+                    canvas_size=(800, 600), fmt='pdf',
+                    prepend="", append="", make_thumbnail=False):
     """Make a (comparison) plot from histogram h1 + stats box stats1, and h2+stats2 and save to file.
 
     h1/stats1 or h2/stats2 can be None, in which case a simpler plot is made
@@ -182,6 +184,9 @@ def plot_hists_ROOT(h1, stats1, h2, stats2, output_dir=".", canvas_size=(800, 60
 
     Plot saved as <output_dir>/<prepend><method_str><append>.<fmt>
     where method_str is extracted from the histogram name.
+
+    Can also save an additional smaller version
+    as a thumbnail in <output_dir>/thumbnails
 
     Parameters
     ----------
@@ -195,12 +200,17 @@ def plot_hists_ROOT(h1, stats1, h2, stats2, output_dir=".", canvas_size=(800, 60
         If None, skip stats box
     output_dir : str
         Output directory for plot
+    canvas_size : tuple, optional
+        Size of canvas
     fmt : str, optional
         Description
     prepend : str, optional
-        Description
+        <prepend> in filename
     append : str, optional
-        Description
+        <append> in filename
+    make_thumbnail : bool, optional
+        If True, save additional copy as small gif in subdir "thumbnails"
+
     """
     if not h1 and not h2:
         print("No TH1 object - not plotting")
@@ -331,6 +341,12 @@ def plot_hists_ROOT(h1, stats1, h2, stats2, output_dir=".", canvas_size=(800, 60
     output_filename = "%s%s%s.%s" % (prepend, hname, append, fmt)
     output_name = os.path.join(output_dir, output_filename)
     c.SaveAs(output_name)
+
+    if make_thumbnail:
+        c.SetCanvasSize(300, 200)
+        output_filename = "%s%s%s.%s" % (prepend, hname, append, 'gif')
+        output_name = os.path.join(output_dir, "thumbnails", output_filename)
+        c.SaveAs(output_name)
 
 
 class HistSummary(object):
@@ -580,13 +596,8 @@ if __name__ == "__main__":
                                 args.outputDir,
                                 canvas_size=(800, 600),
                                 fmt=fmt,
-                                prepend="", append="")
-            if args.thumbnails:
-                plot_hists_ROOT(hist1, stats1, hist2, stats2,
-                                thumbnails_dir,
-                                canvas_size=(300, 200),
-                                fmt='gif',
-                                prepend="", append="")
+                                prepend="", append="",
+                                make_thumbnail=args.thumbnails)
 
         # Do comparison
         status = analyse_hists(hist1, hist2)
