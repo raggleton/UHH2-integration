@@ -254,6 +254,12 @@ def plot_hists_ROOT(h1, stats1, h2, stats2, output_dir=".",
         rp.SetGraphDrawOpt("ALP")
         rp.Draw("grid")
 
+        # Manually set y axis range to ensure we see both hists fully, since this
+        # class only uses the range of h1!
+        ymax = max(h1.GetMaximum(), h2.GetMaximum())
+        yax = rp.GetUpperRefYaxis()
+        yax.SetRangeUser(0, ymax * 1.1)  # factor to pad it out a bit
+
         if h1.GetEntries() > 0 or h2.GetEntries() > 0:
             lower_gr = rp.GetLowerRefGraph()
             # Reset y errors to 0 in ratio graph as not useful
