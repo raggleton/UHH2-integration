@@ -386,6 +386,26 @@ class HistSummary(object):
         return hash(self.name)
 
 
+def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
+    """Safe way to compare 2 floats instead of exact equality.
+
+    Parameters
+    ----------
+    a : float
+    b : float
+        floats to compare
+    rel_tol : float, optional
+        Maximum relative difference allowed
+    abs_tol : float, optional
+        Maximum absolute difference allowed
+
+    Returns
+    -------
+    bool
+    """
+    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+
 def analyse_hists(hist1, hist2):
     """Analyse the 2 histograms and return status string
 
@@ -431,13 +451,13 @@ def analyse_hists(hist1, hist2):
     # FIXME better float comparison to avoid floating point errors
     mean1, mean2 = hist1.GetMean(), hist2.GetMean()
     rms1, rms2 = hist1.GetRMS(), hist2.GetRMS()
-    if mean1 != mean2 or rms1 != rms2:
+    if not isclose(mean1, mean2) or not isclose(rms1, rms2):
         return HistSummary("DIFF_MEAN_RMS", "Differing means and/or RMS")
 
-    if (mean1 == 0 and rms1 == 0) or (mean2 == 0 and rms2 == 0):
+    if (isclose(mean1, 0) and isclose(rms1, 0)) or (isclose(mean2, 0) and isclose(rms2, 0)):
         return HistSummary("ZERO_VALUE", "One or both hists have only 0s")
 
-    if rms1 == 0 or rms2 == 0:
+    if isclose(rms1, 0) or isclose(rms2, 0):
         return HistSummary("ZERO_RMS", "One or both RMSs are 0: stores same value")
 
     return HistSummary("SAME", "Histograms are the same (lowest priority)")
