@@ -97,7 +97,7 @@ build-ref:
 
 
 # Limit jobs to only run on 102X branch, since I haven't setup 94X to run cmssw jobs
-.onlydo102-template: &onlydo102
+.makentuple-template: &make-ntuples
   only:
     variables:
       - $REFBRANCH =~ /^RunII_102X.*/
@@ -107,7 +107,7 @@ build-ref:
   tags:
   - cvmfs
   stage: cmsrun
-  <<: *onlydo102
+  <<: *make-ntuples
   except:
     - master
   retry: 2
@@ -139,7 +139,7 @@ build-ref:
   tags:
     - cvmfs
   stage: compare
-  <<: *onlydo102
+  <<: *make-ntuples
   except:
     - master
   artifacts:
@@ -169,7 +169,7 @@ build-ref:
 # parallelise it as much as possible
 .dfsdeploy-template: &dfs-deploy
   stage: deploy
-  <<: *onlydo102
+  <<: *make-ntuples
   except:
     - master
   # Custom docker image providing the needed tools to deploy in DFS
@@ -420,7 +420,7 @@ review-ntuples:
   tags:
     - cvmfs
   stage: review
-  <<: *onlydo102
+  <<: *make-ntuples
   except:
     - master
   dependencies:
