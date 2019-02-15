@@ -10,8 +10,8 @@ https://github.com/sclorg/s2i-python-container/issues/190
 
 import sys
 import logging
-from flask import Flask, request
 from subprocess import check_output
+from flask import Flask, request
 
 
 app = Flask(__name__)
@@ -52,12 +52,17 @@ def gitlab_forwarder():
     base_branch = request_json["pull_request"]["base"]["ref"]
     proposer = request_json["pull_request"]["user"]["login"]
     pr_id = request_json["pull_request"]["node_id"]
-    app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s." % (pr_num, proposer, base_branch, action))
+    pr_title = request_json["pull_request"]["title"]
+    pr_text = request_json["pull_request"]["body"]
+    compile_text = "[ONLYCOMPILE]"  # don't make ntuples if this keyword is found
+    make_ntuples = "102X" in base_branch and compile_text in pr_text.upper()
+    app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s. Make ntuples: %s"
+                    % (pr_num, proposer, base_branch, action, make_ntuples))
 
     # Now run the script that pushes a new branch to gitlab for this PR.
     # This will then trigger gitlab-ci to run on the new branch
     app.logger.info("Pushing to gitlab")
-    check_output(['./testPR.sh', str(pr_num), base_branch, str(pr_id)])
+    check_output(['./testPR.sh', str(pr_num), base_branch, str(pr_id), str(int(make_ntuples))])
 
     return 'Forwarding to gitlab'
 

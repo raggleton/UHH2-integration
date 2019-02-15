@@ -4,7 +4,7 @@
 # then adding, committing, and pushing
 # 
 # Usage:
-# ./testPR.sh <PR NUMBER> <REFBRANCH> <PRID>
+# ./testPR.sh <PR NUMBER> <REFBRANCH> <PRID> <MAKE NTUPLES>
 # 
 # PRID is optional, it will get updated in the CI job if it doesn't exist
 
@@ -13,6 +13,7 @@ set -x # help debugging by printing commands, watch out if you use secrets!
 PULLNUM="$1"
 REFBRANCH="$2"
 PRID="$3"
+MAKENTUPLES="$4"  # if 1 run cmsRun, make ntuples, plot, if 0 skip that (i.e. compile only)
 
 NEWBRANCH="test${PULLNUM}"
 git checkout master
@@ -28,6 +29,7 @@ CONTENTS="$CONTENTS  REFBRANCH: \"${REFBRANCH}\"\n"
 CONTENTS="$CONTENTS  REMOTEBRANCH: \"pull/${PULLNUM}/head\"\n"
 CONTENTS="$CONTENTS  LOCALBRANCH: \"${NEWBRANCH}\"\n"
 CONTENTS="$CONTENTS  PRID: \"${PRID}\"\n"
+CONTENTS="$CONTENTS  MAKENTUPLES: \"${MAKENTUPLES}\"\n"
 CONTENTS="$CONTENTS$REPLACESTR\n"  # add REPLACESTR back on for any future replacements
 
 # Only work with gnu sed, be careful on mac

@@ -101,6 +101,7 @@ build-ref:
   only:
     variables:
       - $REFBRANCH =~ /^RunII_102X.*/
+      - $MAKENTUPLES == "1"
 
 # cmsRun job templates
 .cmsrun-template: &cmsrun
@@ -475,6 +476,7 @@ success:
       - master
     variables:
       - $REFBRANCH =~ /^RunII_102X.*/
+      - $MAKENTUPLES == "1"
   # don't need artifacts
   dependencies:
   script:
