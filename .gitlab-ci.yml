@@ -97,11 +97,17 @@ build-ref:
 
 
 # Limit jobs to only run on 102X branch, since I haven't setup 94X to run cmssw jobs
+# If any of the conditions in variables evaluates to truth when using `only`,
+# a new job is going to be created.
+# If any of the expressions evaluates to truth when `except` is being used,
+# a job is not going to be created.
 .makentuple-template: &make-ntuples
   only:
     variables:
       - $REFBRANCH =~ /^RunII_102X.*/
-      - $MAKENTUPLES == "1"
+  except:
+    variables:
+      - $MAKENTUPLES == "0"
 
 # cmsRun job templates
 .cmsrun-template: &cmsrun
