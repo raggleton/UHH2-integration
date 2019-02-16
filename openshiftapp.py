@@ -55,7 +55,7 @@ def gitlab_forwarder():
     pr_title = request_json["pull_request"]["title"]
     pr_text = request_json["pull_request"]["body"]
     compile_text = "[ONLYCOMPILE]"  # don't make ntuples if this keyword is found
-    make_ntuples = "102X" in base_branch and compile_text in pr_text.upper()
+    make_ntuples = "102X" in base_branch and compile_text not in pr_text.upper()
     app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s. Make ntuples: %s"
                     % (pr_num, proposer, base_branch, action, make_ntuples))
 
