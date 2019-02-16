@@ -96,18 +96,15 @@ build-ref:
     - if [[ $REFBRANCH == "RunII_102X"* ]]; then cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz; fi  # Tar up CMSSW & SFrame, only if doing cmsrun jobs
 
 
-# Limit jobs to only run on 102X branch, since I haven't setup 94X to run cmssw jobs
-# If any of the conditions in variables evaluates to truth when using `only`,
-# a new job is going to be created.
-# If any of the expressions evaluates to truth when `except` is being used,
-# a job is not going to be created.
+# Logic for determining MAKENTUPLES in openshiftapp.py
+# Based on refbranch, and whether or not user included magic words in PR text.
+# Note that if you add only/except in the stage iteself, it will ignore this
 .makentuple-template: &make-ntuples
   only:
     variables:
-      - $REFBRANCH =~ /^RunII_102X.*/
+      - $MAKENTUPLES == "1"
   except:
-    variables:
-      - $MAKENTUPLES == "0"
+    - master
 
 # cmsRun job templates
 .cmsrun-template: &cmsrun
@@ -115,8 +112,6 @@ build-ref:
   - cvmfs
   stage: cmsrun
   <<: *make-ntuples
-  except:
-    - master
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-${CI_JOB_NAME}
@@ -147,8 +142,6 @@ build-ref:
     - cvmfs
   stage: compare
   <<: *make-ntuples
-  except:
-    - master
   artifacts:
     name: webpage-${CI_JOB_NAME}
     paths:
@@ -177,8 +170,6 @@ build-ref:
 .dfsdeploy-template: &dfs-deploy
   stage: deploy
   <<: *make-ntuples
-  except:
-    - master
   # Custom docker image providing the needed tools to deploy in DFS
   image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer:latest
   script:
@@ -428,8 +419,6 @@ review-ntuples:
     - cvmfs
   stage: review
   <<: *make-ntuples
-  except:
-    - master
   dependencies:
     - build-new
     - cmsrun-2018-data-new
@@ -481,8 +470,7 @@ success:
     refs:
       - master
     variables:
-      - $REFBRANCH =~ /^RunII_102X.*/
-      - $MAKENTUPLES == "1"
+      - $MAKENTUPLES == "1"  # only do this if no PR review
   # don't need artifacts
   dependencies:
   script:
