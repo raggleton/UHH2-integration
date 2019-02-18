@@ -55,11 +55,11 @@ def gitlab_forwarder():
     pr_title = request_json["pull_request"]["title"]
     pr_text = request_json["pull_request"]["body"]
 
-    compile_text = "[ONLY COMPILE]"  # don't make ntuples if this keyword is found
-    make_ntuples = "102X" in base_branch and compile_text not in pr_text.upper()
+    compile_text = "[ONLYCOMPILE]"  # don't make ntuples if this keyword is found
+    make_ntuples = "102X" in base_branch and compile_text not in pr_text.upper().replace(" ", "")
 
-    ciskip_text = "[CI SKIP]"  # don't run CI at all if this keyword is found
-    skip_ci = ciskip_text in pr_text.upper()
+    ciskip_text = "[CISKIP]"  # don't run CI at all if this keyword is found
+    skip_ci = ciskip_text in pr_text.upper().replace(" ", "")
 
     app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s. Skip CI: %s. Make ntuples: %s."
                     % (pr_num, proposer, base_branch, action, skip_ci, make_ntuples))
