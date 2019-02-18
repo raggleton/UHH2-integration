@@ -55,7 +55,7 @@ def gitlab_forwarder():
     pr_title = request_json["pull_request"]["title"]
     pr_text = request_json["pull_request"]["body"]
 
-    compile_text = "[ONLYCOMPILE]"  # don't make ntuples if this keyword is found
+    compile_text = "[ONLY COMPILE]"  # don't make ntuples if this keyword is found
     make_ntuples = "102X" in base_branch and compile_text not in pr_text.upper()
 
     ciskip_text = "[CI SKIP]"  # don't run CI at all if this keyword is found
