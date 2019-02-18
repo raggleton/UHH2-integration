@@ -59,7 +59,7 @@ def gitlab_forwarder():
     make_ntuples = "102X" in base_branch and compile_text not in pr_text.upper()
 
     ciskip_text = "[CI SKIP]"  # don't run CI at all if this keyword is found
-    skip_ci = ciskip_text not in pr_text.upper()
+    skip_ci = ciskip_text in pr_text.upper()
 
     app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s. Skip CI: %s. Make ntuples: %s."
                     % (pr_num, proposer, base_branch, action, skip_ci, make_ntuples))
