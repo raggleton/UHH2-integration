@@ -54,15 +54,20 @@ def gitlab_forwarder():
     pr_id = request_json["pull_request"]["node_id"]
     pr_title = request_json["pull_request"]["title"]
     pr_text = request_json["pull_request"]["body"]
+
     compile_text = "[ONLYCOMPILE]"  # don't make ntuples if this keyword is found
     make_ntuples = "102X" in base_branch and compile_text not in pr_text.upper()
-    app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s. Make ntuples: %s"
-                    % (pr_num, proposer, base_branch, action, make_ntuples))
+
+    ciskip_text = "[CI SKIP]"  # don't run CI at all if this keyword is found
+    skip_ci = ciskip_text not in pr_text.upper()
+
+    app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s. Skip CI: %s. Make ntuples: %s."
+                    % (pr_num, proposer, base_branch, action, skip_ci, make_ntuples))
 
     # Now run the script that pushes a new branch to gitlab for this PR.
     # This will then trigger gitlab-ci to run on the new branch
     app.logger.info("Pushing to gitlab")
-    check_output(['./testPR.sh', str(pr_num), base_branch, str(pr_id), str(int(make_ntuples))])
+    check_output(['./testPR.sh', str(pr_num), base_branch, str(pr_id), str(int(skip_ci)), str(int(make_ntuples))])
 
     return 'Forwarding to gitlab'
 

@@ -4,7 +4,7 @@
 # then adding, committing, and pushing
 # 
 # Usage:
-# ./testPR.sh <PR NUMBER> <REFBRANCH> <PRID> <MAKE NTUPLES>
+# ./testPR.sh <PR NUMBER> <REFBRANCH> <PRID> <SKIP CI> <MAKE NTUPLES>
 # 
 # PRID is optional, it will get updated in the CI job if it doesn't exist
 
@@ -13,13 +13,15 @@ set -x # help debugging by printing commands, watch out if you use secrets!
 PULLNUM="$1"
 REFBRANCH="$2"
 PRID="$3"
-MAKENTUPLES="$4"  # if 1 run cmsRun, make ntuples, plot, if 0 skip that (i.e. compile only)
+SKIPCI="$4"  # if 1 skip all CI, 0 run
+MAKENTUPLES="$5"  # if 1 run cmsRun, make ntuples, plot, if 0 skip that (i.e. compile only)
 
 NEWBRANCH="test${PULLNUM}"
 git checkout master
+
 # If local branch already exists, delete it and do it again
 git branch -D "${NEWBRANCH}"
-# git rev-parse --quiet --verify "${NEWBRANCH}" || git branch -d "${NEWBRANCH}"
+
 git checkout -b "${NEWBRANCH}" master
 
 REPLACESTR="#@TESTVARS@"
@@ -36,7 +38,11 @@ CONTENTS="$CONTENTS$REPLACESTR\n"  # add REPLACESTR back on for any future repla
 sed -i -e "s|${REPLACESTR}|${CONTENTS}|g" .gitlab-ci.yml
 
 git add ".gitlab-ci.yml"
-git commit -m "Test PR ${PULLNUM}"
+COMMITMSG="Test PR ${PULLNUM}"
+if [[ $SKIPCI == 1 ]]; then
+    COMMITMSG="$COMMITMSG [ci skip]"  # gitlab feature
+fi
+git commit -m "${COMMITMSG}"
 git push -f origin "${NEWBRANCH}"  # use force push to overwrite existing branch
 echo "Pushed to origin/${NEWBRANCH}"
 git checkout master
