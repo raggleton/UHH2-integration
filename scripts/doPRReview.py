@@ -49,5 +49,5 @@ if __name__ == "__main__":
     comment_text = comment_text.replace("\n", "\\n").replace('"', '\\"')
     # print(comment_text)
     return_code = subprocess.call('source ${CI_PROJECT_DIR}/scripts/notify_github.sh "passed" "%s"' % (comment_text), shell=True)
-
-    sys.exit(0)
+    sys.exit(return_code)
+    # sys.exit(0)
