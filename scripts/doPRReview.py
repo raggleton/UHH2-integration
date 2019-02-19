@@ -41,7 +41,7 @@ if __name__ == "__main__":
     if args.size:
         if not os.path.isfile(args.size):
             print("Cannot find size file %s, skipping" % args.size)
-        comment_text += "\n\n**Size report**\n(kB = kilobytes, `.` is decimal point not thousands separator)\n\n"
+        comment_text += "\n\n**Size report**\n(kB = kilobytes, \\`\\.\\` is decimal point not thousands separator)\n\n"
         with open(args.size) as f:
             comment_text += f.read()
         comment_text += "\n\n"
