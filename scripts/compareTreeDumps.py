@@ -429,8 +429,8 @@ def analyse_hists(hist1, hist2):
     n_entries1 = hist1.GetEntries()
     n_entries2 = hist2.GetEntries()
 
-    if n_entries1 == 0 or n_entries2 == 0:
-        return HistSummary("NO_ENTRIES", "One or both hists has 0 entries")
+    if n_entries1 == 0 and n_entries2 == 0:
+        return HistSummary("NO_ENTRIES", "Both hists has 0 entries")
 
     if n_entries2 != n_entries1:
         return HistSummary("DIFF_ENTRIES", "Differing number of entries")
