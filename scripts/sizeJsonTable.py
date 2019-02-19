@@ -37,7 +37,7 @@ def print_table_entry(ref_filename, new_filename, sample_name, do_header=False):
 
     key_name = "total_branch_size_per_event"
     if do_header:
-        print("| Sample | Reference {0} [kb] | PR {0} [kb] | diff |".format(key_name.lower().replace("_", " ")))
+        print("| Sample | Reference {0} [kB] | PR {0} [kB] | diff |".format(key_name.lower().replace("_", " ")))
         print("| ------ | ------ | ------ | ------ |")
 
     # update name to include link to webpage

@@ -293,7 +293,7 @@ def main(in_args):
             }
             df_size = pd.DataFrame.from_dict(this_dict, orient='index')
             df_size['size_frac'] = 100. * df_size['size_frac']
-            df_size.rename({"size_frac": "%", "size_per_event": "kb / event"}, axis=1, inplace=True)
+            df_size.rename({"size_frac": "%", "size_per_event": "kB / event"}, axis=1, inplace=True)
             df_size.rename(lambda x: x + " (" + label + ")", axis=1, inplace=True)  # do it last as we need originals for prior renaming
             return df_size
 
@@ -330,7 +330,7 @@ def main(in_args):
                     'size_frac': 100. * vardata['size_frac'] / total_frac
                 }
             df_size = pd.DataFrame.from_dict(this_dict, orient='index')
-            df_size.rename({"size_frac": "%", "size_per_event": "kb / event"}, axis=1, inplace=True)
+            df_size.rename({"size_frac": "%", "size_per_event": "kB / event"}, axis=1, inplace=True)
             df_size.rename(lambda x: x + " (" + label + ")", axis=1, inplace=True)  # do it last as we need originals for prior renaming
             return df_size
 
