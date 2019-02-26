@@ -559,8 +559,11 @@ def get_data(tree, entry_index, method_strs):
             this_data[method] = [d for d in iter_data(getattr(tree, collection_name), methods)]
         else:
             thing = getattr(tree, method)
-            if "ROOT.vector<bool>" in str(type(thing)):
+            type_str = str(type(thing))
+            if "ROOT.vector<bool>" in type_str:
                 thing = ROOT.vectorBoolToInt(thing)
+            if "ROOT.string" in type_str:
+                thing = [thing]  # don't want to iter over each character
             try:
                 # handle iterative branches
                 this_data[method] = [d for d in thing]
