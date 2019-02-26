@@ -6,19 +6,22 @@ args=""
 for newfile in ${TESTDIR}/Ntuple*_new.root;
 do
     echo $newfile
+    # Get sample name from filename
+    name=$(basename "$newfile")
+    name=${name/Ntuple_/}
+    name=${name/_new.root/}
+
     reffile=${newfile/_new.root/_ref.root}
-    if [ -f "$reffile" ]; then
-        # Get sample name from filename
-        name=$(basename "$newfile")
-        name=${name/Ntuple_/}
-        name=${name/_new.root/}
-        args="$args --plotjson plots_${name}.json --plotdir plots_${name} \
-                    --timingrefjson timing_${name}_ref.json --timingnewjson timing_${name}_new.json \
-                    --sizerefjson size_${name}_ref.json --sizenewjson size_${name}_new.json \
-                    --label ${name}"
-    else
-        echo "Cannot find matching file $reffile"
+    if [ !-f "$reffile" ]; then
+        # Horrible hack - incase of no ref file, copy the new file as ref
+        echo "Cannot find matching file $reffile, copying new ones as ref"
+        cp timing_${name}_new.json timing_${name}_ref.json
+        cp size_${name}_new.json size_${name}_ref.json
     fi
+    args="$args --plotjson plots_${name}.json --plotdir plots_${name} \
+                --timingrefjson timing_${name}_ref.json --timingnewjson timing_${name}_new.json \
+                --sizerefjson size_${name}_ref.json --sizenewjson size_${name}_new.json \
+                --label ${name}"
 done
 echo "args: "$args
 
