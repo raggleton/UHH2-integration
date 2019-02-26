@@ -473,6 +473,8 @@ def save_to_json(json_data, hist_status, output_filename):
         Dict of {histname: HistSummary}
     output_filename : str
     """
+    # Discard the common_hists list, we use hist_status info instead
+    # We only keep original info about added/removed collections
     del json_data['common_hists']
     # Store histograms grouped by status
     statuses = sorted(list(set(hist_status.values())))
@@ -630,6 +632,5 @@ if __name__ == "__main__":
 
     print(len(hist_status), "plots produced")
 
-    # Save JSON data
-    if args.compareTo:
-        save_to_json(json_data, hist_status, output_filename=args.json)
+    # Save JSON data. Always needed for later steps in pipeline to work.
+    save_to_json(json_data, hist_status, output_filename=args.json)
