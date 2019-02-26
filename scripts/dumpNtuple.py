@@ -563,13 +563,16 @@ def get_data(tree, entry_index, method_strs):
             if "ROOT.vector<bool>" in type_str:
                 thing = ROOT.vectorBoolToInt(thing)
             if "ROOT.string" in type_str:
-                thing = [thing]  # don't want to iter over each character
-            try:
-                # handle iterative branches
-                this_data[method] = [d for d in thing]
-            except TypeError:
-                # handle scalar branches
-                this_data[method] = thing
+                this_data[method] = [str(thing)]  # don't want to iter over each character
+            elif "ROOT.vector<string>" in type_str:
+                this_data[method] = [str(d) for d in thing]
+            else:
+                try:
+                    # handle iterative branches
+                    this_data[method] = [d for d in thing]
+                except TypeError:
+                    # handle scalar branches
+                    this_data[method] = thing
 
     return this_data
 
