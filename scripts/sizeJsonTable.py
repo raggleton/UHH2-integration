@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-"""Print entry in markdown table comparing 2 Ntuple size JSON files made by treeSizeReport.py"""
+"""Print entry in markdown table comparing 2 Ntuple size JSON files made by treeSizeReport.py
+
+Table contents produced as STDOUT.
+Can also produce table header to accompany row.
+"""
 
 
 from __future__ import print_function
