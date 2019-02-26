@@ -12,7 +12,7 @@ do
     name=${name/_new.root/}
 
     reffile=${newfile/_new.root/_ref.root}
-    if [ !-f "$reffile" ]; then
+    if [ ! -f "$reffile" ]; then
         # Horrible hack - incase of no ref file, copy the new file as ref
         echo "Cannot find matching file $reffile, copying new ones as ref"
         cp timing_${name}_new.json timing_${name}_ref.json
