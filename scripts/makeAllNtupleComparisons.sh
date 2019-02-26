@@ -12,9 +12,9 @@ do
     name=${name/data_/}
     name=${name/_new.json/}
     if [ -f "$reffile" ]; then
-        python ${CI_PROJECT_DIR}/scripts/compareTreeDumps.py "$newfile" --compareTo "$reffile" --json "plots_${name}.json" --outputDir "plots_${name}" --fmt pdf --thumbnails
+        time python ${CI_PROJECT_DIR}/scripts/compareTreeDumps.py "$newfile" --compareTo "$reffile" --json "plots_${name}.json" --outputDir "plots_${name}" --fmt pdf --thumbnails
     else
         echo "Cannot find matching file $reffile"
-        python ${CI_PROJECT_DIR}/scripts/compareTreeDumps.py "$newfile" --json "plots_${name}.json" --outputDir "plots_${name}" --fmt pdf --thumbnails
+        time python ${CI_PROJECT_DIR}/scripts/compareTreeDumps.py "$newfile" --json "plots_${name}.json" --outputDir "plots_${name}" --fmt pdf --thumbnails
     fi
 done
