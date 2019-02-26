@@ -58,14 +58,17 @@ def main(in_args):
 
     all_statuses = sorted(list(set(all_statuses)))
     # want last col to be "same" as least interesting
-    all_statuses.insert(len(all_statuses), all_statuses.pop(all_statuses.index('SAME')))
+    if 'SAME' in all_statuses:
+        all_statuses.insert(len(all_statuses), all_statuses.pop(all_statuses.index('SAME')))
 
     # bit hacky as we want to put DIFF_MEAN_RMS earliest
     all_statuses_mod = all_statuses[:]
     if 'DIFF_MEAN_RMS' in all_statuses:
         all_statuses_mod.remove("DIFF_MEAN_RMS")
 
-    fields = ['name', 'total_#_hists', 'DIFF_MEAN_RMS', 'added_collections', 'added_hists', 'removed_collections', 'removed_hists']
+    fields = ['name', 'total_#_hists', 'added_collections', 'added_hists', 'removed_collections', 'removed_hists']
+    if 'DIFF_MEAN_RMS' in all_statuses:
+        fields.insert(2, 'DIFF_MEAN_RMS')
     fields.extend(all_statuses_mod)  # fields is used for keys for later string formatting, determines order of columns
 
     # Print out column headings using fields
