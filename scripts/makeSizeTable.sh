@@ -14,6 +14,7 @@ do
     reffile=${newfile/_new.json/_ref.json}
     if [ ! -f "$reffile" ]; then
         # horrible hack to get it working in the event of no reffile
+        echo "Copying new file as ref"
         cp "$newfile" "$reffile"
     fi
     # Get sample name from filename
