@@ -76,6 +76,7 @@ def main(in_args):
         table_entry = ("| " + data_str + " |").format(name=fancy_name, **parsed_data[name])
         print(table_entry)
     print("\n")
+    # Print description of each status
     for s in all_statuses:
         print(" - **{name}**: {description}".format(name=s.replace("_", " ").lower(), description=status_descriptions[s]))
     print("\n")
