@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-"""Make markdown table from JSON made by compareNtuples.py"""
+"""Make markdown table from JSON made by compareNtuples.py.
+Table contents produced as STDOUT.
+
+Can process multiple JSON, for each both --json and --label must be specified.
+"""
 
 from __future__ import print_function
 
@@ -53,29 +57,39 @@ def main(in_args):
             status_descriptions[status_name] = status_entry['description']
 
     all_statuses = sorted(list(set(all_statuses)))
-    # want 1st col to be "same"
-    all_statuses.insert(0, all_statuses.pop(all_statuses.index('SAME')))
+    # want last col to be "same" as least interesting
+    all_statuses.insert(len(all_statuses), all_statuses.pop(all_statuses.index('SAME')))
 
-    fields = ['name', 'total_#_hists', 'added_collections', 'added_hists', 'removed_collections', 'removed_hists']
-    fields.extend(all_statuses)
+    # bit hacky as we want to put DIFF_MEAN_RMS earliest
+    all_statuses_mod = all_statuses[:]
+    if 'DIFF_MEAN_RMS' in all_statuses:
+        all_statuses_mod.remove("DIFF_MEAN_RMS")
+
+    fields = ['name', 'total_#_hists', 'DIFF_MEAN_RMS', 'added_collections', 'added_hists', 'removed_collections', 'removed_hists']
+    fields.extend(all_statuses_mod)  # fields is used for keys for later string formatting, determines order of columns
+
+    # Print out column headings using fields
     header = "| " + ' | '.join([f.replace("_", " ").lower() for f in fields]) + " |"
     print(header)
     hline = "| " + ' | '.join(['----' for x in fields]) + " |"
     print(hline)
+
+    # Print table contents
     for name, data in parsed_data.items():
         # Update data to account for missing labels
         for s in all_statuses:
             if s not in parsed_data[name]:
                 parsed_data[name][s] = 0
 
-        data_str = " | ".join(["{"+f+"}" for f in fields])
+        data_str = " | ".join(["{"+f+"}" for f in fields])  # create template str for this row
         # update name to include link to webpage
         # TODO: some way to coordinate this with doPRReview, etc
         url = "https://uhh2-integration.web.cern.ch/UHH2integration/%s/%s.html" % (os.environ['LOCALBRANCH'], name)
         fancy_name = "[%s](%s)" % (name, url)
-        table_entry = ("| " + data_str + " |").format(name=fancy_name, **parsed_data[name])
+        table_entry = ("| " + data_str + " |").format(name=fancy_name, **parsed_data[name])  # numbers actually get put in here
         print(table_entry)
     print("\n")
+
     # Print description of each status
     for s in all_statuses:
         print(" - **{name}**: {description}".format(name=s.replace("_", " ").lower(), description=status_descriptions[s]))
