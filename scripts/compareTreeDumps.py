@@ -94,34 +94,36 @@ def make_hists_ROOT(data1, data2, method_str):
         nbins = len(all_values)
         xmin, xmax = 0, nbins+1
 
-        h1name = "h1_%s" % (hname_clean)
-        h1 = ROOT.TH1F(h1name, ";%s;N" % method_str, nbins, xmin, xmax)
-        stats1 = None
-        ax = h1.GetXaxis()
-        for ind, val in enumerate(all_values):
-            ax.SetBinLabel(ind+1, val)
-            if val in counter1:
-                h1.Fill(ind, counter1[val])
-        h1.Draw("HIST")
-        c.Update()
-        # Get stat boxes for repositioning
-        # Draw hist by itself to get it, then plot them together afterwards
-        stats1 = h1.GetListOfFunctions().FindObject("stats").Clone("stats1")
-        h1.SetStats(0)
+        if data1:
+            h1name = "h1_%s" % (hname_clean)
+            h1 = ROOT.TH1F(h1name, ";%s;N" % method_str, nbins, xmin, xmax)
+            stats1 = None
+            ax = h1.GetXaxis()
+            for ind, val in enumerate(all_values):
+                ax.SetBinLabel(ind+1, val)
+                if val in counter1:
+                    h1.Fill(ind, counter1[val])
+            h1.Draw("HIST")
+            c.Update()
+            # Get stat boxes for repositioning
+            # Draw hist by itself to get it, then plot them together afterwards
+            stats1 = h1.GetListOfFunctions().FindObject("stats").Clone("stats1")
+            h1.SetStats(0)
 
-        h2name = "h2_%s" % (hname_clean)
-        h2 = ROOT.TH1F(h2name, ";%s;N" % method_str, nbins, xmin, xmax)
-        stats2 = None
-        ax = h2.GetXaxis()
-        for ind, val in enumerate(all_values):
-            ax.SetBinLabel(ind+1, val)
-            if val in counter2:
-                h2.Fill(ind, counter2[val])
-        h2.Draw("HIST")
-        c.Update()
-        stats2 = h2.GetListOfFunctions().FindObject("stats").Clone("stats2")
-        h2.SetStats(0)
-        c.Clear()
+        if data2:
+            h2name = "h2_%s" % (hname_clean)
+            h2 = ROOT.TH1F(h2name, ";%s;N" % method_str, nbins, xmin, xmax)
+            stats2 = None
+            ax = h2.GetXaxis()
+            for ind, val in enumerate(all_values):
+                ax.SetBinLabel(ind+1, val)
+                if val in counter2:
+                    h2.Fill(ind, counter2[val])
+            h2.Draw("HIST")
+            c.Update()
+            stats2 = h2.GetListOfFunctions().FindObject("stats").Clone("stats2")
+            h2.SetStats(0)
+            c.Clear()
     else:
         # Figure out axis range using both hists is possible
         xmin, xmax = 0, 1
@@ -138,29 +140,29 @@ def make_hists_ROOT(data1, data2, method_str):
 
         # Make hists
         # We make hists even if no data, to make further plotting easier
-        h1name = "h1_%s" % (hname_clean)
-        h1 = ROOT.TH1F(h1name, ";%s;N" % method_str, nbins, xmin, xmax)
-        stats1 = None
         if data1:
+            h1name = "h1_%s" % (hname_clean)
+            h1 = ROOT.TH1F(h1name, ";%s;N" % method_str, nbins, xmin, xmax)
+            stats1 = None
             for d in data1:
                 h1.Fill(d)
-        h1.Draw("HIST")
-        c.Update()
-        # Get stat boxes for repositioning
-        # Draw hist by itself to get it, then plot them together afterwards
-        stats1 = h1.GetListOfFunctions().FindObject("stats").Clone("stats1")
-        h1.SetStats(0)
+            h1.Draw("HIST")
+            c.Update()
+            # Get stat boxes for repositioning
+            # Draw hist by itself to get it, then plot them together afterwards
+            stats1 = h1.GetListOfFunctions().FindObject("stats").Clone("stats1")
+            h1.SetStats(0)
 
-        h2name = "h2_%s" % (hname_clean)
-        h2 = ROOT.TH1F(h2name, ";%s;N" % method_str, nbins, xmin, xmax)
-        stats2 = None
         if data2:
+            h2name = "h2_%s" % (hname_clean)
+            h2 = ROOT.TH1F(h2name, ";%s;N" % method_str, nbins, xmin, xmax)
+            stats2 = None
             for d in data2:
                 h2.Fill(d)
-        h2.Draw("HIST")
-        c.Update()
-        stats2 = h2.GetListOfFunctions().FindObject("stats").Clone("stats2")
-        h2.SetStats(0)
+            h2.Draw("HIST")
+            c.Update()
+            stats2 = h2.GetListOfFunctions().FindObject("stats").Clone("stats2")
+            h2.SetStats(0)
 
         c.Clear()
 
