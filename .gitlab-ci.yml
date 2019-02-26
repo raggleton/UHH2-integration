@@ -245,59 +245,88 @@ dfsdeploy-2018-mc:
 
 #-------------------------------------------------------------------------------
 
-cmsrun-2017-data-new:
-  # Run 2017 data on PR
+cmsrun-2017v2-data-new:
+  # Run 2017v2 data on PR
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --isData --append "_new"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --isData --append "_new"
 
-cmsrun-2017-data-ref:
-  # Run 2017 data on reference
+cmsrun-2017v2-data-ref:
+  # Run 2017v2 data on reference
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --isData --append "_ref"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --isData --append "_ref"
 
-compare-webpage-2017-data:
+compare-webpage-2017v2-data:
   <<: *compare-webpage
   dependencies:
     - build-new
-    - cmsrun-2017-data-new
-    - cmsrun-2017-data-ref
+    - cmsrun-2017v2-data-new
+    - cmsrun-2017v2-data-ref
 
-dfsdeploy-2017-data:
+dfsdeploy-2017v2-data:
   <<: *dfs-deploy
   dependencies:
-    - compare-webpage-2017-data
+    - compare-webpage-2017v2-data
 
 #-------------------------------------------------------------------------------
 
-cmsrun-2017-mc-new:
-  # Run 2017 mc on PR
+cmsrun-2017v2-mc-new:
+  # Run 2017v2 mc on PR
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --append "_new"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --append "_new"
 
-cmsrun-2017-mc-ref:
-  # Run 2017 mc on reference
+cmsrun-2017v2-mc-ref:
+  # Run 2017v2 mc on reference
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017 --append "_ref"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --append "_ref"
 
-compare-webpage-2017-mc:
+compare-webpage-2017v2-mc:
   <<: *compare-webpage
   dependencies:
     - build-new
-    - cmsrun-2017-mc-new
-    - cmsrun-2017-mc-ref
+    - cmsrun-2017v2-mc-new
+    - cmsrun-2017v2-mc-ref
 
-dfsdeploy-2017-mc:
+dfsdeploy-2017v2-mc:
   <<: *dfs-deploy
   dependencies:
-    - compare-webpage-2017-mc
+    - compare-webpage-2017v2-mc
+
+#-------------------------------------------------------------------------------
+# NB no 2017v1 data jobs as no one uses that dataset
+
+cmsrun-2017v1-mc-new:
+  # Run 2017v1 mc on PR
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v1 --append "_new"
+
+cmsrun-2017v1-mc-ref:
+  # Run 2017v1 mc on reference
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v1 --append "_ref"
+
+compare-webpage-2017v1-mc:
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-2017v1-mc-new
+    - cmsrun-2017v1-mc-ref
+
+dfsdeploy-2017v1-mc:
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-2017v1-mc
 
 #-------------------------------------------------------------------------------
 
@@ -427,12 +456,15 @@ review-ntuples:
     - cmsrun-2018-mc-new
     - cmsrun-2018-mc-ref
     - compare-webpage-2018-mc
-    - cmsrun-2017-data-new
-    - cmsrun-2017-data-ref
-    - compare-webpage-2017-data
-    - cmsrun-2017-mc-new
-    - cmsrun-2017-mc-ref
-    - compare-webpage-2017-mc
+    - cmsrun-2017v2-data-new
+    - cmsrun-2017v2-data-ref
+    - compare-webpage-2017v2-data
+    - cmsrun-2017v2-mc-new
+    - cmsrun-2017v2-mc-ref
+    - compare-webpage-2017v2-mc
+    - cmsrun-2017v1-mc-new
+    - cmsrun-2017v1-mc-ref
+    - compare-webpage-2017v1-mc
     - cmsrun-2016v3-data-new
     - cmsrun-2016v3-data-ref
     - compare-webpage-2016v3-data

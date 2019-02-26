@@ -71,12 +71,12 @@ CONFIGS = {
     },
 
     ######################
-    # 2018 MINIAOD
+    # 2017v2 MINIAOD
     ######################
 
-    "2017": {
+    "2017v2": {
         "data": {
-            "config": "ntuplewriter_data_2017.py",
+            "config": "ntuplewriter_data_2017v2.py",
             "jobs": [
                 {
                     "name": "JetHT",
@@ -93,15 +93,28 @@ CONFIGS = {
             ]
         },
         "mc": {
-            "config": "ntuplewriter_mc_2017.py",
+            "config": "ntuplewriter_mc_2017v2.py",
+            "jobs": [
+                {
+                    "name": "TTSemiLeptonic",
+                    "inputfile": "/store/mc/RunIIFall17MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/30000/D221F074-FF58-E811-958D-509A4C78138B.root",
+                },
+            ]
+        },
+    },
+
+    ######################
+    # 2017v1 MINIAOD
+    ######################
+
+    "2017v1": {
+        # No Prompt data, people use 31Mar18 instead
+        "mc": {
+            "config": "ntuplewriter_mc_2017v1.py",
             "jobs": [
                 {
                     "name": "TTHadronic",
                     "inputfile": "/store/mc/RunIIFall17MiniAOD/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/40000/2657B2FF-650D-E811-99F6-0025905A6060.root",
-                },
-                {
-                    "name": "TTSemiLeptonic",
-                    "inputfile": "/store/mc/RunIIFall17MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/30000/D221F074-FF58-E811-958D-509A4C78138B.root",
                 },
             ]
         },
