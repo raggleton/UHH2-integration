@@ -475,7 +475,9 @@ def save_to_json(json_data, hist_status, output_filename):
     """
     # Discard the common_hists list, we use hist_status info instead
     # We only keep original info about added/removed collections
-    del json_data['common_hists']
+    if 'common_hists' in json_data:
+        del json_data['common_hists']
+
     # Store histograms grouped by status
     statuses = sorted(list(set(hist_status.values())))
     status_dict = {}
