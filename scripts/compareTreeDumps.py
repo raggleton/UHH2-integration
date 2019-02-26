@@ -435,6 +435,11 @@ def analyse_hists(hist1, hist2):
     if n_entries2 != n_entries1:
         return HistSummary("DIFF_ENTRIES", "Differing number of entries")
 
+    mean1, mean2 = hist1.GetMean(), hist2.GetMean()
+    rms1, rms2 = hist1.GetRMS(), hist2.GetRMS()
+    if not isclose(mean1, mean2) or not isclose(rms1, rms2):
+        return HistSummary("DIFF_MEAN_RMS", "Differing means and/or RMS")
+
     # Check x axis range to see if unusually large, or occupies only large numbers
     # X range should be same for both by design
     xmin, xmax = hist1.GetXaxis().GetXmin(), hist1.GetXaxis().GetXmax()
@@ -447,12 +452,6 @@ def analyse_hists(hist1, hist2):
     # Maybe range is small, but all values are very very large (or v.v.small)
     if xmax > range_lim or xmin < -range_lim:
         return HistSummary("EXTREME_VALUES", "x axis has very large values (+- %g)" % range_lim)
-
-    # FIXME better float comparison to avoid floating point errors
-    mean1, mean2 = hist1.GetMean(), hist2.GetMean()
-    rms1, rms2 = hist1.GetRMS(), hist2.GetRMS()
-    if not isclose(mean1, mean2) or not isclose(rms1, rms2):
-        return HistSummary("DIFF_MEAN_RMS", "Differing means and/or RMS")
 
     if (isclose(mean1, 0) and isclose(rms1, 0)) or (isclose(mean2, 0) and isclose(rms2, 0)):
         return HistSummary("ZERO_VALUE", "One or both hists have only 0s")
