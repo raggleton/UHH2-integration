@@ -388,7 +388,7 @@ class HistSummary(object):
         return hash(self.name)
 
 
-def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
+def isclose(a, b, rel_tol=1e-06, abs_tol=0.0):
     """Safe way to compare 2 floats instead of exact equality.
 
     Parameters
@@ -397,7 +397,8 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
     b : float
         floats to compare
     rel_tol : float, optional
-        Maximum relative difference allowed
+        Maximum relative difference allowed. Can see rel differences
+        ~ 5E-7 that are just rounding errors, so 1E-6 is sensible.
     abs_tol : float, optional
         Maximum absolute difference allowed
 
