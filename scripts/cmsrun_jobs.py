@@ -46,7 +46,8 @@ CONFIGS = {
                 },
                 {
                     "name": "SingleMu",
-                    "inputfile": "/store/data/Run2018D/SingleMuon/MINIAOD/PromptReco-v2/000/321/233/00000/6C7B6F79-24A3-E811-A7BF-FA163EC61E98.root",
+                    # "inputfile": "/store/data/Run2018D/SingleMuon/MINIAOD/PromptReco-v2/000/321/233/00000/6C7B6F79-24A3-E811-A7BF-FA163EC61E98.root",
+                    "inputfile": "/store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/1010000/CDBE64B8-6D1D-5F47-A4C8-6722D7D385A1.root"
                 },
                 {
                     "name": "EGamma",  # for 2018 they changed SingleElectron to EGamma
