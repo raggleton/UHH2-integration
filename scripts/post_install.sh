@@ -8,9 +8,10 @@ ulimit -a
 # Compile SFrame and UHH
 cd ${CMSSW_BASE}/../SFrame
 source setup.sh
-time -v make ${MAKEFLAGS}
+which time
+time make ${MAKEFLAGS}
 cd ${CMSSW_BASE}/src/UHH2
-time -v make ${MAKEFLAGS}
+time make ${MAKEFLAGS}
 
 # Hack to make cmsRun work on the images as no default site set
 export CMS_PATH=/cvmfs/cms-ib.cern.ch/
