@@ -2,6 +2,9 @@
 set -e
 set -x # Print command before executing it - easier for looking at logs
 
+# Info about machine
+ulimit -a
+
 # Compile SFrame and UHH
 cd ${CMSSW_BASE}/../SFrame
 source setup.sh
