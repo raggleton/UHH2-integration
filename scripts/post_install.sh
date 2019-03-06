@@ -8,7 +8,6 @@ ulimit -a
 # Compile SFrame and UHH
 cd ${CMSSW_BASE}/../SFrame
 source setup.sh
-which time
 time make ${MAKEFLAGS}
 cd ${CMSSW_BASE}/src/UHH2
 time make ${MAKEFLAGS}
