@@ -6,6 +6,8 @@ Also run JSON producers afterwards to extract size, timings, etc
 """
 
 
+from __future__ import print_function
+
 import os
 import sys
 import argparse
@@ -244,7 +246,7 @@ if __name__ == "__main__":
 
         # Check if config file exists, skip otherwise
         config_filepath = "${{CMSSW_BASE}}/python/UHH2/core/{config}".format(**cms_dict)
-        if not os.path.isfile(config_filepath):
+        if not os.path.isfile(os.path.expandvars(config_filepath)):
             print("! Cannot find config file", config_filepath, "skipping")
             continue
 
