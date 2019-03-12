@@ -67,6 +67,11 @@ CONFIGS = {
                     "name": "TTLeptonic",
                     "inputfile": "/store/mc/RunIIAutumn18MiniAOD/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/110000/D774DA06-04F6-5E45-B02E-70ECD0DD697F.root",
                 },
+                {
+                    "name": "TTHadronicAllConstits",
+                    "inputfile": "/store/mc/RunIIAutumn18MiniAOD/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/2A6B8F74-04C7-1B46-A56E-8C786D0C2E84.root",
+                    "config": "ntuplewriter_mc_2018_allConstits.py",
+                },
             ]
         }
     },
