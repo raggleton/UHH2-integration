@@ -227,7 +227,7 @@ if __name__ == "__main__":
 
         cms_dict = deepcopy(job)
         cms_dict['inputfile'] = os.path.basename(job['inputfile'])
-        cms_dict['config'] = config_filename
+        cms_dict['config'] = job.get('config', config_filename)  # allow special configs
         cms_dict['outputfile'] = "Ntuple_%s.root" % (append)
         cms_dict['logfile'] = "log_%s.txt" % (append)
         cms_dict['cmdlineopt'] = job.get("cmdlineopt", "")  # for other commandline options
