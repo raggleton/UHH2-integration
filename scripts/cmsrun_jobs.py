@@ -237,6 +237,12 @@ if __name__ == "__main__":
         # Hack to make cmsRun work on the images as no default site set
         os.environ['CMS_PATH'] = '/cvmfs/cms-ib.cern.ch/'
 
+        # Check if config file exists, skip otherwise
+        config_filepath = "${{CMSSW_BASE}}/python/UHH2/core/{config}".format(**cms_dict)
+        if not os.path.isfile(config_filepath):
+            print("! Cannot find config file", config_filepath, "skipping")
+            continue
+
         # Use tee to pipe to file & stdout simultaneously for monitoring
         # set -o pipefail VITAL to ensure error code passed through tee,
         # otherwise will use exit code from tee (0) not cmsRun
