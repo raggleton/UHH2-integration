@@ -79,6 +79,9 @@ build-ref:
   stage: build
   dependencies:
     - get-uhh
+  only:
+    variables:
+      - $MAKENTUPLES == "1"
   except:
     - master
   artifacts:
