@@ -23,6 +23,7 @@ start)
     ;;
 passed)
     source ${CI_PROJECT_DIR}/scripts/remove_label.sh "${RUNNING_LABEL}"
+    source ${CI_PROJECT_DIR}/scripts/remove_label.sh "${FAIL_LABEL}"
     source ${CI_PROJECT_DIR}/scripts/add_label.sh "${PASS_LABEL}"
     COMMENT="$2"
     [ -z "$COMMENT" ] && COMMENT="Passed pipeline"
@@ -30,6 +31,7 @@ passed)
     ;;
 failed)
     source ${CI_PROJECT_DIR}/scripts/remove_label.sh "${RUNNING_LABEL}"
+    source ${CI_PROJECT_DIR}/scripts/remove_label.sh "${PASS_LABEL}"
     source ${CI_PROJECT_DIR}/scripts/add_label.sh "${FAIL_LABEL}"
     COMMENT="$2"
     [ -z "$COMMENT" ] && COMMENT="Failed pipeline"
