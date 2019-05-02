@@ -55,18 +55,28 @@ def gitlab_forwarder():
     pr_title = request_json["pull_request"]["title"]
     pr_text = request_json["pull_request"]["body"]
 
-    # Handle special keywords in the PR text
+    # Handle special keywords in the PR text & title
+    sanitise_pr_title = pr_title.upper().replace(" ", "")
     sanitise_pr_text = pr_text.upper().replace(" ", "")
 
     # don't make ntuples if this keyword is found (only applicable to 102X)
+    # do both text & title cos people often forget which
     compile_text = "[ONLYCOMPILE]"
-    make_ntuples = "102X" in base_branch and compile_text not in sanitise_pr_text
+    make_ntuples = ("102X" in base_branch and
+                    (compile_text not in sanitise_pr_text or
+                     compile_text not in sanitise_pr_title))
 
     # don't run CI at all if either of these keywords are found
     # 2 triggers, depending on if you like to put verb first or not
+    # do both text & title cos people often forget which
     ciskip_text1 = "[CISKIP]"
     ciskip_text2 = "[SKIPCI]"
-    skip_ci = ciskip_text1 in sanitise_pr_text or ciskip_text2 in sanitise_pr_text
+    skip_ci = any([
+                  ciskip_text1 in sanitise_pr_text,
+                  ciskip_text2 in sanitise_pr_text,
+                  ciskip_text1 in sanitise_pr_title,
+                  ciskip_text2 in sanitise_pr_title,
+                  ])
 
     app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s. Skip CI: %s. Make ntuples: %s."
                     % (pr_num, proposer, base_branch, action, skip_ci, make_ntuples))
@@ -74,7 +84,8 @@ def gitlab_forwarder():
     # Now run the script that pushes a new branch to gitlab for this PR.
     # This will then trigger gitlab-ci to run on the new branch
     app.logger.info("Pushing to gitlab")
-    check_output(['./testPR.sh', str(pr_num), base_branch, str(pr_id), str(int(skip_ci)), str(int(make_ntuples))])
+    check_output(['./testPR.sh', str(pr_num), base_branch, str(pr_id),
+                  str(int(skip_ci)), str(int(make_ntuples))])
 
     return 'Forwarding to gitlab'
 
