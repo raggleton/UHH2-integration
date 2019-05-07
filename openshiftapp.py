@@ -63,7 +63,7 @@ def gitlab_forwarder():
     # do both text & title cos people often forget which
     compile_text = "[ONLYCOMPILE]"
     make_ntuples = ("102X" in base_branch and
-                    (compile_text not in sanitise_pr_text or
+                    (compile_text not in sanitise_pr_text and
                      compile_text not in sanitise_pr_title))
 
     # don't run CI at all if either of these keywords are found
