@@ -16,11 +16,14 @@ before_script:
   - "[ -z \"$PRID\" ] && python scripts/get_pr_id.py --id $PRNUM --dumpFilename ${SCRIPTDIR}/to_test.sh --dumpVarname PRID && source ${SCRIPTDIR}/to_test.sh"
   - "[ -e ${SCRIPTDIR}/to_test.sh ] && source ${SCRIPTDIR}/to_test.sh"
 
+.job_template: &job_definition  # Common items used for all jobs
+  image: gitlab-registry.cern.ch/ci-tools/ci-worker:slc6 # need this as the default in gitlab is now SLC7
+  tags:
+  - cvmfs
 
 get-uhh:
   # Get the ref & modified versions of UHH2 that is used in later steps along with diff
-  tags:
-  - cvmfs
+  <<: *job_definition
   stage: getit
   except:
     - master
@@ -38,8 +41,7 @@ get-uhh:
 # -----------------------------------------------------------------------------
 build-new:
   # Build the new user's version
-  tags:
-  - cvmfs
+  <<: *job_definition
   stage: build
   dependencies:
     - get-uhh
@@ -74,8 +76,7 @@ build-new:
 build-ref:
   # Build the reference UHH version (set in the install.sh in UHH2)
   # so we don't need the replace_UHH.sh
-  tags:
-  - cvmfs
+  <<: *job_definition
   stage: build
   dependencies:
     - get-uhh
@@ -111,8 +112,7 @@ build-ref:
 
 # cmsRun job templates
 .cmsrun-template: &cmsrun
-  tags:
-  - cvmfs
+  <<: *job_definition
   stage: cmsrun
   <<: *make-ntuples
   retry: 2
@@ -141,8 +141,7 @@ build-ref:
 # Comparison & webpage job between ntuples
 # Must set dependencies manually, including build-new
 .compare-webpage-template: &compare-webpage
-  tags:
-    - cvmfs
+  <<: *job_definition
   stage: compare
   <<: *make-ntuples
   artifacts:
@@ -447,8 +446,7 @@ dfsdeploy-2016v2-mc:
 # REVIEW
 # -----------------------------------------------------------------------------
 review-ntuples:
-  tags:
-    - cvmfs
+  <<: *job_definition
   stage: review
   <<: *make-ntuples
   dependencies:
@@ -497,8 +495,7 @@ review-ntuples:
 # FINISHING UP STAGES
 # -----------------------------------------------------------------------------
 success:
-  tags:
-    - cvmfs
+  <<: *job_definition
   stage: end
   when: on_success
   except:
@@ -512,8 +509,7 @@ success:
     - source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"
 
 failure:
-  tags:
-    - cvmfs
+  <<: *job_definition
   stage: end
   when: on_failure
   except:
