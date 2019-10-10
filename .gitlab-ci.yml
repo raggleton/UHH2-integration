@@ -4,7 +4,14 @@ variables:
   TESTDIR: "${CI_PROJECT_DIR}/testdir"
   SCRIPTDIR: "${CI_PROJECT_DIR}/scripts"
   GITHUB_QUIET: 0  #  1 to turn off github posts, 0 otherwise
+  PRNUM: "1442"
+  REFBRANCH: "RunII_102X_v2"
+  REMOTEBRANCH: "pull/1442/head"
+  LOCALBRANCH: "test1442"
+  PRID: "MDExOlB1bGxSZXF1ZXN0MzI2NzMwMjY2"
+  MAKENTUPLES: "1"
 #@TESTVARS@
+
 # DO NOT DELETE THE TESTVARS COMMENT - gets replaced for each branch with necessary variables
 
 before_script:
