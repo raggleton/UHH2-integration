@@ -64,8 +64,9 @@ build-new:
     - source ${SCRIPTDIR}/post_install.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check log"
     - source ${SCRIPTDIR}/post_comment.sh "Compilation with PR successful"
     # Check the python is even valid
+    # -tt flag checks tabs vs spaces
     - cd ${CMSSW_BASE}/src/UHH2/core/python
-    - for f in ntuple*.py; do echo "$f"; python "$f" || source ${SCRIPTDIR}/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
+    - for f in ntuple*.py; do echo "$f"; python -tt "$f" || source ${SCRIPTDIR}/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
     # Check the CRAB tarball size
     - source /cvmfs/cms.cern.ch/crab3/crab.sh; cd ${CMSSW_BASE}/src/UHH2/scripts/crab;
       python ${SCRIPTDIR}/makeCheckCrabTarball.py --output testTarball.tgz || source ${SCRIPTDIR}/post_comment.sh "CRAB tarball creation failed or exceeded size limit"; rm testTarball.tgz
