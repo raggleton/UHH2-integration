@@ -17,7 +17,7 @@ before_script:
   - "[ -e ${SCRIPTDIR}/to_test.sh ] && source ${SCRIPTDIR}/to_test.sh"
 
 .job_template: &job_definition  # Common items used for all jobs
-  image: gitlab-registry.cern.ch/ci-tools/ci-worker:slc6 # need this as the default in gitlab is now SLC7
+  image: ${IMAGE}
   tags:
   - cvmfs
 

@@ -81,11 +81,14 @@ def gitlab_forwarder():
     app.logger.info("Handling PR %d from %s, to merge into branch %s. PR was %s. Skip CI: %s. Make ntuples: %s."
                     % (pr_num, proposer, base_branch, action, skip_ci, make_ntuples))
 
+    # Determine whether we are using SL6 or CC7
+    is_slc7 = "106X" in base_branch
+
     # Now run the script that pushes a new branch to gitlab for this PR.
     # This will then trigger gitlab-ci to run on the new branch
     app.logger.info("Pushing to gitlab")
     check_output(['./testPR.sh', str(pr_num), base_branch, str(pr_id),
-                  str(int(skip_ci)), str(int(make_ntuples))])
+                  str(int(skip_ci)), str(int(make_ntuples)), str(int(is_slc7))])
 
     return 'Forwarding to gitlab'
 

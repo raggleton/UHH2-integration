@@ -4,7 +4,7 @@
 # then adding, committing, and pushing
 # 
 # Usage:
-# ./testPR.sh <PR NUMBER> <REFBRANCH> <PRID> <SKIP CI> <MAKE NTUPLES>
+# ./testPR.sh <PR NUMBER> <REFBRANCH> <PRID> <SKIP CI> <MAKE NTUPLES> <IS SLC7>
 # 
 # PRID is optional, it will get updated in the CI job if it doesn't exist
 
@@ -15,6 +15,7 @@ REFBRANCH="$2"
 PRID="$3"
 SKIPCI="$4"  # if 1 skip all CI, 0 run
 MAKENTUPLES="$5"  # if 1 run cmsRun, make ntuples, plot, if 0 skip that (i.e. compile only)
+ISSLC7="$6"
 
 NEWBRANCH="test${PULLNUM}"
 git checkout master
@@ -26,12 +27,18 @@ git checkout -b "${NEWBRANCH}" master
 
 REPLACESTR="#@TESTVARS@"
 
+IMAGE="gitlab-registry.cern.ch/ci-tools/ci-worker:slc6"
+if [[ $ISSLC7 == 1 ]]; then
+    IMAGE="gitlab-registry.cern.ch/ci-tools/ci-worker:cc7"
+fi
+
 CONTENTS="  PRNUM: \"${PULLNUM}\"\n"
 CONTENTS="$CONTENTS  REFBRANCH: \"${REFBRANCH}\"\n"
 CONTENTS="$CONTENTS  REMOTEBRANCH: \"pull/${PULLNUM}/head\"\n"
 CONTENTS="$CONTENTS  LOCALBRANCH: \"${NEWBRANCH}\"\n"
 CONTENTS="$CONTENTS  PRID: \"${PRID}\"\n"
 CONTENTS="$CONTENTS  MAKENTUPLES: \"${MAKENTUPLES}\"\n"
+CONTENTS="$CONTENTS  IMAGE: \"${IMAGE}\"\n"
 CONTENTS="$CONTENTS$REPLACESTR\n"  # add REPLACESTR back on for any future replacements
 
 # Only work with gnu sed, be careful on mac
