@@ -57,6 +57,7 @@ build-new:
     - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
     - mkdir -p ${TESTDIR} && cd ${TESTDIR}
+    - uname -a
     # deploy CMSSW, UHH
     - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "install.sh failed, please check log"
     - source ${SCRIPTDIR}/replace_UHH.sh  # Use the UHH2 version we checked out
