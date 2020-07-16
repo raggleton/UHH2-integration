@@ -34,6 +34,109 @@ NEVENTS = 500
 # Note that we assume the input file is in EOS (cernbox), see fetchMiniAOD.sh,
 # thus you should copy xrdcp any files first to the EOS location
 CONFIGS = {
+
+    ######################
+    # 2018 UltraLegacy MINIAOD
+    ######################
+    "2018UL": {
+        "data": {
+            "config": "ntuplewriter_data_2018UL.py",
+            "jobs" : [
+                {
+                    "name": "JetHT",
+                    "inputfile": "/store/data/Run2018B/JetHT/MINIAOD/12Nov2019_UL2018-v2/110000/C65A083B-9762-AF49-ACA1-DA764EA05A9E.root"
+                },
+                {
+                    "name": "SingleMu",
+                    "inputfile": "/store/data/Run2018B/SingleMuon/MINIAOD/12Nov2019_UL2018-v2/70000/5EEF8EA9-86A1-A147-91BB-194B64FC4972.root"
+                },
+                {
+                    "name": "EGamma",
+                    "inputfile": "/store/data/Run2018B/EGamma/MINIAOD/12Nov2019_UL2018-v2/100000/F37232DA-6F44-D640-A3BB-5CFEC6D6D04A.root"
+                }
+            ]
+        },
+        "mc": {
+            "config": "ntuplewriter_mc_2018UL.py",
+            "jobs": [
+                {
+                    "name": "TTSemiLeptonic",
+                    "inputfile": "/store/mc/RunIISummer19UL18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v11_L1v1-v2/10000/CB2A4110-1466-E949-BFE4-661AFEB27197.root"
+                }
+            ]
+        }
+    },
+
+    ######################
+    # 2017 UltraLegacy MINIAOD
+    ######################
+    "2017UL": {
+        "data": {
+            "config": "ntuplewriter_data_2017UL.py",
+            "jobs" : [
+                {
+                    "name": "JetHT",
+                    "inputfile": "/store/data/Run2017D/JetHT/MINIAOD/09Aug2019_UL2017-v1/50000/8320FFCD-A41A-1849-A506-52EF233246F4.root"
+                },
+                {
+                    "name": "SingleMu",
+                    "inputfile": "/store/data/Run2017D/SingleMuon/MINIAOD/09Aug2019_UL2017-v1/50000/ACB10C92-4B9B-5749-8C96-60942152E15C.root"
+                },
+                {
+                    "name": "SingleElectron",
+                    "inputfile": "/store/data/Run2017D/SingleElectron/MINIAOD/09Aug2019_UL2017-v1/270000/9CEAFD24-9D9D-304D-BEC0-3FE3B4903429.root"
+                }
+            ]
+        },
+        "mc": {
+            "config": "ntuplewriter_mc_2017UL.py",
+            "jobs": [
+                {
+                    "name": "TTSemiLeptonic",
+                    "inputfile": "/store/mc/RunIISummer19UL17MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/30000/BE7AE880-FE10-334A-89DC-35CCB590D9DD.root"
+                }
+            ]
+        }
+    },
+
+    ######################
+    # 2016 UltraLegacy MINIAOD
+    ######################
+    # Ignore these for now - may need to do 'normal' & 'preVFP' scenarios
+    # "2016UL": {
+    #     "data": {
+    #         "config": "ntuplewriter_data_2016UL.py",
+    #         "jobs" : [
+    #             {
+    #                 "name": "JetHT",
+    #                 "inputfile": "/store/data/Run2016F/JetHT/MINIAOD/21Feb2020_UL2016-v1/20000/1D5D8AF8-0201-824C-88DC-F4ED45F72277.root"
+    #             },
+    #             {
+    #                 "name": "SingleMu",
+    #                 "inputfile": "/store/data/Run2016F/SingleMuon/MINIAOD/21Feb2020_UL2016-v1/20000/15E4BD7A-5D84-9547-A313-1B19122E5EC6.root"
+    #             },
+    #             {
+    #                 "name": "SingleElectron",
+    #                 "inputfile": "/store/data/Run2016F/SingleElectron/MINIAOD/21Feb2020_UL2016-v1/40000/57D54A73-FD5E-424A-8BC7-98830A3733AE.root"
+    #             }
+    #         ]
+    #     },
+    #     "mc": {
+    #         "config": "ntuplewriter_mc_2016UL.py",
+    #         "jobs": [
+    #             {
+    #                 "name": "TTbar",
+    #                 "inputfile": "/store/mc/RunIISummer19UL16MiniAOD/TTbar_13TeV_TuneCP5_Pythia8/MINIAODSIM/106X_mcRun2_asymptotic_v13-v2/10000/9C43EA79-8B3D-3543-BCE2-BB9A0D017338.root"
+    #             }
+    #         ]
+    #     }
+    # },
+
+
+    ############################################################################
+    # NON-ULTRA LEGACY BELOW HERE:
+    ############################################################################
+
     ######################
     # 2018 PromptReco MINIAOD
     ######################
@@ -256,6 +359,7 @@ if __name__ == "__main__":
         cmsrun_cmd = ('set -o pipefail; time cmsRun -n {numthreads} ${{CMSSW_BASE}}/python/UHH2/core/{config} {cmdlineopt} '
                       'maxEvents={maxevents} wantSummary=1 inputFiles=file:{inputfile} outputFile={outputfile} '
                       '2>&1 | tee {logfile}'.format(**cms_dict))
+        print(cmsrun_cmd)
         return_code = subprocess.call(cmsrun_cmd, shell=True, stderr=subprocess.STDOUT)
         if return_code != 0:
             sys.exit(return_code)

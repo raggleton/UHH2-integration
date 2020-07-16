@@ -115,6 +115,13 @@ build-ref:
   except:
     - master
 
+# version for 106X jobs
+.makentuple106-template: &make-ntuples-106
+  only:
+    variables:
+      - $MAKENTUPLES == "1" && $REFBRANCH =~ /.*106X.*/
+  except:
+    - master
 
 # cmsRun job templates
 .cmsrun-template: &cmsrun
@@ -481,6 +488,137 @@ dfsdeploy-2016v2-mc:
   dependencies:
     - compare-webpage-2016v2-mc
 
+#-------------------------------------------------------------------------------
+# Ultra-Legacy jobs
+#-------------------------------------------------------------------------------
+cmsrun-2018UL-data-new:
+  # Run 2018UL data on PR
+  <<: *make-ntuples-106
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018UL --isData --append "_new"
+
+cmsrun-2018UL-data-ref:
+  # Run 2018UL data on reference
+  <<: *make-ntuples-106
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018UL --isData --append "_ref"
+
+compare-webpage-2018UL-data:
+  <<: *make-ntuples-106
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-2018UL-data-new
+    - cmsrun-2018UL-data-ref
+
+dfsdeploy-2018UL-data:
+  <<: *make-ntuples-106
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-2018UL-data
+
+#-------------------------------------------------------------------------------
+
+cmsrun-2018UL-mc-new:
+  # Run 2018UL mc on PR
+  <<: *make-ntuples-106
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018UL --append "_new"
+
+cmsrun-2018UL-mc-ref:
+  # Run 2018UL mc on reference
+  <<: *make-ntuples-106
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018UL --append "_ref"
+
+compare-webpage-2018UL-mc:
+  <<: *make-ntuples-106
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-2018UL-mc-new
+    - cmsrun-2018UL-mc-ref
+
+dfsdeploy-2018UL-mc:
+  <<: *make-ntuples-106
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-2018UL-mc
+
+#-------------------------------------------------------------------------------
+
+cmsrun-2017UL-data-new:
+  # Run 2017UL data on PR
+  <<: *make-ntuples-106
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017UL --isData --append "_new"
+
+cmsrun-2017UL-data-ref:
+  # Run 2017UL data on reference
+  <<: *make-ntuples-106
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017UL --isData --append "_ref"
+
+compare-webpage-2017UL-data:
+  <<: *make-ntuples-106
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-2017UL-data-new
+    - cmsrun-2017UL-data-ref
+
+dfsdeploy-2017UL-data:
+  <<: *make-ntuples-106
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-2017UL-data
+
+#-------------------------------------------------------------------------------
+
+cmsrun-2017UL-mc-new:
+  # Run 2017UL mc on PR
+  <<: *make-ntuples-106
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017UL --append "_new"
+
+cmsrun-2017UL-mc-ref:
+  # Run 2017UL mc on reference
+  <<: *make-ntuples-106
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017UL --append "_ref"
+
+compare-webpage-2017UL-mc:
+  <<: *make-ntuples-106
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-2017UL-mc-new
+    - cmsrun-2017UL-mc-ref
+
+dfsdeploy-2017UL-mc:
+  <<: *make-ntuples-106
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-2017UL-mc
+
+#-------------------------------------------------------------------------------
+
 # -----------------------------------------------------------------------------
 # REVIEW
 # -----------------------------------------------------------------------------
@@ -492,13 +630,14 @@ review-ntuples:
       - $MAKENTUPLES == "1"
   dependencies:
     - build-new
+    # 102X jobs:
     - cmsrun-2018-data-new
     - cmsrun-2018-data-ref
     - compare-webpage-2018-data
     - cmsrun-2018-mc-new
     - cmsrun-2018-mc-ref
     - compare-webpage-2018-mc
-    - cmsrun-2017v2-data-new
+    - cmsrun-2017UL-data-new
     - cmsrun-2017v2-data-ref
     - compare-webpage-2017v2-data
     - cmsrun-2017v2-mc-new
@@ -519,6 +658,23 @@ review-ntuples:
     - cmsrun-2016v2-mc-new
     - cmsrun-2016v2-mc-ref
     - compare-webpage-2016v2-mc
+    # 106X ultra-legacy jobs:
+    - cmsrun-2018UL-data-new
+    - cmsrun-2018UL-data-ref
+    - compare-webpage-2018UL-data
+    - dfsdeploy-2018UL-data
+    - cmsrun-2018UL-mc-new
+    - cmsrun-2018UL-mc-ref
+    - compare-webpage-2018UL-mc
+    - dfsdeploy-2018UL-mc
+    - cmsrun-2017UL-data-new
+    - cmsrun-2017UL-data-ref
+    - compare-webpage-2017UL-data
+    - dfsdeploy-2017UL-data
+    - cmsrun-2017UL-mc-new
+    - cmsrun-2017UL-mc-ref
+    - compare-webpage-2017UL-mc
+    - dfsdeploy-2017UL-mc
   script:
     # Deploy our release to get a newer version of python etc, check packages
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
