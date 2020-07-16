@@ -59,12 +59,13 @@ def gitlab_forwarder():
     sanitise_pr_title = pr_title.upper().replace(" ", "")
     sanitise_pr_text = pr_text.upper().replace(" ", "")
 
-    # don't make ntuples if this keyword is found (only applicable to 102X)
-    # do both text & title cos people often forget which
+    # decide whether to do ntuples - only for 102X, 106X
+    # don't make ntuples if this keyword is found
+    # do both text & title cos people often forget which to use
     compile_text = "[ONLYCOMPILE]"
-    make_ntuples = ("102X" in base_branch and
-                    (compile_text not in sanitise_pr_text and
-                     compile_text not in sanitise_pr_title))
+    make_ntuples = (("102X" in base_branch or "106X" in base_branch) and
+                    compile_text not in sanitise_pr_text and
+                    compile_text not in sanitise_pr_title)
 
     # don't run CI at all if either of these keywords are found
     # 2 triggers, depending on if you like to put verb first or not
