@@ -13,4 +13,4 @@ set +x  # Make sure no variables visible
 ${CI_PROJECT_DIR}/scripts/kinit.sh
 echo "filename: $1"
 BNAME=$(basename "$1")
-time xrdcp --nopbar -f --retry 3 "root://eosuser.cern.ch//eos/user/r/${EOS_USERNAME}/UHH2MiniAOD/${BNAME}" "${BNAME}"
+time xrdcp --nopbar -f --retry 3 "root://eosuser.cern.ch//eos/user/${EOS_USERNAME:0:1}/${EOS_USERNAME}/UHH2MiniAOD/${BNAME}" "${BNAME}"
