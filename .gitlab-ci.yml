@@ -7,6 +7,11 @@ variables:
 #@TESTVARS@
 # DO NOT DELETE THE TESTVARS COMMENT - gets replaced for each branch with necessary variables
 
+default:
+  image: ${IMAGE}
+  tags:
+    - cvmfs
+
 before_script:
   # Common part to setup vars
   - source /cvmfs/grid.cern.ch/etc/profile.d/setup-cvmfs-ui.sh
@@ -16,15 +21,8 @@ before_script:
   - "[ -z \"$PRID\" ] && python scripts/get_pr_id.py --id $PRNUM --dumpFilename ${SCRIPTDIR}/to_test.sh --dumpVarname PRID && source ${SCRIPTDIR}/to_test.sh"
   - "[ -e ${SCRIPTDIR}/to_test.sh ] && source ${SCRIPTDIR}/to_test.sh"
 
-.job_template: &job_definition  # Common items used for all jobs
-  # TODO: promote to global
-  image: ${IMAGE}
-  tags:
-  - cvmfs
-
 get-uhh:
   # Get the ref & modified versions of UHH2 that is used in later steps along with diff
-  <<: *job_definition
   stage: getit
   except:
     - master
@@ -42,7 +40,6 @@ get-uhh:
 # -----------------------------------------------------------------------------
 build-new:
   # Build the new user's version
-  <<: *job_definition
   stage: build
   dependencies:
     - get-uhh
@@ -79,7 +76,6 @@ build-new:
 build-ref:
   # Build the reference UHH version (set in the install.sh in UHH2)
   # so we don't need the replace_UHH.sh
-  <<: *job_definition
   stage: build
   dependencies:
     - get-uhh
@@ -125,7 +121,6 @@ build-ref:
 
 # cmsRun job templates
 .cmsrun-template: &cmsrun
-  <<: *job_definition
   stage: cmsrun
   retry: 2
   artifacts:
@@ -153,7 +148,6 @@ build-ref:
 # Comparison & webpage job between ntuples
 # Must set dependencies manually, including build-new
 .compare-webpage-template: &compare-webpage
-  <<: *job_definition
   stage: compare
   artifacts:
     name: webpage-${CI_JOB_NAME}
@@ -623,7 +617,6 @@ dfsdeploy-2017UL-mc:
 # REVIEW
 # -----------------------------------------------------------------------------
 review-ntuples:
-  <<: *job_definition
   stage: review
   only:
     variables:
@@ -692,7 +685,6 @@ review-ntuples:
 # FINISHING UP STAGES
 # -----------------------------------------------------------------------------
 success:
-  <<: *job_definition
   stage: end
   when: on_success
   except:
@@ -706,7 +698,6 @@ success:
     - source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"
 
 failure:
-  <<: *job_definition
   stage: end
   when: on_failure
   except:
