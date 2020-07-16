@@ -17,6 +17,7 @@ before_script:
   - "[ -e ${SCRIPTDIR}/to_test.sh ] && source ${SCRIPTDIR}/to_test.sh"
 
 .job_template: &job_definition  # Common items used for all jobs
+  # TODO: promote to global
   image: ${IMAGE}
   tags:
   - cvmfs
@@ -102,21 +103,23 @@ build-ref:
     - if [[ $REFBRANCH == "RunII_10"* ]]; then cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_ref.tgz; fi  # Tar up CMSSW & SFrame, only if doing cmsrun jobs
 
 
-# Logic for determining MAKENTUPLES in openshiftapp.py
+# Logic for setting MAKENTUPLES variables is done in openshiftapp.py
 # Based on refbranch, and whether or not user included magic words in PR text.
 # Note that if you add only/except in the stage iteself, it will ignore this
-.makentuple-template: &make-ntuples
+
+# version for 102X jobs
+.makentuple102-template: &make-ntuples-102
   only:
     variables:
-      - $MAKENTUPLES == "1"
+      - $MAKENTUPLES == "1" && $REFBRANCH =~ /.*102X.*/
   except:
     - master
+
 
 # cmsRun job templates
 .cmsrun-template: &cmsrun
   <<: *job_definition
   stage: cmsrun
-  <<: *make-ntuples
   retry: 2
   artifacts:
     name: ${CI_COMMIT_REF_NAME}-${CI_JOB_NAME}
@@ -145,7 +148,6 @@ build-ref:
 .compare-webpage-template: &compare-webpage
   <<: *job_definition
   stage: compare
-  <<: *make-ntuples
   artifacts:
     name: webpage-${CI_JOB_NAME}
     paths:
@@ -173,7 +175,6 @@ build-ref:
 # parallelise it as much as possible
 .dfsdeploy-template: &dfs-deploy
   stage: deploy
-  <<: *make-ntuples
   # Custom docker image providing the needed tools to deploy in DFS
   image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer:latest
   script:
@@ -195,6 +196,7 @@ build-ref:
 
 cmsrun-2018-data-new:
   # Run 2018 data on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -202,12 +204,14 @@ cmsrun-2018-data-new:
 
 cmsrun-2018-data-ref:
   # Run 2018 data on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_ref"
 
 compare-webpage-2018-data:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -215,6 +219,7 @@ compare-webpage-2018-data:
     - cmsrun-2018-data-ref
 
 dfsdeploy-2018-data:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2018-data
@@ -223,6 +228,7 @@ dfsdeploy-2018-data:
 
 cmsrun-2018-mc-new:
   # Run 2018 mc on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -230,12 +236,14 @@ cmsrun-2018-mc-new:
 
 cmsrun-2018-mc-ref:
   # Run 2018 mc on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_ref"
 
 compare-webpage-2018-mc:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -243,6 +251,7 @@ compare-webpage-2018-mc:
     - cmsrun-2018-mc-ref
 
 dfsdeploy-2018-mc:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2018-mc
@@ -251,6 +260,7 @@ dfsdeploy-2018-mc:
 
 cmsrun-2017v2-data-new:
   # Run 2017v2 data on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -258,12 +268,14 @@ cmsrun-2017v2-data-new:
 
 cmsrun-2017v2-data-ref:
   # Run 2017v2 data on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --isData --append "_ref"
 
 compare-webpage-2017v2-data:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -271,6 +283,7 @@ compare-webpage-2017v2-data:
     - cmsrun-2017v2-data-ref
 
 dfsdeploy-2017v2-data:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2017v2-data
@@ -279,6 +292,7 @@ dfsdeploy-2017v2-data:
 
 cmsrun-2017v2-mc-new:
   # Run 2017v2 mc on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -286,12 +300,14 @@ cmsrun-2017v2-mc-new:
 
 cmsrun-2017v2-mc-ref:
   # Run 2017v2 mc on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --append "_ref"
 
 compare-webpage-2017v2-mc:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -299,6 +315,7 @@ compare-webpage-2017v2-mc:
     - cmsrun-2017v2-mc-ref
 
 dfsdeploy-2017v2-mc:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2017v2-mc
@@ -308,6 +325,7 @@ dfsdeploy-2017v2-mc:
 
 cmsrun-2017v1-mc-new:
   # Run 2017v1 mc on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -315,12 +333,14 @@ cmsrun-2017v1-mc-new:
 
 cmsrun-2017v1-mc-ref:
   # Run 2017v1 mc on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v1 --append "_ref"
 
 compare-webpage-2017v1-mc:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -328,6 +348,7 @@ compare-webpage-2017v1-mc:
     - cmsrun-2017v1-mc-ref
 
 dfsdeploy-2017v1-mc:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2017v1-mc
@@ -336,6 +357,7 @@ dfsdeploy-2017v1-mc:
 
 cmsrun-2016v3-data-new:
   # Run 2016v3 data on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -343,12 +365,14 @@ cmsrun-2016v3-data-new:
 
 cmsrun-2016v3-data-ref:
   # Run 2016v3 data on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_ref"
 
 compare-webpage-2016v3-data:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -356,6 +380,7 @@ compare-webpage-2016v3-data:
     - cmsrun-2016v3-data-ref
 
 dfsdeploy-2016v3-data:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2016v3-data
@@ -364,6 +389,7 @@ dfsdeploy-2016v3-data:
 
 cmsrun-2016v3-mc-new:
   # Run 2016v3 mc on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -371,12 +397,14 @@ cmsrun-2016v3-mc-new:
 
 cmsrun-2016v3-mc-ref:
   # Run 2016v3 mc on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_ref"
 
 compare-webpage-2016v3-mc:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -384,6 +412,7 @@ compare-webpage-2016v3-mc:
     - cmsrun-2016v3-mc-ref
 
 dfsdeploy-2016v3-mc:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2016v3-mc
@@ -392,6 +421,7 @@ dfsdeploy-2016v3-mc:
 
 cmsrun-2016v2-data-new:
   # Run 2016v2 data on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -399,12 +429,14 @@ cmsrun-2016v2-data-new:
 
 cmsrun-2016v2-data-ref:
   # Run 2016v2 data on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_ref"
 
 compare-webpage-2016v2-data:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -412,6 +444,7 @@ compare-webpage-2016v2-data:
     - cmsrun-2016v2-data-ref
 
 dfsdeploy-2016v2-data:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2016v2-data
@@ -420,6 +453,7 @@ dfsdeploy-2016v2-data:
 
 cmsrun-2016v2-mc-new:
   # Run 2016v2 mc on PR
+  <<: *make-ntuples-102
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -427,12 +461,14 @@ cmsrun-2016v2-mc-new:
 
 cmsrun-2016v2-mc-ref:
   # Run 2016v2 mc on reference
+  <<: *make-ntuples-102
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_ref"
 
 compare-webpage-2016v2-mc:
+  <<: *make-ntuples-102
   <<: *compare-webpage
   dependencies:
     - build-new
@@ -440,6 +476,7 @@ compare-webpage-2016v2-mc:
     - cmsrun-2016v2-mc-ref
 
 dfsdeploy-2016v2-mc:
+  <<: *make-ntuples-102
   <<: *dfs-deploy
   dependencies:
     - compare-webpage-2016v2-mc
@@ -450,7 +487,9 @@ dfsdeploy-2016v2-mc:
 review-ntuples:
   <<: *job_definition
   stage: review
-  <<: *make-ntuples
+  only:
+    variables:
+      - $MAKENTUPLES == "1"
   dependencies:
     - build-new
     - cmsrun-2018-data-new
