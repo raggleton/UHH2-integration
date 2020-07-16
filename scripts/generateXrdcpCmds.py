@@ -13,6 +13,7 @@ DESTINATION = "root://eosuser.cern.ch//eos/user/r/raggleto/UHH2MiniAOD"
 
 
 XROOTD_REDIR = "root://xrootd-cms.infn.it"
+XROOTD_REDIR = "root://xrootd.unl.edu"
 
 
 for year, year_dict in CONFIGS.items():
