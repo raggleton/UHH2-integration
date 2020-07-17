@@ -117,10 +117,27 @@ def store_branches(tree, obj_list, do_recursive=False, indent=0):
             store_branches(b, obj_list, True, new_indent)
 
 
+def check_enum(this_type):
+    """Check if a type is actually an enum
+
+    in older pyROOT __name__ resolves to 'int'
+    in newer pyROOT __name__ resolves to e.g. 'SimType' which we don't want
+
+    Parameters
+    ----------
+    this_type : type
+
+    Returns
+    -------
+    bool
+    """
+    return (int in this_type.__bases__) or (this_type.__name__ == "int")
+
+
 def resolve_type(typename):
     """Convert the cppyy type to python types
 
-    e.g. Muon::SimType -> int
+    e.g. enum Muon::SimType -> int
 
     Parameters
     ----------
@@ -138,8 +155,12 @@ def resolve_type(typename):
     parts = typename.split(".")
     if parts[0] not in BUILTIN_TYPES:
         current = getattr(ROOT, parts[0])
+        # this resolves e.g. ROOT.Muon.SimType,
+        # since we can't do getattr(ROOT, 'Muon.SimType')
         for p in parts[1:]:
             current = getattr(current, p)
+        if check_enum(current):
+            return 'int'
         return current.__name__
     else:
         return parts[0]
