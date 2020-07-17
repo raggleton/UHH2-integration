@@ -67,9 +67,9 @@ build-new:
     - cd ${CMSSW_BASE}/src/UHH2/core/python
     - for f in ntuple*.py; do echo "$f"; python -tt "$f" || source ${SCRIPTDIR}/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
     # Check the CRAB tarball size
-    - if [[ $SCRAM_ARCH = "slc6"* ]]; then source /cvmfs/cms.cern.ch/crab3/crab.sh; else source /cvmfs/cms.cern.ch/crab3/crab.sh; fi; cd ${CMSSW_BASE}/src/UHH2/scripts/crab;
+    - source /cvmfs/cms.cern.ch/common/crab-setup.sh; cd ${CMSSW_BASE}/src/UHH2/scripts/crab;
       python ${SCRIPTDIR}/makeCheckCrabTarball.py --output testTarball.tgz || source ${SCRIPTDIR}/post_comment.sh "CRAB tarball creation failed or exceeded size limit"; rm testTarball.tgz
-    # Tar up CMSSW & SFrame but only for 102X jobs where we actually run cmsrun jobs
+    # Tar up CMSSW & SFrame but only for 10*X jobs where we actually run cmsrun jobs
     - if [[ $REFBRANCH == "RunII_10"* ]]; then cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz; fi
 
 
