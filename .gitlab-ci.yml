@@ -702,7 +702,7 @@ final:
       - master
   when: always
   dependencies:
-    - build-ref
+    - build-new
     - review-ntuples
   script:
     # issue final pass/fail messages, based on prescence of files made in earlier stages
