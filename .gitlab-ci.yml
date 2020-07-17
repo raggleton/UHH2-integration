@@ -182,8 +182,8 @@ build-ref:
     # Script that performs the deploy to DFS. Makes use of the variables defined in the project
     # It will not sync the generated content with the folder in DFS (risk of deleting DFS management files)
     # It will just override the contents of DFS or copy new files
-    # redirect to dev null otherwise too much log text
-    - deploy-dfs > /dev/null 2>&1
+    # redirect to dev null otherwise too much log text, but keep errors
+    - deploy-dfs 1> /dev/null
     # do not run any globally defined before_script or after_script for this step
   before_script: []
   after_script: []
