@@ -51,6 +51,7 @@ build-new:
     paths:
       - ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz
       - ${TESTDIR}/deploy_script_all_${CI_COMMIT_REF_NAME}.sh
+      - ${CI_PROJECT_DIR}/build-success
   script:
     - yum install -y libtool  # needed for autoreconf when setting up fastjet
     - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
@@ -71,7 +72,8 @@ build-new:
       python ${SCRIPTDIR}/makeCheckCrabTarball.py --output testTarball.tgz || source ${SCRIPTDIR}/post_comment.sh "CRAB tarball creation failed or exceeded size limit"; rm testTarball.tgz
     # Tar up CMSSW & SFrame but only for 10*X jobs where we actually run cmsrun jobs
     - if [[ $REFBRANCH == "RunII_10"* ]]; then cd ${TESTDIR} && python ${SCRIPTDIR}/tarballEntireRelease.py -o ${TESTDIR}/all_${CI_COMMIT_REF_NAME}.tgz; fi
-
+    # for later pass/fail check
+    - touch ${CI_PROJECT_DIR}/build-success
 
 build-ref:
   # Build the reference UHH version (set in the install.sh in UHH2)
@@ -668,6 +670,10 @@ review-ntuples:
     - cmsrun-2017UL-mc-ref
     - compare-webpage-2017UL-mc
     - dfsdeploy-2017UL-mc
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/review-success
+    expire_in: 2 days
   script:
     # Deploy our release to get a newer version of python etc, check packages
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
@@ -679,33 +685,31 @@ review-ntuples:
     # do PR review with all the necessary inputs
     - ls ${TESTDIR}
     - python ${SCRIPTDIR}/doPRReview.py --timing ${TESTDIR}/timing_report.md --size ${TESTDIR}/size_report.md --plots ${TESTDIR}/ntuple_report.md
+    # for later pass/fail check
+    - touch ${CI_PROJECT_DIR}/review-success
+  after_script:
+    # always run, even if one line in script fails
+    - if [[ $MAKENTUPLES == "1" ]] && [[ ! -f ${CI_PROJECT_DIR}/review-success ]]; then source ${SCRIPTDIR}/notify_github.sh "failed" "Ntuples / plotting / webpage / review failed, please check logs"; fi
 
 
 # -----------------------------------------------------------------------------
-# FINISHING UP STAGES
+# FINISHING UP
 # -----------------------------------------------------------------------------
-success:
+final:
   stage: end
-  when: on_success
   except:
     refs:
       - master
-    variables:
-      - $MAKENTUPLES == "1"  # only do this if no PR review
-  # don't need artifacts
+  when: always
   dependencies:
+    - build-ref
+    - review-ntuples
   script:
-    - source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"
-
-failure:
-  stage: end
-  when: on_failure
-  except:
-    - master
-  # don't need artifacts
-  dependencies:
-  script:
-    - source ${SCRIPTDIR}/notify_github.sh "failed" "Compilations and/or tests failed, please check logs"
+    # issue final pass/fail messages, based on prescence of files made in earlier stages
+    # bit hacky, but no other way - when: on_failure always gets triggered, even if rerun with all stages passing
+    - if [[ ! -f ${CI_PROJECT_DIR}/build-success ]]; then source ${SCRIPTDIR}/notify_github.sh "failed" "Compilations and/or tests failed, please check logs"; fi
+    # do final success message only when no review, since review does notify_github.sh for us
+    - if [[ $MAKENTUPLES == "0" ]]; then source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"; fi
 
 
 stages:
