@@ -125,7 +125,7 @@ function checkCopyFiles {
     # Get listing for this directory on DFS once
     # This avoids calling it for all files individually
     smbout=$($smbclient -k //cerndfs.cern.ch/dfs -c "cd ${DFS_WEBSITE_PATH}/${WEBEND}/; ls $thisdir/*")
-    # echo "$smbout"
+    echo "$smbout"
     for fname in "$thisdir"/*;
     do
         if [ ! -f "$fname" ]; then
