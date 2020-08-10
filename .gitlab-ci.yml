@@ -631,7 +631,7 @@ review-ntuples:
     - cmsrun-2018-mc-new
     - cmsrun-2018-mc-ref
     - compare-webpage-2018-mc
-    - cmsrun-2017UL-data-new
+    - cmsrun-2017v2-data-new
     - cmsrun-2017v2-data-ref
     - compare-webpage-2017v2-data
     - cmsrun-2017v2-mc-new
