@@ -4,7 +4,15 @@ variables:
   TESTDIR: "${CI_PROJECT_DIR}/testdir"
   SCRIPTDIR: "${CI_PROJECT_DIR}/scripts"
   GITHUB_QUIET: 0  #  1 to turn off github posts, 0 otherwise
+  PRNUM: "1530"
+  REFBRANCH: "RunII_106X_v1"
+  REMOTEBRANCH: "pull/1530/head"
+  LOCALBRANCH: "test1530"
+  PRID: "MDExOlB1bGxSZXF1ZXN0NDY1NTQ1Njk1"
+  MAKENTUPLES: "0"
+  IMAGE: "gitlab-registry.cern.ch/ci-tools/ci-worker:cc7"
 #@TESTVARS@
+
 # DO NOT DELETE THE TESTVARS COMMENT - gets replaced for each branch with necessary variables
 
 default:
