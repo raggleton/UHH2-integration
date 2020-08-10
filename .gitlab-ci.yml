@@ -486,131 +486,131 @@ dfsdeploy-2016v2-mc:
 #-------------------------------------------------------------------------------
 # Ultra-Legacy jobs
 #-------------------------------------------------------------------------------
-cmsrun-2018UL-data-new:
-  # Run 2018UL data on PR
+cmsrun-UL18-data-new:
+  # Run UL18 data on PR
   <<: *make-ntuples-106
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018UL --isData --append "_new"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL18 --isData --append "_new"
 
-cmsrun-2018UL-data-ref:
-  # Run 2018UL data on reference
+cmsrun-UL18-data-ref:
+  # Run UL18 data on reference
   <<: *make-ntuples-106
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018UL --isData --append "_ref"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL18 --isData --append "_ref"
 
-compare-webpage-2018UL-data:
+compare-webpage-UL18-data:
   <<: *make-ntuples-106
   <<: *compare-webpage
   dependencies:
     - build-new
-    - cmsrun-2018UL-data-new
-    - cmsrun-2018UL-data-ref
+    - cmsrun-UL18-data-new
+    - cmsrun-UL18-data-ref
 
-dfsdeploy-2018UL-data:
+dfsdeploy-UL18-data:
   <<: *make-ntuples-106
   <<: *dfs-deploy
   dependencies:
-    - compare-webpage-2018UL-data
+    - compare-webpage-UL18-data
 
 #-------------------------------------------------------------------------------
 
-cmsrun-2018UL-mc-new:
-  # Run 2018UL mc on PR
+cmsrun-UL18-mc-new:
+  # Run UL18 mc on PR
   <<: *make-ntuples-106
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018UL --append "_new"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL18 --append "_new"
 
-cmsrun-2018UL-mc-ref:
-  # Run 2018UL mc on reference
+cmsrun-UL18-mc-ref:
+  # Run UL18 mc on reference
   <<: *make-ntuples-106
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018UL --append "_ref"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL18 --append "_ref"
 
-compare-webpage-2018UL-mc:
+compare-webpage-UL18-mc:
   <<: *make-ntuples-106
   <<: *compare-webpage
   dependencies:
     - build-new
-    - cmsrun-2018UL-mc-new
-    - cmsrun-2018UL-mc-ref
+    - cmsrun-UL18-mc-new
+    - cmsrun-UL18-mc-ref
 
-dfsdeploy-2018UL-mc:
+dfsdeploy-UL18-mc:
   <<: *make-ntuples-106
   <<: *dfs-deploy
   dependencies:
-    - compare-webpage-2018UL-mc
+    - compare-webpage-UL18-mc
 
 #-------------------------------------------------------------------------------
 
-cmsrun-2017UL-data-new:
-  # Run 2017UL data on PR
+cmsrun-UL17-data-new:
+  # Run UL17 data on PR
   <<: *make-ntuples-106
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017UL --isData --append "_new"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL17 --isData --append "_new"
 
-cmsrun-2017UL-data-ref:
-  # Run 2017UL data on reference
+cmsrun-UL17-data-ref:
+  # Run UL17 data on reference
   <<: *make-ntuples-106
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017UL --isData --append "_ref"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL17 --isData --append "_ref"
 
-compare-webpage-2017UL-data:
+compare-webpage-UL17-data:
   <<: *make-ntuples-106
   <<: *compare-webpage
   dependencies:
     - build-new
-    - cmsrun-2017UL-data-new
-    - cmsrun-2017UL-data-ref
+    - cmsrun-UL17-data-new
+    - cmsrun-UL17-data-ref
 
-dfsdeploy-2017UL-data:
+dfsdeploy-UL17-data:
   <<: *make-ntuples-106
   <<: *dfs-deploy
   dependencies:
-    - compare-webpage-2017UL-data
+    - compare-webpage-UL17-data
 
 #-------------------------------------------------------------------------------
 
-cmsrun-2017UL-mc-new:
-  # Run 2017UL mc on PR
+cmsrun-UL17-mc-new:
+  # Run UL17 mc on PR
   <<: *make-ntuples-106
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017UL --append "_new"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL17 --append "_new"
 
-cmsrun-2017UL-mc-ref:
-  # Run 2017UL mc on reference
+cmsrun-UL17-mc-ref:
+  # Run UL17 mc on reference
   <<: *make-ntuples-106
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
-    - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017UL --append "_ref"
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL17 --append "_ref"
 
-compare-webpage-2017UL-mc:
+compare-webpage-UL17-mc:
   <<: *make-ntuples-106
   <<: *compare-webpage
   dependencies:
     - build-new
-    - cmsrun-2017UL-mc-new
-    - cmsrun-2017UL-mc-ref
+    - cmsrun-UL17-mc-new
+    - cmsrun-UL17-mc-ref
 
-dfsdeploy-2017UL-mc:
+dfsdeploy-UL17-mc:
   <<: *make-ntuples-106
   <<: *dfs-deploy
   dependencies:
-    - compare-webpage-2017UL-mc
+    - compare-webpage-UL17-mc
 
 #-------------------------------------------------------------------------------
 
@@ -653,22 +653,22 @@ review-ntuples:
     - cmsrun-2016v2-mc-ref
     - compare-webpage-2016v2-mc
     # 106X ultra-legacy jobs:
-    - cmsrun-2018UL-data-new
-    - cmsrun-2018UL-data-ref
-    - compare-webpage-2018UL-data
-    - dfsdeploy-2018UL-data
-    - cmsrun-2018UL-mc-new
-    - cmsrun-2018UL-mc-ref
-    - compare-webpage-2018UL-mc
-    - dfsdeploy-2018UL-mc
-    - cmsrun-2017UL-data-new
-    - cmsrun-2017UL-data-ref
-    - compare-webpage-2017UL-data
-    - dfsdeploy-2017UL-data
-    - cmsrun-2017UL-mc-new
-    - cmsrun-2017UL-mc-ref
-    - compare-webpage-2017UL-mc
-    - dfsdeploy-2017UL-mc
+    - cmsrun-UL18-data-new
+    - cmsrun-UL18-data-ref
+    - compare-webpage-UL18-data
+    - dfsdeploy-UL18-data
+    - cmsrun-UL18-mc-new
+    - cmsrun-UL18-mc-ref
+    - compare-webpage-UL18-mc
+    - dfsdeploy-UL18-mc
+    - cmsrun-UL17-data-new
+    - cmsrun-UL17-data-ref
+    - compare-webpage-UL17-data
+    - dfsdeploy-UL17-data
+    - cmsrun-UL17-mc-new
+    - cmsrun-UL17-mc-ref
+    - compare-webpage-UL17-mc
+    - dfsdeploy-UL17-mc
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/review-success

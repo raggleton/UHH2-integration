@@ -38,9 +38,9 @@ CONFIGS = {
     ######################
     # 2018 UltraLegacy MINIAOD
     ######################
-    "2018UL": {
+    "UL18": {
         "data": {
-            "config": "ntuplewriter_data_2018UL.py",
+            "config": "ntuplewriter_data_UL18.py",
             "jobs" : [
                 {
                     "name": "JetHT",
@@ -57,7 +57,7 @@ CONFIGS = {
             ]
         },
         "mc": {
-            "config": "ntuplewriter_mc_2018UL.py",
+            "config": "ntuplewriter_mc_UL18.py",
             "jobs": [
                 {
                     "name": "TTSemiLeptonic",
@@ -70,9 +70,9 @@ CONFIGS = {
     ######################
     # 2017 UltraLegacy MINIAOD
     ######################
-    "2017UL": {
+    "UL17": {
         "data": {
-            "config": "ntuplewriter_data_2017UL.py",
+            "config": "ntuplewriter_data_UL17.py",
             "jobs" : [
                 {
                     "name": "JetHT",
@@ -89,7 +89,7 @@ CONFIGS = {
             ]
         },
         "mc": {
-            "config": "ntuplewriter_mc_2017UL.py",
+            "config": "ntuplewriter_mc_UL17.py",
             "jobs": [
                 {
                     "name": "TTSemiLeptonic",
