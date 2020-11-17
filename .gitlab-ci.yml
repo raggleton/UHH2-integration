@@ -3,7 +3,7 @@ variables:
   CMSSW_GIT_REFERENCE: "${CI_PROJECT_DIR}/cmssw.git"
   TESTDIR: "${CI_PROJECT_DIR}/testdir"
   SCRIPTDIR: "${CI_PROJECT_DIR}/scripts"
-  GITHUB_QUIET: 0  #  1 to turn off github posts, 0 otherwise
+  GITHUB_QUIET: 1  #  1 to turn off github posts, 0 otherwise
   PRNUM: "1542"
   REFBRANCH: "RunII_102X_v2"
   REMOTEBRANCH: "pull/1542/head"
