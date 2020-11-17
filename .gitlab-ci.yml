@@ -75,6 +75,41 @@ build-new:
     # for later pass/fail check
     - touch ${CI_PROJECT_DIR}/build-success
 
+build-new-alt-arch:
+  # Build the new user's version, with an alternate architecture
+  # This is only for 102X, where we have both SLC6 and EL7 support
+  stage: build
+  dependencies:
+    - get-uhh
+  except:
+    - master
+  only:
+    variables:
+      - $REFBRANCH =~ /.*102X.*/
+  artifacts:
+    name: ${CI_COMMIT_REF_NAME}-new-alt-arch-setup
+    expire_in: 6 mos
+    paths:
+      - ${CI_PROJECT_DIR}/build-alt-arch-success
+  image: gitlab-registry.cern.ch/ci-tools/ci-worker:cc7
+  script:
+    - yum install -y libtool  # needed for autoreconf when setting up fastjet
+    - cd UHH2 && git checkout ${LOCALBRANCH} && cd .. # Use the modified branch
+    - mkdir -p ${TESTDIR} && cd ${TESTDIR}
+    - uname -a
+    # deploy CMSSW, UHH
+    - source ${CI_PROJECT_DIR}/UHH2/scripts/install.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "install.sh failed, please check log"
+    - source ${SCRIPTDIR}/replace_UHH.sh  # Use the UHH2 version we checked out
+    # Compile everything
+    - source ${SCRIPTDIR}/post_install.sh || source ${SCRIPTDIR}/notify_github.sh "failed" "Compilation of SFrame / UHH2 failed, please check log"
+    - source ${SCRIPTDIR}/post_comment.sh "Compilation with PR successful"
+    # Check the python is even valid
+    # -tt flag checks tabs vs spaces
+    - cd ${CMSSW_BASE}/src/UHH2/core/python
+    - for f in ntuple*.py; do echo "$f"; python -tt "$f" || source ${SCRIPTDIR}/notify_github.sh "failed" 'Encountered invalid python in ntuplewriter* scripts' ; done
+    # for later pass/fail check
+    - touch ${CI_PROJECT_DIR}/build-alt-arch-success
+
 build-ref:
   # Build the reference UHH version (set in the install.sh in UHH2)
   # so we don't need the replace_UHH.sh
@@ -702,11 +737,13 @@ final:
   when: always
   dependencies:
     - build-new
+    - build-new-alt-arch
     - review-ntuples
   script:
     # issue final pass/fail messages, based on prescence of files made in earlier stages
     # bit hacky, but no other way - when: on_failure always gets triggered, even if rerun with all stages passing
     - if [[ ! -f ${CI_PROJECT_DIR}/build-success ]]; then source ${SCRIPTDIR}/notify_github.sh "failed" "Compilations and/or tests failed, please check logs"; fi
+    - if [[ "$REFBRANCH" == "RunII_102"* ]] && [[ ! -f ${CI_PROJECT_DIR}/build-alt-arch-success ]]; then source ${SCRIPTDIR}/notify_github.sh "failed" "Compilations and/or tests for alternate arch failed, please check logs"; fi
     # do final success message only when no review, since review does notify_github.sh for us
     - if [[ $MAKENTUPLES == "0" ]]; then source ${SCRIPTDIR}/notify_github.sh "passed" "Compilations & tests successful"; fi
 
