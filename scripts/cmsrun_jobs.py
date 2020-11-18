@@ -28,11 +28,15 @@ NEVENTS = 500
 # i.e. input filename, # events, job name for each.
 # The job name is used for output file and logs, thus should be unique and meaningful
 #
-# Maybe in the future this will get out of hand, and it should just be a flattened list,
-# or a set of function calls
+# Note that we assume the input file is in EOS (cernbox), see fetchMiniAOD.sh.
+# !!! IMPORTANT You should copy xrdcp any files first to the EOS location,
+# use generateXrdcpCmds.py
 #
-# Note that we assume the input file is in EOS (cernbox), see fetchMiniAOD.sh,
-# thus you should copy xrdcp any files first to the EOS location
+# For each dataset, we want the smallest file (with at least NEVENTS entries)
+# The DAS query is:
+#
+# dasgoclient -query='file dataset=<dataset> | grep file.size, file.name, file.nevents' | sort -k1 -n | head
+#
 CONFIGS = {
 
     ######################
@@ -100,37 +104,68 @@ CONFIGS = {
     },
 
     ######################
-    # 2016 UltraLegacy MINIAOD
+    # 2016 Pre-VFP UltraLegacy MINIAOD
     ######################
-    # Ignore these for now - may need to do 'normal' & 'preVFP' scenarios
-    # "2016UL": {
-    #     "data": {
-    #         "config": "ntuplewriter_data_2016UL.py",
-    #         "jobs" : [
-    #             {
-    #                 "name": "JetHT",
-    #                 "inputfile": "/store/data/Run2016F/JetHT/MINIAOD/21Feb2020_UL2016-v1/20000/1D5D8AF8-0201-824C-88DC-F4ED45F72277.root"
-    #             },
-    #             {
-    #                 "name": "SingleMu",
-    #                 "inputfile": "/store/data/Run2016F/SingleMuon/MINIAOD/21Feb2020_UL2016-v1/20000/15E4BD7A-5D84-9547-A313-1B19122E5EC6.root"
-    #             },
-    #             {
-    #                 "name": "SingleElectron",
-    #                 "inputfile": "/store/data/Run2016F/SingleElectron/MINIAOD/21Feb2020_UL2016-v1/40000/57D54A73-FD5E-424A-8BC7-98830A3733AE.root"
-    #             }
-    #         ]
-    #     },
-    #     "mc": {
-    #         "config": "ntuplewriter_mc_2016UL.py",
-    #         "jobs": [
-    #             {
-    #                 "name": "TTbar",
-    #                 "inputfile": "/store/mc/RunIISummer19UL16MiniAOD/TTbar_13TeV_TuneCP5_Pythia8/MINIAODSIM/106X_mcRun2_asymptotic_v13-v2/10000/9C43EA79-8B3D-3543-BCE2-BB9A0D017338.root"
-    #             }
-    #         ]
-    #     }
-    # },
+    "UL16preVFP": {
+        "data": {
+            "config": "ntuplewriter_data_UL16preVFP.py",
+            "jobs" : [
+                {
+                    "name": "JetHT",
+                    "inputfile": "/store/data/Run2016B/JetHT/MINIAOD/21Feb2020_ver1_UL2016_HIPM-v1/240000/BB7E9923-3C70-5046-9669-EEC635F0FCBA.root"
+                },
+                {
+                    "name": "SingleMu",
+                    "inputfile": "/store/data/Run2016B/SingleMuon/MINIAOD/21Feb2020_ver1_UL2016_HIPM-v1/60000/484215C7-4E65-6248-BED5-62915D0CE599.root"
+                },
+                {
+                    "name": "SingleElectron",
+                    "inputfile": "/store/data/Run2016B/SingleElectron/MINIAOD/21Feb2020_ver1_UL2016_HIPM-v1/60000/8213197A-F465-9844-B8CC-DCC442EB3E19.root"
+                }
+            ]
+        },
+        "mc": {
+            "config": "ntuplewriter_mc_UL16preVFP.py",
+            "jobs": [
+                {
+                    "name": "TTbar",
+                    "inputfile": "/store/mc/RunIISummer19UL16MiniAODAPV/TTbar_13TeV_TuneCP5_Pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v8-v2/20000/681AC177-562C-0545-8E0F-CEFB0F56CA16.root"
+                }
+            ]
+        }
+    },
+
+    ######################
+    # 2016 Post-VFP UltraLegacy MINIAOD
+    ######################
+    "UL16postVFP": {
+        "data": {
+            "config": "ntuplewriter_data_UL16postVFP.py",
+            "jobs" : [
+                {
+                    "name": "JetHT",
+                    "inputfile": "/store/data/Run2016F/JetHT/MINIAOD/21Feb2020_UL2016-v1/40000/FB14AC9B-DF9D-BA40-A037-039EC43FD6AE.root"
+                },
+                {
+                    "name": "SingleMu",
+                    "inputfile": "/store/data/Run2016F/SingleMuon/MINIAOD/21Feb2020_UL2016-v1/20000/15E4BD7A-5D84-9547-A313-1B19122E5EC6.root"
+                },
+                {
+                    "name": "SingleElectron",
+                    "inputfile": "/store/data/Run2016F/SingleElectron/MINIAOD/21Feb2020_UL2016-v1/40000/57D54A73-FD5E-424A-8BC7-98830A3733AE.root"
+                }
+            ]
+        },
+        "mc": {
+            "config": "ntuplewriter_mc_UL16postVFP.py",
+            "jobs": [
+                {
+                    "name": "TTbar",
+                    "inputfile": "/store/mc/RunIISummer19UL16MiniAOD/TTbar_13TeV_TuneCP5_Pythia8/MINIAODSIM/106X_mcRun2_asymptotic_v13-v2/10000/9C43EA79-8B3D-3543-BCE2-BB9A0D017338.root"
+                }
+            ]
+        }
+    },
 
 
     ############################################################################

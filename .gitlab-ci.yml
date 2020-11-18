@@ -648,6 +648,132 @@ dfsdeploy-UL17-mc:
 
 #-------------------------------------------------------------------------------
 
+cmsrun-UL16preVFP-data-new:
+  # Run UL16preVFP data on PR
+  <<: *make-ntuples-106
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16preVFP --isData --append "_new"
+
+cmsrun-UL16preVFP-data-ref:
+  # Run UL16preVFP data on reference
+  <<: *make-ntuples-106
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16preVFP --isData --append "_ref"
+
+compare-webpage-UL16preVFP-data:
+  <<: *make-ntuples-106
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-UL16preVFP-data-new
+    - cmsrun-UL16preVFP-data-ref
+
+dfsdeploy-UL16preVFP-data:
+  <<: *make-ntuples-106
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-UL16preVFP-data
+
+#-------------------------------------------------------------------------------
+
+cmsrun-UL16preVFP-mc-new:
+  # Run UL16preVFP mc on PR
+  <<: *make-ntuples-106
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16preVFP --append "_new"
+
+cmsrun-UL16preVFP-mc-ref:
+  # Run UL16preVFP mc on reference
+  <<: *make-ntuples-106
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16preVFP --append "_ref"
+
+compare-webpage-UL16preVFP-mc:
+  <<: *make-ntuples-106
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-UL16preVFP-mc-new
+    - cmsrun-UL16preVFP-mc-ref
+
+dfsdeploy-UL16preVFP-mc:
+  <<: *make-ntuples-106
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-UL16preVFP-mc
+
+#-------------------------------------------------------------------------------
+
+cmsrun-UL16postVFP-data-new:
+  # Run UL16postVFP data on PR
+  <<: *make-ntuples-106
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16postVFP --isData --append "_new"
+
+cmsrun-UL16postVFP-data-ref:
+  # Run UL16postVFP data on reference
+  <<: *make-ntuples-106
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16postVFP --isData --append "_ref"
+
+compare-webpage-UL16postVFP-data:
+  <<: *make-ntuples-106
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-UL16postVFP-data-new
+    - cmsrun-UL16postVFP-data-ref
+
+dfsdeploy-UL16postVFP-data:
+  <<: *make-ntuples-106
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-UL16postVFP-data
+
+#-------------------------------------------------------------------------------
+
+cmsrun-UL16postVFP-mc-new:
+  # Run UL16postVFP mc on PR
+  <<: *make-ntuples-106
+  <<: *cmsrun-new
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16postVFP --append "_new"
+
+cmsrun-UL16postVFP-mc-ref:
+  # Run UL16postVFP mc on reference
+  <<: *make-ntuples-106
+  <<: *cmsrun-ref
+  script:
+    - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16postVFP --append "_ref"
+
+compare-webpage-UL16postVFP-mc:
+  <<: *make-ntuples-106
+  <<: *compare-webpage
+  dependencies:
+    - build-new
+    - cmsrun-UL16postVFP-mc-new
+    - cmsrun-UL16postVFP-mc-ref
+
+dfsdeploy-UL16postVFP-mc:
+  <<: *make-ntuples-106
+  <<: *dfs-deploy
+  dependencies:
+    - compare-webpage-UL16postVFP-mc
+
 # -----------------------------------------------------------------------------
 # REVIEW
 # -----------------------------------------------------------------------------
@@ -703,6 +829,22 @@ review-ntuples:
     - cmsrun-UL17-mc-ref
     - compare-webpage-UL17-mc
     - dfsdeploy-UL17-mc
+    - cmsrun-UL16preVFP-data-new
+    - cmsrun-UL16preVFP-data-ref
+    - compare-webpage-UL16preVFP-data
+    - dfsdeploy-UL16preVFP-data
+    - cmsrun-UL16preVFP-mc-new
+    - cmsrun-UL16preVFP-mc-ref
+    - compare-webpage-UL16preVFP-mc
+    - dfsdeploy-UL16preVFP-mc
+    - cmsrun-UL16postVFP-data-new
+    - cmsrun-UL16postVFP-data-ref
+    - compare-webpage-UL16postVFP-data
+    - dfsdeploy-UL16postVFP-data
+    - cmsrun-UL16postVFP-mc-new
+    - cmsrun-UL16postVFP-mc-ref
+    - compare-webpage-UL16postVFP-mc
+    - dfsdeploy-UL16postVFP-mc
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/review-success
