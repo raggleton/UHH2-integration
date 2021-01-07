@@ -9,7 +9,8 @@ from cmsrun_jobs import CONFIGS
 
 
 # Set this to your desired location
-DESTINATION = "root://eosuser.cern.ch//eos/user/r/raggleto/UHH2MiniAOD"
+EOS_USERNAME = "uhh2integration"
+DESTINATION = "root://eosuser.cern.ch//eos/user/%s/%s/UHH2MiniAOD" % (EOS_USERNAME[0], EOS_USERNAME)
 
 
 XROOTD_REDIR = "root://xrootd-cms.infn.it"

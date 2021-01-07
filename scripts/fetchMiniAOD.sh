@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # Fetch miniaod from my cernbox/eos
-# Assumes file is stored as just basename 
+# Assumes file is stored as just basename
+# Copy files over beforehand using generateXrdcpCmds.py
 # 
 # Requires you to have a kerberos token already, see kinit.sh,
 # Also requries setting EOS_USERNAME as secure variable
