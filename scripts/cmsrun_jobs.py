@@ -409,8 +409,8 @@ if __name__ == "__main__":
         produce_size_json(cms_dict['outputfile'], size_json, tree_name=tree_name, verbose=False)
 
         # Dump data to JSON
-        data_json = "data_%s.json" % (append)
+        data_output = "data_%s.awkd" % (append)
         flatten_ntuple_write(input_filename=cms_dict['outputfile'], tree_name=tree_name,
-                             output_filename=data_json)
+                             output_filename=data_output)
 
     sys.exit(0)

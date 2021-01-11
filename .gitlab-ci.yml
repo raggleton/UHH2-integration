@@ -166,6 +166,7 @@ build-ref:
       - ${TESTDIR}/Ntuple*.root
       - ${TESTDIR}/log*.txt
       - ${TESTDIR}/*.json
+      - ${TESTDIR}/*.awkd
 
 .cmsrun-new-template: &cmsrun-new
   # Run cmsRun on PR
