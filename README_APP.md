@@ -20,7 +20,7 @@ These are hosted on a CERN openshift page.
 
 ## Odds n ends
 
-- By default the openshift sites are only visible **inside** the CERN network. To configure access to the widerInternet, see https://cern.service-now.com/service-portal/article.do?n=KB0004359
+- By default the openshift sites are only visible **inside** the CERN network. To configure access to the wider Internet, see https://cern.service-now.com/service-portal/article.do?n=KB0004359
 
-- If you have `app.py`, and you haven't set `APP_CONFIG`, then it will ruun that instead of gunicorn etc, Which is not what you want.
+- If you have `app.py`, and you haven't set `APP_CONFIG`, then it will ruun that instead of gunicorn etc, which is not what you want.
 
