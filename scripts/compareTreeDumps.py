@@ -92,13 +92,14 @@ def make_hists_ROOT(data1, data2, method_str):
         all_values = set(data1) | set(data2)
         all_values = sorted(list(all_values))
         nbins = len(all_values)
-        xmin, xmax = 0, nbins+1
+        xmin, xmax = 0, nbins
 
         if data1:
             h1name = "h1_%s" % (hname_clean)
             h1 = ROOT.TH1F(h1name, ";%s;N" % method_str, nbins, xmin, xmax)
             stats1 = None
             ax = h1.GetXaxis()
+            ax.SetAlphanumeric()
             for ind, val in enumerate(all_values):
                 ax.SetBinLabel(ind+1, val)
                 if val in counter1:
@@ -115,6 +116,7 @@ def make_hists_ROOT(data1, data2, method_str):
             h2 = ROOT.TH1F(h2name, ";%s;N" % method_str, nbins, xmin, xmax)
             stats2 = None
             ax = h2.GetXaxis()
+            ax.SetAlphanumeric()
             for ind, val in enumerate(all_values):
                 ax.SetBinLabel(ind+1, val)
                 if val in counter2:
@@ -290,8 +292,11 @@ def plot_hists_ROOT(h1, stats1, h2, stats2, output_dir=".",
         rp.GetLowerRefYaxis().SetTitle("h1 / h2")
         rp.GetLowerRefYaxis().SetTitleOffset(1.65)
 
-        # Try and reset labels
-        # Broken, no idea how to fix
+        # Try and reset labels to get same ones as component hists
+        # Broken in ROOT, no idea how to fix
+        # https://root-forum.cern.ch/t/tratioplot-with-alphanumeric-label/40682
+        if h1.GetXaxis().IsAlphanumeric():
+            print("Warning:", h1.GetName().replace("h1_", ""), "has alphanumeric axis labels, but TRatioPlot doesn't support them")
         xax_ref = h1.GetXaxis()
         nbins = h1.GetNbinsX()
         xax = rp.GetLowerRefXaxis()
