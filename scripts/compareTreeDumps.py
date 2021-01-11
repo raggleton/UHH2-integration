@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-"""Script to compare all entries in 2 JSON tree dumps made by dumpNtuple.py
+"""Script to compare all entries in 2 tree dumps made by dumpNtuple.py
 Plots are made, with the option of separate thumbnail plots fo use in a website.
 
 An analysis is also performed to categorise plot comaprisons.
@@ -36,7 +36,8 @@ HIST_COLOURS = [ROOT.kBlue, ROOT.kRed]
 
 
 def get_collections(tree_data_keys):
-    """Figure out branches/collections from tree_data dict keys from JSON
+    """Figure out branches/collections from tree_data dict keys
+    i.e. names of nested method calls
 
     e.g. ['run', 'slimmedJets.pt()'] -> ['run', 'slimmedJets']
     Parameters
@@ -83,11 +84,18 @@ def make_hists_ROOT(data1, data2, method_str):
     nbins = 50
 
     h1, stats1, h2, stats2 = None, None, None, None
-
     # Need special procedure for strings
     # Use six.string_types to handle string in both py2 and 3
     # Since they are u'xxx' in py2, and 'xxx' in py3
-    if (data1 and isinstance(data1[0], string_types)) or (data2 and isinstance(data2[0], string_types)):
+    # and test for bytes type since awkward seems to use that for strings?
+    def _get_first_entry(iterable):
+        return iterable[0] if len(iterable) > 0 else None
+    data1_first_entry = _get_first_entry(data1) if data1 is not None else None
+    data2_first_entry = _get_first_entry(data2) if data2 is not None else None
+
+    if ((data1 is not None and isinstance(data1_first_entry, (string_types, bytes))) or
+        (data2 is not None and isinstance(data2_first_entry, (string_types, bytes)))):
+        # To plot hists for string values, we plot a frequency plot for each unique string
         counter1 = Counter(data1)
         counter2 = Counter(data2)
         all_values = set(data1) | set(data2)
@@ -95,14 +103,14 @@ def make_hists_ROOT(data1, data2, method_str):
         nbins = len(all_values)
         xmin, xmax = 0, nbins
 
-        if data1:
+        if data1 is not None:
             h1name = "h1_%s" % (hname_clean)
             h1 = ROOT.TH1F(h1name, ";%s;N" % method_str, nbins, xmin, xmax)
             stats1 = None
             ax = h1.GetXaxis()
             ax.SetAlphanumeric()
             for ind, val in enumerate(all_values):
-                ax.SetBinLabel(ind+1, val)
+                ax.SetBinLabel(ind+1, val.decode())
                 if val in counter1:
                     h1.Fill(ind, counter1[val])
             h1.Draw("HIST")
@@ -112,14 +120,14 @@ def make_hists_ROOT(data1, data2, method_str):
             stats1 = h1.GetListOfFunctions().FindObject("stats").Clone("stats1")
             h1.SetStats(0)
 
-        if data2:
+        if data2 is not None:
             h2name = "h2_%s" % (hname_clean)
             h2 = ROOT.TH1F(h2name, ";%s;N" % method_str, nbins, xmin, xmax)
             stats2 = None
             ax = h2.GetXaxis()
             ax.SetAlphanumeric()
             for ind, val in enumerate(all_values):
-                ax.SetBinLabel(ind+1, val)
+                ax.SetBinLabel(ind+1, val.decode())
                 if val in counter2:
                     h2.Fill(ind, counter2[val])
             h2.Draw("HIST")
@@ -152,7 +160,7 @@ def make_hists_ROOT(data1, data2, method_str):
 
         # Make hists
         # We make hists even if no data, to make further plotting easier
-        if data1:
+        if data1 is not None:
             h1name = "h1_%s" % (hname_clean)
             h1 = ROOT.TH1F(h1name, ";%s;N" % method_str, nbins, xmin, xmax)
             stats1 = None
@@ -165,7 +173,7 @@ def make_hists_ROOT(data1, data2, method_str):
             stats1 = h1.GetListOfFunctions().FindObject("stats").Clone("stats1")
             h1.SetStats(0)
 
-        if data2:
+        if data2 is not None:
             h2name = "h2_%s" % (hname_clean)
             h2 = ROOT.TH1F(h2name, ";%s;N" % method_str, nbins, xmin, xmax)
             stats2 = None
@@ -534,9 +542,11 @@ def save_to_json(json_data, hist_status, output_filename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("filename",
-                        help='Ntuple JSON filename (will be labelled "new" in plots)')
+                        help='Ntuple dump filename (made by dumpNtuple.py,'
+                             ' will be labelled "new" in plots)')
     parser.add_argument("--compareTo",
-                        help='Optional reference comparison JSON (will be labelled "ref" in plots)')
+                        help='Optional reference comparison dump file '
+                             '(made by dumpNtuple.py, will be labelled "ref" in plots)')
 
     default_output_dir = "treePlots"
     parser.add_argument("--outputDir",
@@ -564,14 +574,37 @@ if __name__ == "__main__":
     tree_data1 = {}
     tree_data2 = {}
 
-    with open(args.filename) as f:
-        tree_data1 = json.load(f)
-        print(len(tree_data1), "hists in main file")
+    # whether to handle as HDF5 or awkward arrays
+    is_hdf5_1 = "hdf5" in os.path.splitext(args.filename)[1]
+    if not is_hdf5_1 and "awkd" not in os.path.splitext(args.filename)[1]:
+        raise IOError("Input must be .hdf5 or .awkd")
 
+    if is_hdf5_1:
+        import h5py
+        tree_data1 = h5py.File(args.filename)
+        print(len(tree_data1.keys()), "hists in main file")
+    else:
+        import awkward
+        tree_data1 = awkward.load(args.filename)
+        print(len(tree_data1.columns), "hists in main file")
+
+    is_hdf5_2 = False
     if args.compareTo:
-        with open(args.compareTo) as f:
-            tree_data2 = json.load(f)
-            print(len(tree_data2), "hists in compareTo file")
+        is_hdf5_2 = "hdf5" in os.path.splitext(args.compareTo)[1]
+        if not is_hdf5_2 and "awkd" not in os.path.splitext(args.compareTo)[1]:
+            raise IOError("--compareTo input must be .hdf5 or .awkd")
+
+        if is_hdf5_2:
+            if not is_hdf5_1:
+                import h5py
+            tree_data2 = h5py.File(args.compareTo)
+            print(len(tree_data2.keys()), "hists in compareTo file")
+        else:
+            if is_hdf5_1:
+                import awkward
+            tree_data2 = awkward.load(args.compareTo)
+            print(len(tree_data2.columns), "hists in compareTo file")
+
 
     json_data = {
         "added_collections": [],
@@ -580,10 +613,13 @@ if __name__ == "__main__":
         "removed_hists": []
     }
 
-    collections1 = get_collections(tree_data1.keys())
+    tree1_keys = tree_data1.keys() if is_hdf5_1 else tree_data1.columns
+    collections1 = get_collections(tree1_keys)
 
+    tree2_keys, collections2 = [], []
     if args.compareTo:
-        collections2 = get_collections(tree_data2.keys())
+        tree2_keys = tree_data2.keys() if is_hdf5_2 else tree_data2.columns
+        collections2 = get_collections(tree2_keys)
         # Store added/removed collections
         # Added/removed are defined relative to the tree passed as --compareTo
         cols1 = set(collections1)
@@ -594,8 +630,8 @@ if __name__ == "__main__":
         json_data['removed_collections'].extend(removed)
 
         # Store added/removed hists
-        hists1 = set(list(tree_data1.keys()))
-        hists2 = set(list(tree_data2.keys()))
+        hists1 = set(tree1_keys)
+        hists2 = set(tree2_keys)
         added_hists = sorted(list(hists1 - hists2))
         removed_hists = sorted(list(hists2 - hists1))
         json_data['added_hists'].extend(added_hists)
@@ -613,7 +649,7 @@ if __name__ == "__main__":
     hist_status = OrderedDict()
 
     # Make & plot (comparison) hists
-    common_hists = sorted(json_data.get('common_hists', tree_data1.keys()))  # If only ref file, just do all
+    common_hists = sorted(json_data.get('common_hists', tree1_keys))  # If only ref file, just do all
     added_hists = json_data.get('added_hists', [])
     removed_hists = json_data.get('removed_hists', [])
     all_hists = list(chain(common_hists, added_hists, removed_hists))
@@ -621,7 +657,7 @@ if __name__ == "__main__":
     print("Producing", len(all_hists), "hists")
     json_data['total_number'] = len(all_hists)
 
-    # Use tqdm to get nice prgress bar, and add hist name if verbose,
+    # Use tqdm to get nice progress bar, and add hist name if verbose,
     # padded to keep constant position for progress bar
     # disable on non-TTY
     pbar = tqdm(all_hists, disable=None)
@@ -632,9 +668,15 @@ if __name__ == "__main__":
             pbar.set_description(fmt_str.format(method_str))
 
         # Make histograms
-        hist1, stats1, hist2, stats2 = make_hists_ROOT(tree_data1.get(method_str, []),
-                                                       tree_data2.get(method_str, []),
-                                                       method_str)
+        data1 = tree_data1[method_str] if method_str in collections1 else []
+        if not is_hdf5_1 and len(data1) > 0:
+            data1 = data1.flatten()
+
+        data2 = tree_data2[method_str] if method_str in collections2 else []
+        if not is_hdf5_2 and len(data2) > 0:
+            data2 = data2.flatten()
+
+        hist1, stats1, hist2, stats2 = make_hists_ROOT(data1, data2, method_str)
 
         # Plot to file
         if hist1 or hist2:
@@ -654,3 +696,8 @@ if __name__ == "__main__":
 
     # Save JSON data. Always needed for later steps in pipeline to work.
     save_to_json(json_data, hist_status, output_filename=args.json)
+
+    if is_hdf5_1:
+        tree_data1.close()
+    if is_hdf5_2:
+        tree_data2.close()

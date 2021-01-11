@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-"""Script to save all variables of all collections in a ntuple to JSON file.
+"""Script to save all variables of all collections in a ntuple to a file in a flattened format.
 Methods are called recursively on objects.
 
 Class info can also be saved to a JSON file.
@@ -12,11 +12,12 @@ from __future__ import print_function
 
 import os
 import re
+import sys
 import json
 import argparse
 import inspect
 from operator import methodcaller, attrgetter
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from tqdm import trange
 import ROOT
 
@@ -650,12 +651,33 @@ def print_tree_summary(tree_info, class_info, label):
     print("-" * 80)
 
 
-def flatten_ntuple_write(input_filename, tree_name, output_filename, class_json_filename=None, verbose=False):
-    """Convert ntuple to flattened JSON file. All data for a given method are
-    output as one long list, ignoring event splitting.
+def get_size(obj, seen=None):
+    """Recursively finds size of objects
 
-    Whilst not practical for proper analysis, useful for comparing all values
-    in e.g. 2 files.
+    Taken from https://goshippo.com/blog/measure-real-size-any-python-object/
+    """
+    size = sys.getsizeof(obj)
+    if seen is None:
+        seen = set()
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 0
+    # Important mark as seen *before* entering recursion to gracefully handle
+    # self-referential objects
+    seen.add(obj_id)
+    if isinstance(obj, dict):
+        size += sum([get_size(v, seen) for v in obj.values()])
+        size += sum([get_size(k, seen) for k in obj.keys()])
+    elif hasattr(obj, '__dict__'):
+        size += get_size(obj.__dict__, seen)
+    elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
+        size += sum([get_size(i, seen) for i in obj])
+    return size
+
+
+def flatten_ntuple_write(input_filename, tree_name, output_filename, class_json_filename=None, verbose=False):
+    """Convert ntuple to flattened file with awkward array table.
+    All data for a given method are output as one long list, ignoring event splitting.
 
     Tried to output as ROOT TTree, but very difficult in PyROOT with
     variable size branches.
@@ -667,7 +689,7 @@ def flatten_ntuple_write(input_filename, tree_name, output_filename, class_json_
     tree_name : str
         Name of TTree inside input file
     output_filename : str
-        Output JSON filename
+        Output filename
     class_json_filename : None, optional
         If a str, output class info dicts to this file in JSON format
     verbose : bool, optional
@@ -687,44 +709,58 @@ def flatten_ntuple_write(input_filename, tree_name, output_filename, class_json_
     print(tree.GetEntries(), "entries in tree")
     print(len(method_list), "hists in tree")
 
-    # store list of events, where each event is a dict of {method:value}
-    tree_data = []
+    # store list of values for each method call, where each event is a dict of {method:value}
+    tree_data = defaultdict(list)
 
     # Use tqdm for nice progressbar, disable on non-TTY
     for ind in trange(tree.GetEntries(), disable=None):
         this_data = get_data(tree, ind, method_list)
-        tree_data.append(this_data)
+        # flatten all events into one long list per method, makes for a much
+        # more compact output, we don't care about individual events
+        # guess we could compare those events with the same number of entries
+        # in both files? i.e. 1 or 0, but hard to do for
+        # eg jets, in which jet #1 may not be the same object in both files
+        # don't use items() as not iterator in python2
+        for key in this_data:
+            # may be a single scalar, or iterable - use extend where possible
+            try:
+                _ = iter(this_data[key])
+                tree_data[key].extend(this_data[key])
+            except TypeError:
+                tree_data[key].append(this_data[key])
+
+    print("tree_data size:", get_size(tree_data))
 
     # Save JSON data
     if class_infos and class_json_filename:
         with open(class_json_filename, 'w') as jf:
             json.dump(class_infos, jf, indent=2, sort_keys=True)
 
-    # flatten all events into one long list per method, makes for a much
-    # more compact JSON, we don't care about individual events
-    new_tree_data = {}
-    for ind, evt in enumerate(tree_data):
-        for key, value in evt.items():
-            if ind == 0:
-                new_tree_data[key] = []
-            # may be a single scalar, or iterable - use extend where possible
-            try:
-                _ = iter(value)
-                new_tree_data[key].extend(value)
-            except TypeError:
-                new_tree_data[key].append(value)
-
-    # save to JSON
-    with open(output_filename, 'w') as jf:
-        json.dump(new_tree_data, jf, indent=None, sort_keys=True)
+    is_hdf5 = "hdf5" in os.path.splitext(output_filename)[1]
+    if is_hdf5:
+        # Save to HDF5
+        import h5py
+        import numpy as np
+        with h5py.File(output_filename, "w") as f:
+            for k in tree_data:
+                f.create_dataset(k, data=np.array(tree_data[k]),
+                                 compression="gzip", compression_opts=9)
+    else:
+        # Save to awkward array
+        # make awkwardd table, save with compression
+        import awkward
+        awkd_table = awkward.fromiter([tree_data])
+        awkward.save(output_filename, awkd_table, mode='w', compression=True)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("filename",
                         help='ROOT Ntuple filename')
+
+    output_fmts = ['.awkd', '.hdf5']
     parser.add_argument("output",
-                        help="Output filename")
+                        help="Output filename. Must be one of [%s] file extensions (.awkd recommended)" % ', '.join(output_fmts))
     default_tree = "AnalysisTree"
     parser.add_argument("--treeName",
                         help="Name of TTree, defaults to %s" % default_tree,
@@ -739,6 +775,9 @@ if __name__ == "__main__":
 
     if not os.path.isfile(args.filename):
         raise IOError("Cannot find filename %s" % args.filename)
+
+    if not any(x in os.path.splitext(output_filename)[1] for x in output_fmts):
+        raise IOError("Output file should be %s" % ', '.join(output_fmts))
 
     flatten_ntuple_write(input_filename=args.filename, tree_name=args.treeName,
                          output_filename=args.output, class_json_filename=args.classJson,
