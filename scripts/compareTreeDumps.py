@@ -16,6 +16,7 @@ import os
 import re
 import json
 import argparse
+import numpy as np
 from array import array
 from itertools import chain
 from collections import OrderedDict, Counter
@@ -129,16 +130,25 @@ def make_hists_ROOT(data1, data2, method_str):
     else:
         # Figure out axis range using both hists is possible
         xmin, xmax = 0, 1
-        if len(data1) > 0 or len(data2) > 0:
-            xmin = min(chain(data1, data2))
-            xmax = max(chain(data1, data2))
-            # add extra padding, but only if numeric data
-            if (data1 and not isinstance(data1[0], str)) or (data2 and not isinstance(data2[0], str)):
-                delta = xmax - xmin
-                if delta == 0:
-                    delta = xmin/10.  # extra padding incase only 1 value
-                xmin -= (0.1 * delta)
-                xmax += (0.1 * delta)
+        if isinstance(data1_first_entry, type(None)) or isinstance(data2_first_entry, type(None)):
+            pass
+        else:
+            if isinstance(data1_first_entry, (bool, np.bool_)) or isinstance(data2_first_entry, (bool, np.bool_)):
+                xmin, xmax = 0, 2
+                nbins = 2
+            else:
+                try:
+                    xmin = min(chain(data1, data2))
+                    xmax = max(chain(data1, data2))
+                    # add extra padding
+                    delta = xmax - xmin
+                    if delta == 0:
+                        delta = xmin/10.  # extra padding incase only 1 value
+                    xmin -= (0.1 * delta)
+                    xmax += (0.1 * delta)
+                except ValueError:
+                    # happens if both sequences are empty
+                    pass
 
         # Make hists
         # We make hists even if no data, to make further plotting easier
