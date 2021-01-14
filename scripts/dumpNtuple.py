@@ -747,8 +747,22 @@ def flatten_ntuple_write(input_filename, tree_name, output_filename, class_json_
                                  compression="gzip", compression_opts=9)
     else:
         # Save to awkward array
-        # make awkwardd table, save with compression
+        # make awkward table, save with compression
         import awkward
+        # Use awkeard 0.12/13/14 as 0.15 has a bug that means it can't load()
+        # the file
+        # And awkward 1 doesn't even allow this format
+        # And the awkward 0.9 in CMSSW_10_6 is too old for this
+        major, minor, _ =  awkward.version.version_info
+        major = int(major)
+        minor = int(minor)
+        if major == 1:
+            raise ImportError("Need awkward 0.12.X, you have %s" % awkward.__version__)
+        elif minor > 14:
+            raise ImportError("Need awkward 0.12 / 0.13 / 0.14, you have %s" % awkward.__version__)
+        elif minor < 12:
+            raise ImportError("Need awkward 0.12 / 0.13 / 0.14, you have %s" % awkward.__version__)
+
         awkd_table = awkward.fromiter([tree_data])
         awkward.save(output_filename, awkd_table, mode='w', compression=True)
 
@@ -776,7 +790,7 @@ if __name__ == "__main__":
     if not os.path.isfile(args.filename):
         raise IOError("Cannot find filename %s" % args.filename)
 
-    if not any(x in os.path.splitext(output_filename)[1] for x in output_fmts):
+    if not any(x in os.path.splitext(args.output)[1] for x in output_fmts):
         raise IOError("Output file should be %s" % ', '.join(output_fmts))
 
     flatten_ntuple_write(input_filename=args.filename, tree_name=args.treeName,

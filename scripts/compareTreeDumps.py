@@ -585,6 +585,16 @@ if __name__ == "__main__":
         print(len(tree_data1.keys()), "hists in main file")
     else:
         import awkward
+        major, minor, _ =  awkward.version.version_info
+        major = int(major)
+        minor = int(minor)
+        if major == 1:
+            raise ImportError("Need awkward 0.12.X, you have %s" % awkward.__version__)
+        elif minor > 14:
+            raise ImportError("Need awkward 0.12 / 0.13 / 0.14, you have %s" % awkward.__version__)
+        elif minor < 12:
+            raise ImportError("Need awkward 0.12 / 0.13 / 0.14, you have %s" % awkward.__version__)
+
         tree_data1 = awkward.load(args.filename)
         print(len(tree_data1.columns), "hists in main file")
 
@@ -602,6 +612,16 @@ if __name__ == "__main__":
         else:
             if is_hdf5_1:
                 import awkward
+                major, minor, _ =  awkward.version.version_info
+                major = int(major)
+                minor = int(minor)
+                if major == 1:
+                    raise ImportError("Need awkward 0.12.X, you have %s" % awkward.__version__)
+                elif minor > 14:
+                    raise ImportError("Need awkward 0.12 / 0.13 / 0.14, you have %s" % awkward.__version__)
+                elif minor < 12:
+                    raise ImportError("Need awkward 0.12 / 0.13 / 0.14, you have %s" % awkward.__version__)
+
             tree_data2 = awkward.load(args.compareTo)
             print(len(tree_data2.columns), "hists in compareTo file")
 

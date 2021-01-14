@@ -203,6 +203,7 @@ cmsrun-2018-data-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_new"
 
 cmsrun-2018-data-ref:
@@ -211,6 +212,7 @@ cmsrun-2018-data-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --isData --append "_ref"
 
 compare-webpage-2018-data:
@@ -235,6 +237,7 @@ cmsrun-2018-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_new"
 
 cmsrun-2018-mc-ref:
@@ -243,6 +246,7 @@ cmsrun-2018-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2018 --append "_ref"
 
 compare-webpage-2018-mc:
@@ -267,6 +271,7 @@ cmsrun-2017v2-data-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --isData --append "_new"
 
 cmsrun-2017v2-data-ref:
@@ -275,6 +280,7 @@ cmsrun-2017v2-data-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --isData --append "_ref"
 
 compare-webpage-2017v2-data:
@@ -299,6 +305,7 @@ cmsrun-2017v2-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --append "_new"
 
 cmsrun-2017v2-mc-ref:
@@ -307,6 +314,7 @@ cmsrun-2017v2-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v2 --append "_ref"
 
 compare-webpage-2017v2-mc:
@@ -332,6 +340,7 @@ cmsrun-2017v1-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v1 --append "_new"
 
 cmsrun-2017v1-mc-ref:
@@ -340,6 +349,7 @@ cmsrun-2017v1-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2017v1 --append "_ref"
 
 compare-webpage-2017v1-mc:
@@ -364,6 +374,7 @@ cmsrun-2016v3-data-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_new"
 
 cmsrun-2016v3-data-ref:
@@ -372,6 +383,7 @@ cmsrun-2016v3-data-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --isData --append "_ref"
 
 compare-webpage-2016v3-data:
@@ -396,6 +408,7 @@ cmsrun-2016v3-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_new"
 
 cmsrun-2016v3-mc-ref:
@@ -404,6 +417,7 @@ cmsrun-2016v3-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v3 --append "_ref"
 
 compare-webpage-2016v3-mc:
@@ -428,6 +442,7 @@ cmsrun-2016v2-data-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_new"
 
 cmsrun-2016v2-data-ref:
@@ -436,6 +451,7 @@ cmsrun-2016v2-data-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --isData --append "_ref"
 
 compare-webpage-2016v2-data:
@@ -460,6 +476,7 @@ cmsrun-2016v2-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_new"
 
 cmsrun-2016v2-mc-ref:
@@ -468,6 +485,7 @@ cmsrun-2016v2-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year 2016v2 --append "_ref"
 
 compare-webpage-2016v2-mc:
@@ -493,6 +511,7 @@ cmsrun-UL18-data-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL18 --isData --append "_new"
 
 cmsrun-UL18-data-ref:
@@ -501,6 +520,7 @@ cmsrun-UL18-data-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL18 --isData --append "_ref"
 
 compare-webpage-UL18-data:
@@ -525,6 +545,7 @@ cmsrun-UL18-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL18 --append "_new"
 
 cmsrun-UL18-mc-ref:
@@ -533,6 +554,7 @@ cmsrun-UL18-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL18 --append "_ref"
 
 compare-webpage-UL18-mc:
@@ -557,6 +579,7 @@ cmsrun-UL17-data-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL17 --isData --append "_new"
 
 cmsrun-UL17-data-ref:
@@ -565,6 +588,7 @@ cmsrun-UL17-data-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL17 --isData --append "_ref"
 
 compare-webpage-UL17-data:
@@ -589,6 +613,7 @@ cmsrun-UL17-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL17 --append "_new"
 
 cmsrun-UL17-mc-ref:
@@ -597,6 +622,7 @@ cmsrun-UL17-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL17 --append "_ref"
 
 compare-webpage-UL17-mc:
@@ -621,6 +647,7 @@ cmsrun-UL16preVFP-data-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16preVFP --isData --append "_new"
 
 cmsrun-UL16preVFP-data-ref:
@@ -629,6 +656,7 @@ cmsrun-UL16preVFP-data-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16preVFP --isData --append "_ref"
 
 compare-webpage-UL16preVFP-data:
@@ -653,6 +681,7 @@ cmsrun-UL16preVFP-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16preVFP --append "_new"
 
 cmsrun-UL16preVFP-mc-ref:
@@ -661,6 +690,7 @@ cmsrun-UL16preVFP-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16preVFP --append "_ref"
 
 compare-webpage-UL16preVFP-mc:
@@ -685,6 +715,7 @@ cmsrun-UL16postVFP-data-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16postVFP --isData --append "_new"
 
 cmsrun-UL16postVFP-data-ref:
@@ -693,6 +724,7 @@ cmsrun-UL16postVFP-data-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16postVFP --isData --append "_ref"
 
 compare-webpage-UL16postVFP-data:
@@ -717,6 +749,7 @@ cmsrun-UL16postVFP-mc-new:
   <<: *cmsrun-new
   script:
     - cd ${TESTDIR} && source deploy_script_all_${CI_COMMIT_REF_NAME}.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16postVFP --append "_new"
 
 cmsrun-UL16postVFP-mc-ref:
@@ -725,6 +758,7 @@ cmsrun-UL16postVFP-mc-ref:
   <<: *cmsrun-ref
   script:
     - cd ${TESTDIR} && source deploy_script_all_ref.sh && cd ${TESTDIR}
+    - pip install --user -r ${CI_PROJECT_DIR}/requirements_local.txt  # to get awkward0, etc
     - python ${SCRIPTDIR}/cmsrun_jobs.py --year UL16postVFP --append "_ref"
 
 compare-webpage-UL16postVFP-mc:
