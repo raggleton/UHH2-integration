@@ -83,7 +83,7 @@ def gitlab_forwarder():
                     % (pr_num, proposer, base_branch, action, skip_ci, make_ntuples))
 
     # Determine whether we are using SL6 or CC7
-    is_slc7 = "106X" in base_branch
+    is_slc7 = "102X_v1" not in base_branch
 
     # Now run the script that pushes a new branch to gitlab for this PR.
     # This will then trigger gitlab-ci to run on the new branch
