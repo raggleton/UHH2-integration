@@ -74,9 +74,25 @@ def get_collection_name(label):
     return label.split(".")[0].replace("()", "")
 
 
-def add_plot_group(group_key, plot_names, plot_dir):
-    """Add a group of plots, each as a Plot object, collated by collection name"""
+def add_plot_group(group_key, plot_names, plot_dir, dummy_thumbnail):
+    """Add a group of plots, each as a Plot object, collated by collection name
 
+    Parameters
+    ----------
+    group_key : str
+        Group name (e.g. NO_ENTRIES, SAME)
+    plot_names : list[str]
+        Name of plots, e.g. ["jetsAk4CHS.jetArea()", "jetsAk8CHS.pfcand_indexs()"]
+    plot_dir : str
+        Directory with plots and thumbnails
+    dummy_thumbnail : str
+        Dummy thumbnail image filename for non-existent plots.
+
+    Returns
+    -------
+    Group
+        Object with group info, containing corresponding Plot objects
+    """
     # For each collection we have a Group
     group_mapping = OrderedDict()
     # for all plots not in a collection e.g. run, we put in one Group, makes HTML production easier
@@ -89,15 +105,26 @@ def add_plot_group(group_key, plot_names, plot_dir):
 
     # Now create Plot obj, and assign to correct Group
     for plot_name in plot_names:
+        this_thumbnailname = plot_name.replace("()", "") + ".gif"  # As specified in compareTreeDumps.py
+        this_thumbnailname = os.path.join(plot_dir, "thumbnails", this_thumbnailname)
+
+        this_filename = plot_name.replace("()", "") + ".pdf"  # As specified in makeAllNtupleComparisons.sh
+        this_filename = os.path.join(plot_dir, this_filename)
+
+        if group_key == "NO_ENTRIES":
+            # special case for NO_ENTRIES, as the plots don't exist...but do double check
+            if not os.path.isfile(this_thumbnailname):
+                this_thumbnailname = dummy_thumbnail
+            if not os.path.isfile(this_filename):
+                this_filename = dummy_thumbnail
+
         col = default_col
         if is_collection(plot_name):
             col = get_collection_name(plot_name)
-        this_thumbnailname = plot_name.replace("()", "") + ".gif"  # As specified in plotCompareNtuples.py
-        this_filename = plot_name.replace("()", "") + ".pdf"  # As specified in makeAllNtupleComparisons.sh
         group_mapping[col].contents.append(
             Plot(this_id=plot_name,
-                 thumbnailname=os.path.join(plot_dir, "thumbnails", this_thumbnailname),
-                 filename=os.path.join(plot_dir, this_filename),
+                 thumbnailname=this_thumbnailname,
+                 filename=this_filename,
                  # use <wbr> to allow line break, otherwise need spaces to wrap
                  caption=plot_name.replace(".", "<wbr>."),
                  title=plot_name,
@@ -175,29 +202,38 @@ def main(in_args):
         # PLOTS
         #######################################################################
 
-        # Copy files to figs dir, including thumbnail
+        # Copy files to figs dir, including thumbnails
         figs_dir = os.path.join(args.outputDir, label_safe + '_figs')
         if not os.path.isdir(figs_dir):
             os.makedirs(figs_dir)
-        placeholder_dest = os.path.join(figs_dir, 'placeholder.jpg')
+
         placeholder_src = os.path.join(TEMPLATE_DIR, 'placeholder.jpg')
+        placeholder_dest = os.path.join(figs_dir, 'placeholder.jpg')
         shutil.copyfile(placeholder_src, placeholder_dest)
+
+        dummy_thumbnail_src = os.path.join(TEMPLATE_DIR, 'na_thumbnail.gif')
+        dummy_thumbnail_dest = os.path.join(figs_dir, 'na_thumbnail.gif')
+        shutil.copyfile(dummy_thumbnail_src, dummy_thumbnail_dest)
+
+        copy_tree(plotdir, figs_dir)
+
         # location relative to HTML file, for use in the HTML
         rel_placeholder_img = os.path.relpath(placeholder_dest, os.path.dirname(html_filename))
-        copy_tree(plotdir, figs_dir)
 
         with open(plotjson) as f:
             orig_plot_data = json.load(f, object_pairs_hook=OrderedDict)
 
         # Add groups of plots, each group will have its own header etc
-
         # Do added/remove hists first
         # Use new location for plots, relative to where HTML will end up
         rel_figs_dir = os.path.relpath(figs_dir, os.path.dirname(html_filename))
+        dummy_thumbnail = os.path.relpath(dummy_thumbnail_dest, os.path.dirname(html_filename))
+
         plot_data = [
                      add_plot_group(group_key=key,
                                     plot_names=orig_plot_data[key]['names'],
-                                    plot_dir=rel_figs_dir)
+                                    plot_dir=rel_figs_dir,
+                                    dummy_thumbnail=dummy_thumbnail)
                      for key in ['added_hists', 'removed_hists']
                     ]
 
@@ -205,7 +241,8 @@ def main(in_args):
         plot_data.extend([
                           add_plot_group(group_key=key,
                                          plot_names=orig_plot_data['comparison'][key]['names'],
-                                         plot_dir=rel_figs_dir)
+                                         plot_dir=rel_figs_dir,
+                                         dummy_thumbnail=dummy_thumbnail)
                           for key in orig_plot_data['comparison']
                          ])
 
