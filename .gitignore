@@ -1,6 +1,8 @@
 .pytest_cache/
 __pycache__/
 
+*.awkd
+*.hdf5
 *.patch
 *.json
 *.root
@@ -13,6 +15,10 @@ __pycache__/
 *.bak
 *.html
 !templates/plotPage.html
+!templates/*.gif
+!templates/*.jpg
+!templates/*.jpeg
+!templates/*.png
 *.txt
 *.md
 !README.md
