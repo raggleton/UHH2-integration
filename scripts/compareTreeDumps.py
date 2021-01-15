@@ -688,11 +688,11 @@ if __name__ == "__main__":
             pbar.set_description(fmt_str.format(method_str))
 
         # Make histograms
-        data1 = tree_data1[method_str] if method_str in collections1 else []
+        data1 = tree_data1[method_str] if method_str in tree1_keys else []
         if not is_hdf5_1 and len(data1) > 0:
             data1 = data1.flatten()
 
-        data2 = tree_data2[method_str] if method_str in collections2 else []
+        data2 = tree_data2[method_str] if method_str in tree2_keys else []
         if not is_hdf5_2 and len(data2) > 0:
             data2 = data2.flatten()
 
