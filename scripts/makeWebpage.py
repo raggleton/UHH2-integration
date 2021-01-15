@@ -152,14 +152,40 @@ def main(in_args):
     Thus it is best used for all the pages from one CI pipeline run.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--plotjson", help="Input plots JSON file", required=True, action='append')
-    parser.add_argument("--plotdir", help="Directory with plots in JSON file", required=True, action='append')
-    parser.add_argument("--timingrefjson", help="Input reference timing JSON file", action='append')
-    parser.add_argument("--timingnewjson", help="Input new timing JSON file", action='append')
-    parser.add_argument("--sizerefjson", help="Input reference size JSON file", action='append')
-    parser.add_argument("--sizenewjson", help="Input new size JSON file", action='append')
-    parser.add_argument("--label", help="Label for given plot file", required=True, action='append')
-    parser.add_argument("--outputDir", help="Directory for output files & figures", default=".")
+    parser.add_argument("--plotjson",
+                        help="Input plots JSON file",
+                        required=True,
+                        action='append',
+                        default=[])
+    parser.add_argument("--plotdir",
+                        help="Directory with plots in JSON file",
+                        required=True,
+                        action='append',
+                        default=[])
+    parser.add_argument("--timingrefjson",
+                        help="Input reference timing JSON file",
+                        action='append',
+                        default=[])
+    parser.add_argument("--timingnewjson",
+                        help="Input new timing JSON file",
+                        action='append',
+                        default=[])
+    parser.add_argument("--sizerefjson",
+                        help="Input reference size JSON file",
+                        action='append',
+                        default=[])
+    parser.add_argument("--sizenewjson",
+                        help="Input new size JSON file",
+                        action='append',
+                         default=[])
+    parser.add_argument("--label",
+                        help="Label for given plot file",
+                        required=True,
+                        action='append',
+                        default=[])
+    parser.add_argument("--outputDir",
+                        help="Directory for output files & figures",
+                        default=".")
     args = parser.parse_args(in_args)
 
     if not os.path.isdir(args.outputDir):
