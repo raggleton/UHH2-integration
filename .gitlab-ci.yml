@@ -6,6 +6,7 @@ variables:
   GITHUB_QUIET: 1  #  1 to turn off github posts, 0 otherwise
 #@TESTVARS@
 # DO NOT DELETE THE TESTVARS COMMENT - gets replaced for each branch with necessary variables
+  WEBDIR: "UHH2integration/${LOCALBRANCH}"  # LOCALBRANCH set in testPR
 
 default:
   image: ${IMAGE}

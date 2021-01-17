@@ -109,10 +109,6 @@ then
        exit 1
 fi
 
-# match variable in makeAllWebapges.sh
-# TODO: centralise me!
-export WEBEND="UHH2integration/${LOCALBRANCH}"
-
 function checkCopyFiles {
     # This function iterates over all files in a directory, and for each
     # checks its existence on SMB mount, and its size. If it doesn't exist, or
@@ -124,7 +120,7 @@ function checkCopyFiles {
     set +e  # allow errors, e.g. for not finding files
     # Get listing for this directory on DFS once
     # This avoids calling it for all files individually
-    smbout=$($smbclient -k //cerndfs.cern.ch/dfs -c "cd ${DFS_WEBSITE_PATH}/${WEBEND}/; ls $thisdir/*")
+    smbout=$($smbclient -k //cerndfs.cern.ch/dfs -c "cd ${DFS_WEBSITE_PATH}/${WEBDIR}/; ls $thisdir/*")
     echo "$smbout"
     for fname in "$thisdir"/*;
     do
@@ -156,8 +152,8 @@ function checkCopyFiles {
             # mput ONLY works if you have the basename as the mask for mput
             # i.e. $fname won't work there
             # But it does work for ls
-            $smbclient -k //cerndfs.cern.ch/dfs -c "lcd ${CI_WEBSITE_DIR}/${WEBEND}/${thisdir}; cd ${DFS_WEBSITE_PATH}/${WEBEND}/${thisdir}; recurse; prompt OFF; mask *; mput $patternname"
-            smbsize=$($smbclient -k //cerndfs.cern.ch/dfs -c "ls ${DFS_WEBSITE_PATH}/${WEBEND}/$fname" | awk -v pat="$patternname" '$0~pat {print $3}')
+            $smbclient -k //cerndfs.cern.ch/dfs -c "lcd ${CI_WEBSITE_DIR}/${WEBDIR}/${thisdir}; cd ${DFS_WEBSITE_PATH}/${WEBDIR}/${thisdir}; recurse; prompt OFF; mask *; mput $patternname"
+            smbsize=$($smbclient -k //cerndfs.cern.ch/dfs -c "ls ${DFS_WEBSITE_PATH}/${WEBDIR}/$fname" | awk -v pat="$patternname" '$0~pat {print $3}')
             (( counter++ ))
             if [ "$counter" -eq 6 ]; then
                 echo "WARNING: couldn't copy $fname, tried 5 times"
@@ -172,7 +168,7 @@ function checkCopyFiles {
 
 # New part: check that all the directories got copied correctly
 # I wish I could do directory size check, or checksum, but no luck
-cd "${CI_WEBSITE_DIR}/${WEBEND}/"
+cd "${CI_WEBSITE_DIR}/${WEBDIR}/"
 # can't use -exec with function AND have bash vars
 # ignore . as find will include it
 find . ! -path . -type d -print0 | while IFS= read -r -d '' line;

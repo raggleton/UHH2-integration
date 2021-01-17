@@ -26,7 +26,6 @@ done
 echo "args: "$args
 
 # Need to put website contents in directory "public"
-export WEBEND="UHH2integration/${LOCALBRANCH}"
-ODIR=${CI_PROJECT_DIR}/public/${WEBEND}
+ODIR=${CI_PROJECT_DIR}/public/${WEBDIR}
 mkdir -p $ODIR
 python ${CI_PROJECT_DIR}/scripts/makeWebpage.py --outputDir "$ODIR" $args
