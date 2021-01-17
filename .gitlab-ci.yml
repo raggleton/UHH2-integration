@@ -6,7 +6,8 @@ variables:
   GITHUB_QUIET: 1  #  1 to turn off github posts, 0 otherwise
 #@TESTVARS@
 # DO NOT DELETE THE TESTVARS COMMENT - gets replaced for each branch with necessary variables
-  WEBDIR: "UHH2integration/${LOCALBRANCH}"  # LOCALBRANCH set in testPR
+  WEBDIR: "UHH2integration/${LOCALBRANCH}"  # Directory to be copied to EOS_PATH, LOCALBRANCH set in testPR
+
 
 default:
   image: ${IMAGE}
@@ -171,22 +172,21 @@ build-ref:
     - ls ${TESTDIR}
     - source ${SCRIPTDIR}/makeAllWebpages.sh
 
-# Deploy the pages generated to DFS
+# Deploy the pages generated to EOS
 # contents actually generated in compare-webpage job
-# https://gitlab.cern.ch/gitlabci-examples/deploy_dfs/
-# requires vars DFS_WEBSITE_NAME, DFS_WEBSITE_USERNAME, DFS_WEBSITE_PASSWORD
+# https://gitlab.cern.ch/gitlabci-examples/deploy_eos/
+# requires vars EOS_ACCOUNT_USERNAME, EOS_ACCOUNT_PASSWORD, EOS_PATH
+# optionally CI_OUTPUT_DIR (default is public)
 # Must set dependencies to compare job
 # We do this in separate jobs since the upload is slow, so we want to
 # parallelise it as much as possible
-.dfsdeploy-template: &dfs-deploy
+.eosdeploy-template: &eos-deploy
   stage: deploy
-  # Custom docker image providing the needed tools to deploy in DFS
+  # Custom docker image providing the needed tools to deploy in EOS
   image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer:latest
   script:
-    # Script that performs the deploy to DFS. Makes use of the variables defined in the project
-    # It will not sync the generated content with the folder in DFS (risk of deleting DFS management files)
-    # It will just override the contents of DFS or copy new files
-    - source ${SCRIPTDIR}/my-deploy-dfs.sh
+    # Script that performs the deploy to EOS. Makes use of the variables defined in the project
+    - deploy-eos
     # do not run any globally defined before_script or after_script for this step
   before_script: []
   after_script: []
@@ -196,7 +196,7 @@ build-ref:
 # -----------------------------------------------------------------------------
 # Each {era, type} should have a new job (to run on PR),
 # a ref job (to run on current HEAD), a comparison & webpage maker job,
-# and a dfs uploader job
+# and a EOS uploader job
 
 cmsrun-2018-data-new:
   # Run 2018 data on PR
@@ -224,9 +224,9 @@ compare-webpage-2018-data:
     - cmsrun-2018-data-new
     - cmsrun-2018-data-ref
 
-dfsdeploy-2018-data:
+eosdeploy-2018-data:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2018-data
 
@@ -258,9 +258,9 @@ compare-webpage-2018-mc:
     - cmsrun-2018-mc-new
     - cmsrun-2018-mc-ref
 
-dfsdeploy-2018-mc:
+eosdeploy-2018-mc:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2018-mc
 
@@ -292,9 +292,9 @@ compare-webpage-2017v2-data:
     - cmsrun-2017v2-data-new
     - cmsrun-2017v2-data-ref
 
-dfsdeploy-2017v2-data:
+eosdeploy-2017v2-data:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2017v2-data
 
@@ -326,9 +326,9 @@ compare-webpage-2017v2-mc:
     - cmsrun-2017v2-mc-new
     - cmsrun-2017v2-mc-ref
 
-dfsdeploy-2017v2-mc:
+eosdeploy-2017v2-mc:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2017v2-mc
 
@@ -361,9 +361,9 @@ compare-webpage-2017v1-mc:
     - cmsrun-2017v1-mc-new
     - cmsrun-2017v1-mc-ref
 
-dfsdeploy-2017v1-mc:
+eosdeploy-2017v1-mc:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2017v1-mc
 
@@ -395,9 +395,9 @@ compare-webpage-2016v3-data:
     - cmsrun-2016v3-data-new
     - cmsrun-2016v3-data-ref
 
-dfsdeploy-2016v3-data:
+eosdeploy-2016v3-data:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2016v3-data
 
@@ -429,9 +429,9 @@ compare-webpage-2016v3-mc:
     - cmsrun-2016v3-mc-new
     - cmsrun-2016v3-mc-ref
 
-dfsdeploy-2016v3-mc:
+eosdeploy-2016v3-mc:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2016v3-mc
 
@@ -463,9 +463,9 @@ compare-webpage-2016v2-data:
     - cmsrun-2016v2-data-new
     - cmsrun-2016v2-data-ref
 
-dfsdeploy-2016v2-data:
+eosdeploy-2016v2-data:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2016v2-data
 
@@ -497,9 +497,9 @@ compare-webpage-2016v2-mc:
     - cmsrun-2016v2-mc-new
     - cmsrun-2016v2-mc-ref
 
-dfsdeploy-2016v2-mc:
+eosdeploy-2016v2-mc:
   <<: *make-ntuples-102
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-2016v2-mc
 
@@ -532,9 +532,9 @@ compare-webpage-UL18-data:
     - cmsrun-UL18-data-new
     - cmsrun-UL18-data-ref
 
-dfsdeploy-UL18-data:
+eosdeploy-UL18-data:
   <<: *make-ntuples-106
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-UL18-data
 
@@ -566,9 +566,9 @@ compare-webpage-UL18-mc:
     - cmsrun-UL18-mc-new
     - cmsrun-UL18-mc-ref
 
-dfsdeploy-UL18-mc:
+eosdeploy-UL18-mc:
   <<: *make-ntuples-106
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-UL18-mc
 
@@ -600,9 +600,9 @@ compare-webpage-UL17-data:
     - cmsrun-UL17-data-new
     - cmsrun-UL17-data-ref
 
-dfsdeploy-UL17-data:
+eosdeploy-UL17-data:
   <<: *make-ntuples-106
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-UL17-data
 
@@ -634,9 +634,9 @@ compare-webpage-UL17-mc:
     - cmsrun-UL17-mc-new
     - cmsrun-UL17-mc-ref
 
-dfsdeploy-UL17-mc:
+eosdeploy-UL17-mc:
   <<: *make-ntuples-106
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-UL17-mc
 
@@ -668,9 +668,9 @@ compare-webpage-UL16preVFP-data:
     - cmsrun-UL16preVFP-data-new
     - cmsrun-UL16preVFP-data-ref
 
-dfsdeploy-UL16preVFP-data:
+eosdeploy-UL16preVFP-data:
   <<: *make-ntuples-106
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-UL16preVFP-data
 
@@ -702,9 +702,9 @@ compare-webpage-UL16preVFP-mc:
     - cmsrun-UL16preVFP-mc-new
     - cmsrun-UL16preVFP-mc-ref
 
-dfsdeploy-UL16preVFP-mc:
+eosdeploy-UL16preVFP-mc:
   <<: *make-ntuples-106
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-UL16preVFP-mc
 
@@ -736,9 +736,9 @@ compare-webpage-UL16postVFP-data:
     - cmsrun-UL16postVFP-data-new
     - cmsrun-UL16postVFP-data-ref
 
-dfsdeploy-UL16postVFP-data:
+eosdeploy-UL16postVFP-data:
   <<: *make-ntuples-106
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-UL16postVFP-data
 
@@ -770,9 +770,9 @@ compare-webpage-UL16postVFP-mc:
     - cmsrun-UL16postVFP-mc-new
     - cmsrun-UL16postVFP-mc-ref
 
-dfsdeploy-UL16postVFP-mc:
+eosdeploy-UL16postVFP-mc:
   <<: *make-ntuples-106
-  <<: *dfs-deploy
+  <<: *eos-deploy
   dependencies:
     - compare-webpage-UL16postVFP-mc
 
@@ -818,35 +818,35 @@ review-ntuples:
     - cmsrun-UL18-data-new
     - cmsrun-UL18-data-ref
     - compare-webpage-UL18-data
-    - dfsdeploy-UL18-data
+    - eosdeploy-UL18-data
     - cmsrun-UL18-mc-new
     - cmsrun-UL18-mc-ref
     - compare-webpage-UL18-mc
-    - dfsdeploy-UL18-mc
+    - eosdeploy-UL18-mc
     - cmsrun-UL17-data-new
     - cmsrun-UL17-data-ref
     - compare-webpage-UL17-data
-    - dfsdeploy-UL17-data
+    - eosdeploy-UL17-data
     - cmsrun-UL17-mc-new
     - cmsrun-UL17-mc-ref
     - compare-webpage-UL17-mc
-    - dfsdeploy-UL17-mc
+    - eosdeploy-UL17-mc
     - cmsrun-UL16preVFP-data-new
     - cmsrun-UL16preVFP-data-ref
     - compare-webpage-UL16preVFP-data
-    - dfsdeploy-UL16preVFP-data
+    - eosdeploy-UL16preVFP-data
     - cmsrun-UL16preVFP-mc-new
     - cmsrun-UL16preVFP-mc-ref
     - compare-webpage-UL16preVFP-mc
-    - dfsdeploy-UL16preVFP-mc
+    - eosdeploy-UL16preVFP-mc
     - cmsrun-UL16postVFP-data-new
     - cmsrun-UL16postVFP-data-ref
     - compare-webpage-UL16postVFP-data
-    - dfsdeploy-UL16postVFP-data
+    - eosdeploy-UL16postVFP-data
     - cmsrun-UL16postVFP-mc-new
     - cmsrun-UL16postVFP-mc-ref
     - compare-webpage-UL16postVFP-mc
-    - dfsdeploy-UL16postVFP-mc
+    - eosdeploy-UL16postVFP-mc
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/review-success

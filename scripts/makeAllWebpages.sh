@@ -25,7 +25,7 @@ do
 done
 echo "args: "$args
 
-# Need to put website contents in directory "public"
+# Need to put website contents in directory "public" as that's the default for CI_OUTPUT_DIR
 ODIR=${CI_PROJECT_DIR}/public/${WEBDIR}
 mkdir -p $ODIR
 python ${CI_PROJECT_DIR}/scripts/makeWebpage.py --outputDir "$ODIR" $args
